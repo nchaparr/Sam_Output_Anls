@@ -178,6 +178,47 @@ def get_fit(array, height):
     return fit_array, grad_array, grad_peaks
 
 
+def get_RSS(theta, height):
+     """
+        Fitting the local theta profile with three lines
+     
+     """
+     fitvals = np.zeros_like(theta)
+     RSS = np.empty((312, 312))+ np.nan
+     for j in range(312):
+          if j > 2:
+               for k in range(312):
+                    if k>j+1:
+                         b_1 = (np.sum(np.multiply(height[2:j], theta[2:j])) - 1/j*np.sum(height[2:j]*np.sum(theta[2:j])))/(np.sum(height[2:j]**2) - 1/j*np.sum(height[2:j])**2)
+                         a_1 = np.sum(np.multiply(height[2:j], theta[2:j]))/np.sum(height[2:j]) - b_1*np.sum(height[2:j]**2)/np.sum(height[2:j])
+                         
+                         b_2 = (np.sum(theta[j:k]) - (k-j)*(a_1+b_1*height[j]))/(np.sum(height[j:k]) - (k-j)*height[j])
+                         
+                         a_2 = np.sum(np.multiply(height[j:k], theta[j:k]))/np.sum(height[j:k]) - b_2*np.sum(height[j:k]**2)/np.sum(height[j:k])
+
+                         print np.sum(height[j:k]), np.sum(np.multiply(height[j:k], theta[j:k])), b_2, np.sum(height[j:k]**2)
+                         print np.sum(height[j:k]), (k-j)*height[j]
+
+                         b_3 = (np.sum(theta[k:312]) - (312-k)*(a_2+b_2*height[k]))/(np.sum(height[k:312]) - (312-k)*height[k])
+                         a_3 = np.sum(np.multiply(height[k:312], theta[k:312]))/np.sum(height[k:312]) - b_2*np.sum(height[k:312]**2)/np.sum(height[k:312])
+                         
+                         RSS[j, k] = np.sum(np.add(theta[2:j], -(a_1+ b_1*height[2:j]))**2) + np.sum(np.add(theta[j:k], -(a_2+ b_2*height[j:k]))**2) + np.sum(np.add(theta[k:312], -(a_2+ b_2*height[k:312]))**2) 
+                         print j, k, a_1, b_1, a_2, b_2, a_3, b_3, RSS[j, k]
+     
+     [J, K] = np.unravel_index(RSS.argmin(), RSS.shape)
+     
+     fitvals[:J] = b_1*height[:J] + a_1
+     fitvals[J:K] = b_2*height[J:K] + a_2
+     fitvals[K:312] = b_3*height[K:312] + a_3
+
+
+     return fitvals, RSS, J, K                                                                  
+                                                                                    
+                                                                              
+                                                                                       
+                                                                                       
+
+
 #set up plot
 theFig = plt.figure(1)
 theFig.clf()
@@ -188,97 +229,46 @@ theAx.set_ylabel('z (m)')
 
 theAx1 = theFig.add_subplot(122)
 theAx1.set_title('')
-theAx1.set_xlabel('Theta (K)')
+theAx1.set_xlabel('')
 theAx1.set_ylabel('')
+
+theFig = plt.figure(2)
+theFig.clf()
+theAx2 = theFig.add_subplot(111)
+theAx2.set_title('')
+theAx2.set_xlabel('')
+theAx2.set_ylabel('')
 
 dump_time_list, time_hrs = Make_Timelists(1, 600, 28800)
 
-
 dump_time = dump_time_list[29]
 
-for k in range(10):
+for k in range(1):
      
      [wvels, theta, tracer, height] = nc.Get_Var_Arrays("/tera2/nchaparr/Dec252013/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time, k+1)
 
-     #[fit_array, dvardz, grad_peaks] = get_fit(theta, height)
+     
      [dvardz, grad_peaks] = nc.Domain_Grad(theta, height) 
-     v_max, v_min, mean, stddev = np.amax(grad_peaks), np.amin(grad_peaks), np.mean(grad_peaks), np.std(grad_peaks)
-     #label_list, tick_list = get_ticks(mean, stddev,v_max, v_min)
-     print 'max min std', v_max, v_min, mean, stddev
-     #get slice of w, at domain averaged h
-     yavh = np.mean(grad_peaks, axis = 0)
-     avh = np.mean(yavh, axis = 0)
-     slice_index = np.where(height > 1500)[0]
-
-     #tops = tracer_peaks[np.abs(tracer_peaks - 1570)<10]
-     #print tops.shape, tops
      tops_indices=np.where(np.abs(grad_peaks - 0)>0)
      
-     for i in range(tops_indices[0].shape[0]):
-     #for i in range(1):
+     #for i in range(tops_indices[0].shape[0]):
+     for i in range(1):
           top_index = [tops_indices[0][i], tops_indices[1][i]]
           [i, j] = top_index
-          if np.mod(i, 10) ==0:
-               print i, j
-          #print dvardz[50-1:0:-1, i, j].shape, dvardz[:,i, j].shape, dvardz[-1:50:-1, i, j].shape
-          #s = np.r_[dvardz[50-1:0:-1, i, j], dvardz[:,i, j], dvardz[-1:50:-1, i, j]]
-          #print s.shape
-          #w = np.ones(50, 'd')
-          #y=np.convolve(w/w.sum(), s, mode='valid')
-          #print y.shape
-          
-          #gradmax = np.amax(dvardz[: , i, j])
-          #index = np.where(dvardz[:, i, j] - gradmax == 0)[0][0]
-          #index2 = np.argmax(dvardz[:, i, j])
-          #print index, index2, height[index], gradmax, grad_peaks[i,j]
-     #top_index = [24, 68]
-
-          #print top_index, top_index[0]*25, top_index[1]*25, tracer_peaks[top_index[0], top_index[1]], v_max
-     #theAx.plot(np.zeros(312)+302, height, 'k--')
-
-     #theAx.plot(wvels[:, top_index[0], top_index[1]]+302, height, 'r--', label='w')
-          thetavals = theta[:, top_index[0], top_index[1]]
-          #s1 = np.r_[theta[10-1:0:-1, i, j], theta[:,i, j], theta[-1:10:-1, i, j]]
-          #print s1.shape
-          #w1 = np.ones(10, 'd')
-          #y1=np.convolve(w1/w1.sum(), s1, mode='valid')
-          #print y.shape
-          
-          #fitvals = fit_array[:, top_index[0], top_index[1]]
-          gradvals = dvardz[:, top_index[0], top_index[1]]
-          #dheight = np.gradient(height)
-          #dvar = np.gradient(thetavals)
-          #dvardz = np.divide(dvar, dheight)
-          #print ddvardzdz.shape
-          #stepvals = steps[:, top_index[0], top_index[1]]
+          thetavals = theta[:, i, j]
+          fitvals, RSS, J, K = get_RSS(thetavals, height) 
           theAx1.plot(thetavals, height[:], 'wo')
-          #theAx1.plot(y1[:312], height[:], 'b-')
-          gradref0 = np.zeros_like(gradvals)
-          gradref1 = np.zeros_like(gradvals) + .0025
-          theAx.plot(gradvals, height[:], 'r-')
-          #theAx.plot(wvels[:, top_index[0], top_index[1]], height[:], 'b-')
-          theAx.plot(gradref0, height[:], 'k--')
-          theAx.plot(gradref1, height[:], 'k--')          
-          #theAx.plot(dvardz, height[:], 'k-')
-          #theAx.plot(y[:312], height[:], 'b-')
-          #theAx1.plot(fitvals+.5, height[:], 'b-')
+          theAx.plot(fitvals, height[:], 'r-')
           
-     #filler_array = np.zeros([64, 192])
-     #wslice = wvels[slice_index[0], :, :]
-     #wslice = np.vstack((wslice, filler_array))
-     #n, bins, patches = theAx.hist(tracer_peaks, bins=20)
-     #height_bin_vols = nc.Bin_Peaks(grad_peaks, height)
-     #theAx.bar(height, height_bin_vols)
-     #grad_peaks = np.vstack((grad_peaks, filler_array))
-     #x = np.arange(0, 4800, 25)
-     #y = np.arange(0, 4800, 25)
-     #X,Y = np.meshgrid(x, y)
+x = np.arange(0, 312, 1)
+y = np.arange(0, 312, 1)
+X,Y = np.meshgrid(x, y)
 
      #plt.legend(loc = 'upper center', prop={'size':8})
      #theAx.text(304, 1700, 'h',  fontdict=None, withdash=True)
-     #im = theAx.pcolor(X, Y, grad_peaks, cmap=cm.bone, vmax=v_max, vmin=v_min)
+im = theAx2.pcolor(X, Y, RSS, cmap=cm.bone)
      #im = theAx.pcolor(X, Y, wslice, cmap=cm.bone, vmax=4, vmin=-3) #
-     #bar = plt.colorbar(im)
+bar = plt.colorbar(im)
      #bar.locator = ticker.FixedLocator(tick_list)
      #bar.formatter= ticker.FixedFormatter(label_list)
      #bar.update_ticks()
