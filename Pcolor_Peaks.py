@@ -137,18 +137,6 @@ def get_fit(theta, height):
      return fitvals, RSS, j, k                                                              
                                                                                 
                                                                               
-#set up plot
-theFig = plt.figure(1)
-theFig.clf()
-theAx = theFig.add_subplot(121)
-theAx.set_title('')
-theAx.set_xlabel('')
-theAx.set_ylabel('z (m)')
-
-theAx1 = theFig.add_subplot(122)
-theAx1.set_title('')
-theAx1.set_xlabel('')
-theAx1.set_ylabel('')
 
 #Lists of times relating to output (nc) files
 dump_time_list, time_hrs = Make_Timelists(1, 600, 28800)
@@ -163,7 +151,7 @@ for k in range(1):
      tops_indices=np.where(np.abs(grad_peaks - 1400)<10)
      
      #choosing one horizontal point
-     for i in range(1):
+     for i in range(4):
           top_index = [tops_indices[0][i], tops_indices[1][i]]
           [i, j] = top_index
           thetavals = theta[:, i, j]
@@ -172,7 +160,19 @@ for k in range(1):
           print 'Start', startTime#1     
           fitvals, RSS, J, K = get_fit(thetavals, height)
           print 'RSS time', (datetime.now()-startTime)
-          
+          #set up plot
+          theFig = plt.figure(i)
+          theFig.clf()
+          theAx = theFig.add_subplot(121)
+          theAx.set_title('')
+          theAx.set_xlabel('')
+          theAx.set_ylabel('z (m)')
+
+          theAx1 = theFig.add_subplot(122)
+          theAx1.set_title('')
+          theAx1.set_xlabel('')
+          theAx1.set_ylabel('')
+
           theAx1.plot(thetavals, height[:], 'wo')
           theAx.plot(fitvals[:J], height[:J], 'r-')
           theAx.plot(fitvals[J:K], height[J:K], 'b-')
