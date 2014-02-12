@@ -103,9 +103,18 @@ def get_fit(theta, height):
           if j > 2:
                for k in range(300):
                     if k>j+1 and k<299:
-                         b_1 = (np.sum(np.multiply(height[:j], theta[:j])) - 1/j*np.sum(height[:j])*np.sum(theta[:j]))/(np.sum(height[:j]**2) - 1/j*np.sum(height[:j])**2)
-                         a_1 = np.sum(np.multiply(height[:j], theta[:j]))/np.sum(height[:j]) - b_1*np.sum(height[:j]**2)/np.sum(height[:j])
-                         
+                         b_1=0, a_1=0, num_b=0, num_a=0, dem_b1=0, dem_b2=0, dem_a=0
+                         for i in range(j):
+                              num_b1 = num_1 + height[i]*theta[i]
+                              num_b2 = num_b2 + height[i]
+                              num_b3 = num_b3 + theta[i]
+                              dem_b1 = dem_b1 + height[i]**2
+                              dem_b2 = dem_b2 + height[i]
+                         num_b = num_b1 - 1/j*num_b2*num_b3
+                         dem_b = dem_b1  - 1/j*dem_b2**2
+                         b_1 = num_b/dem_b
+                         a_1 = num_b1/num_b2 - b_1*dem_b1/num_b2
+                                                                           
                          b_2 = (np.sum(theta[j:k]) - (k-j)*(a_1+b_1*height[j]))/(np.sum(height[j:k]) - (k-j)*height[j])
                          
                          a_2 = np.sum(np.multiply(height[j:k], theta[j:k]))/np.sum(height[j:k]) - b_2*np.sum(height[j:k]**2)/np.sum(height[j:k])
@@ -113,7 +122,7 @@ def get_fit(theta, height):
                          b_3 = (np.sum(theta[k:300]) - (300-k)*(a_2+b_2*height[k]))/(np.sum(height[k:300]) - (300-k)*height[k])
                          a_3 = np.sum(np.multiply(height[k:300], theta[k:300]))/np.sum(height[k:300]) - b_2*np.sum(height[k:300]**2)/np.sum(height[k:300])
                          
-                         RSS[j, k] = np.sum(np.add(theta[2:j], -(a_1+ b_1*height[2:j]))**2) + np.sum(np.add(theta[j:k], -(a_2+ b_2*height[j:k]))**2) + np.sum(np.add(theta[k:312], -(a_2+ b_2*height[k:300]))**2) 
+                         RSS[j, k] = np.sum(np.add(theta[2:j], -(a_1+ b_1*height[2:j]))**2) + np.sum(np.add(theta[j:k], -(a_2+ b_2*height[j:k]))**2) + np.sum(np.add(theta[k:300], -(a_2+ b_2*height[k:300]))**2) 
                          
                          
      RSS = ma.masked_where(np.isnan(RSS), RSS)
@@ -125,8 +134,8 @@ def get_fit(theta, height):
      b_2 = (np.sum(theta[j:k]) - (k-j)*(a_1+b_1*height[j]))/(np.sum(height[j:k]) - (k-j)*height[j])                         
      a_2 = np.sum(np.multiply(height[j:k], theta[j:k]))/np.sum(height[j:k]) - b_2*np.sum(height[j:k]**2)/np.sum(height[j:k])
 
-     b_3 = (np.sum(theta[k:312]) - (312-k)*(a_2+b_2*height[k]))/(np.sum(height[k:312]) - (312-k)*height[k])
-     a_3 = np.sum(np.multiply(height[k:312], theta[k:312]))/np.sum(height[k:312]) - b_2*np.sum(height[k:312]**2)/np.sum(height[k:312])
+     b_3 = (np.sum(theta[k:300]) - (300-k)*(a_2+b_2*height[k]))/(np.sum(height[k:300]) - (300-k)*height[k])
+     a_3 = np.sum(np.multiply(height[k:300], theta[k:300]))/np.sum(height[k:300]) - b_2*np.sum(height[k:300]**2)/np.sum(height[k:300])
                          
      
      fitvals[:j] = b_1*height[:j] + a_1
@@ -154,8 +163,9 @@ for k in range(1):
      for i in range(4):
           top_index = [tops_indices[0][i], tops_indices[1][i]]
           [l, m] = top_index
-          thetavals = theta[: l, m]
-
+          print top_index
+          thetavals = theta[:, l, m]
+          print thetavals.shape
           startTime = datetime.now()
           print 'Start', startTime#1     
           fitvals, RSS, J, K = get_fit(thetavals, height)
