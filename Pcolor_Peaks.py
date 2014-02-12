@@ -97,12 +97,12 @@ def get_fit(theta, height):
      """
      
      fitvals = np.zeros_like(theta)
-     RSS = np.empty((312, 312))+ np.nan
+     RSS = np.empty((300, 300))+ np.nan
      print RSS[0,0]
-     for j in range(312):
+     for j in range(300):
           if j > 2:
-               for k in range(312):
-                    if k>j+1 and k<311:
+               for k in range(300):
+                    if k>j+1 and k<299:
                          b_1 = (np.sum(np.multiply(height[:j], theta[:j])) - 1/j*np.sum(height[:j])*np.sum(theta[:j]))/(np.sum(height[:j]**2) - 1/j*np.sum(height[:j])**2)
                          a_1 = np.sum(np.multiply(height[:j], theta[:j]))/np.sum(height[:j]) - b_1*np.sum(height[:j]**2)/np.sum(height[:j])
                          
@@ -110,10 +110,10 @@ def get_fit(theta, height):
                          
                          a_2 = np.sum(np.multiply(height[j:k], theta[j:k]))/np.sum(height[j:k]) - b_2*np.sum(height[j:k]**2)/np.sum(height[j:k])
 
-                         b_3 = (np.sum(theta[k:312]) - (312-k)*(a_2+b_2*height[k]))/(np.sum(height[k:312]) - (312-k)*height[k])
-                         a_3 = np.sum(np.multiply(height[k:312], theta[k:312]))/np.sum(height[k:312]) - b_2*np.sum(height[k:312]**2)/np.sum(height[k:312])
+                         b_3 = (np.sum(theta[k:300]) - (300-k)*(a_2+b_2*height[k]))/(np.sum(height[k:300]) - (300-k)*height[k])
+                         a_3 = np.sum(np.multiply(height[k:300], theta[k:300]))/np.sum(height[k:300]) - b_2*np.sum(height[k:300]**2)/np.sum(height[k:300])
                          
-                         RSS[j, k] = np.sum(np.add(theta[2:j], -(a_1+ b_1*height[2:j]))**2) + np.sum(np.add(theta[j:k], -(a_2+ b_2*height[j:k]))**2) + np.sum(np.add(theta[k:312], -(a_2+ b_2*height[k:312]))**2) 
+                         RSS[j, k] = np.sum(np.add(theta[2:j], -(a_1+ b_1*height[2:j]))**2) + np.sum(np.add(theta[j:k], -(a_2+ b_2*height[j:k]))**2) + np.sum(np.add(theta[k:312], -(a_2+ b_2*height[k:300]))**2) 
                          
                          
      RSS = ma.masked_where(np.isnan(RSS), RSS)
@@ -153,8 +153,8 @@ for k in range(1):
      #choosing one horizontal point
      for i in range(4):
           top_index = [tops_indices[0][i], tops_indices[1][i]]
-          [i, j] = top_index
-          thetavals = theta[:, i, j]
+          [l, m] = top_index
+          thetavals = theta[: l, m]
 
           startTime = datetime.now()
           print 'Start', startTime#1     
@@ -179,11 +179,11 @@ for k in range(1):
           theAx.plot(fitvals[K:312], height[K:312], 'g-')
           theAx1.plot(fitvals, height[:], 'r-')
 
-theAx1.set_xlim(300, 310)
-theAx1.set_ylim(0, 4000)
-theAx.set_ylim(0, 4000)
-theAx.set_xlim(300, 310)
-plt.show()
+          theAx1.set_xlim(300, 310)
+          theAx1.set_ylim(0, 4000)
+          theAx.set_ylim(0, 4000)
+          theAx.set_xlim(300, 310)
+          plt.show()
 
 
 
