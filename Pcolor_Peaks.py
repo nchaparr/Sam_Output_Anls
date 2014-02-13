@@ -97,12 +97,12 @@ def get_fit(theta, height):
      """
      
      fitvals = np.zeros_like(theta)
-     RSS = np.empty((300, 300))+ np.nan
+     RSS = np.empty((298, 290))+ np.nan
      print RSS[0,0]
-     for j in range(300):
+     for j in range(298):
           if j > 2:
-               for k in range(300):
-                    if k>j+1 and k<299:
+               for k in range(298):
+                    if k>j+1 and k<279:
                          b_1, a_1, num_b_11, num_b_12, num_b_13, dem_b_11, dem_b_12 = 0, 0, 0, 0, 0, 0, 0  
                          for i in range(j):
                               num_b_11 = num_b_11 + height[i]*theta[i]
@@ -133,25 +133,30 @@ def get_fit(theta, height):
                          
                          #print np.sum(theta[j:k]), num_b_21  NOTE: these are different, np.sum seems to round to 1 decimal place
                          
-                         #num_b_31, num_b_32, dem_b_31, dem_b_32, num_a_31, num_a_32 = 0, 0, 0, 0, 0, 0
-                         #for i in range(300-k):
-                         #     num_b_31 = num_b_31 + theta[k+i]
-                         #     num_b_32 = num_b_32 + a_2 + b_2*height[k]
-                         #     dem_b_31 = dem_b_31 + height[k+i]
-                         #     dem_b_32 = dem_b_32 + height[k]
-                         #     num_a_31 = num_a_31 + height[k+i]*theta[k+i]
-                         #     num_a_32 = num_a_32 + height[k+i]**2
+                         num_b_31, num_b_32, dem_b_31, dem_b_32, num_a_31, num_a_32 = 0, 0, 0, 0, 0, 0
+                         for i in range(298-k):
+                              num_b_31 = num_b_31 + theta[k+i]
+                              num_b_32 = num_b_32 + a_2 + b_2*height[k]
+                              dem_b_31 = dem_b_31 + height[k+i]
+                              dem_b_32 = dem_b_32 + height[k]
+                              num_a_31 = num_a_31 + height[k+i]*theta[k+i]
+                              num_a_32 = num_a_32 + height[k+i]**2
 
-                         #num_b_3 = num_b_31 - num_b_32
-                         #dem_b_3 = dem_b_31 - dem_b_32
+                         num_b_3 = num_b_31 - num_b_32
+                         dem_b_3 = dem_b_31 - dem_b_32
 
-                         #b_3 = num_b_3/dem_b_3
-                         #a_3 = num_a_31/dem_b_31 - b_2*dem_a_32/dem_b_31
+                         b_3 = num_b_3/dem_b_3
+                         a_3 = num_a_31/dem_b_31 - b_2*num_a_32/dem_b_31
                          
-                         b_3 = (np.sum(theta[k:300]) - (300-k)*(a_2+b_2*height[k]))/(np.sum(height[k:300]) - (300-k)*height[k])
-                         a_3 = np.sum(np.multiply(height[k:300], theta[k:300]))/np.sum(height[k:300]) - b_2*np.sum(height[k:300]**2)/np.sum(height[k:300])
+                         #b_3 = (np.sum(theta[k:298]) - (298-k)*(a_2+b_2*height[k]))/(np.sum(height[k:298]) - (298-k)*height[k])
+                         #a_3 = np.sum(np.multiply(height[k:298], theta[k:298]))/np.sum(height[k:298]) - b_2*np.sum(height[k:298]**2)/np.sum(height[k:298])
                          
-                         RSS[j, k] = np.sum(np.add(theta[2:j], -(a_1+ b_1*height[2:j]))**2) + np.sum(np.add(theta[j:k], -(a_2+ b_2*height[j:k]))**2) + np.sum(np.add(theta[k:300], -(a_2+ b_2*height[k:300]))**2) 
+                         #print np.sum(theta[k:298]), num_b_31 NOTE: sum seems to round up to 1 dec                                               
+                         
+                         #print np.sum(np.multiply(height[k:298], theta[k:298])), num_a_31 NOTE: again rounding but this time not decimal places!!           
+                                              
+                         
+                         RSS[j, k] = np.sum(np.add(theta[2:j], -(a_1+ b_1*height[2:j]))**2) + np.sum(np.add(theta[j:k], -(a_2+ b_2*height[j:k]))**2) + np.sum(np.add(theta[k:298], -(a_2+ b_2*height[k:298]))**2) 
                          
                          
      RSS = ma.masked_where(np.isnan(RSS), RSS)
@@ -163,13 +168,13 @@ def get_fit(theta, height):
      b_2 = (np.sum(theta[j:k]) - (k-j)*(a_1+b_1*height[j]))/(np.sum(height[j:k]) - (k-j)*height[j])                         
      a_2 = np.sum(np.multiply(height[j:k], theta[j:k]))/np.sum(height[j:k]) - b_2*np.sum(height[j:k]**2)/np.sum(height[j:k])
 
-     b_3 = (np.sum(theta[k:300]) - (300-k)*(a_2+b_2*height[k]))/(np.sum(height[k:300]) - (300-k)*height[k])
-     a_3 = np.sum(np.multiply(height[k:300], theta[k:300]))/np.sum(height[k:300]) - b_2*np.sum(height[k:300]**2)/np.sum(height[k:300])
+     b_3 = (np.sum(theta[k:298]) - (298-k)*(a_2+b_2*height[k]))/(np.sum(height[k:298]) - (298-k)*height[k])
+     a_3 = np.sum(np.multiply(height[k:298], theta[k:298]))/np.sum(height[k:298]) - b_2*np.sum(height[k:298]**2)/np.sum(height[k:298])
                          
      
      fitvals[:j] = b_1*height[:j] + a_1
      fitvals[j:k] = b_2*height[j:k] + a_2
-     fitvals[k:312] = b_3*height[k:312] + a_3
+     fitvals[k:298] = b_3*height[k:298] + a_3
 
 
      return fitvals, RSS, j, k                                                              
@@ -215,13 +220,14 @@ for k in range(1):
           theAx1.plot(thetavals, height[:], 'wo')
           theAx.plot(fitvals[:J], height[:J], 'r-')
           theAx.plot(fitvals[J:K], height[J:K], 'b-')
-          theAx.plot(fitvals[K:312], height[K:312], 'g-')
-          theAx1.plot(fitvals, height[:], 'r-')
-
-          theAx1.set_xlim(300, 310)
-          theAx1.set_ylim(0, 4000)
-          theAx.set_ylim(0, 4000)
-          theAx.set_xlim(300, 310)
+          theAx.plot(fitvals[K:298], height[K:298], 'g-')
+          print fitvals[:298].shape, height[:298].shape
+          theAx1.plot(fitvals[:298], height[:298], 'r-')
+          
+          theAx1.set_xlim(300, 320)
+          theAx1.set_ylim(0, 6000)
+          theAx.set_ylim(0, 6000)
+          theAx.set_xlim(300, 320)
           plt.show()
 
 
