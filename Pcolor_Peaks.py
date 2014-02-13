@@ -147,18 +147,23 @@ def get_fit(theta, height):
 
                          b_3 = num_b_3/dem_b_3
                          a_3 = num_a_31/dem_b_31 - b_2*num_a_32/dem_b_31
-                         
-                         #b_3 = (np.sum(theta[k:298]) - (298-k)*(a_2+b_2*height[k]))/(np.sum(height[k:298]) - (298-k)*height[k])
-                         #a_3 = np.sum(np.multiply(height[k:298], theta[k:298]))/np.sum(height[k:298]) - b_2*np.sum(height[k:298]**2)/np.sum(height[k:298])
-                         
-                         #print np.sum(theta[k:298]), num_b_31 NOTE: sum seems to round up to 1 dec                                               
-                         
-                         #print np.sum(np.multiply(height[k:298], theta[k:298])), num_a_31 NOTE: again rounding but this time not decimal places!!           
-                                              
-                         
+                                                  
+                         #print np.sum(theta[k:298]), num_b_31 NOTE: sum seems to round up to 1 dec                                   
+                         #print np.sum(np.multiply(height[k:298], theta[k:298])), num_a_31 NOTE: again rounding but this time not decimal places!!      
+                                                                      
                          RSS[j, k] = np.sum(np.add(theta[2:j], -(a_1+ b_1*height[2:j]))**2) + np.sum(np.add(theta[j:k], -(a_2+ b_2*height[j:k]))**2) + np.sum(np.add(theta[k:298], -(a_2+ b_2*height[k:298]))**2) 
-                         
-                         
+                         RSS_1 = 0
+                         for i in range(j):
+                              RSS_1 = RSS_1 + (theta[i] -(a_1 + b_1*height[i]))**2
+                         RSS_2 = 0     
+                         for i in range(k-j):
+                              RSS_2 = RSS_2 + (theta[j+i] - (a_2 + b_2*height[j+i]))**2
+                         RSS_3 = 0
+                         for i in range(298-k):
+                              RSS_3 = RSS_3 + (theta[k+i] - (a_3 + b_3*height[k+i]))**2
+                         RSS[j, k] = RSS_1 + RSS_2 + RSS_3
+
+                        
      RSS = ma.masked_where(np.isnan(RSS), RSS)
      [j, k] = np.unravel_index(ma.argmin(RSS), RSS.shape)
      
