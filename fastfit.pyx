@@ -1,104 +1,52 @@
-from __future__ import division
-from netCDF4 import Dataset
-import glob,os.path
+
 import numpy as np
-import numpy.ma as ma
-from scipy.interpolate import UnivariateSpline
-from matplotlib import cm
-from matplotlib import ticker
-import matplotlib.pyplot as plt
-#import site
-#site.addsitedir('/tera/phil/nchaparr/SAM2/sam_main/python')
-#from Percentiles import *
-from matplotlib.patches import Patch
-import sys
-#sys.path.insert(0, '/tera/phil/nchaparr/python')
-import nchap_fun as nc
-from Make_Timelist import *
-import warnings
-warnings.simplefilter('ignore', np.RankWarning)
-#import pywt
-from scipy import stats
-from datetime import datetime
+cimport numpy as np
+from libc.stdint cimport int32_t
+cimport cython
+from libc.stdio cimport printf
 
-"""
-    In testing phase -- get_fit() for identifying ML top
-    To plot gradient maxima ie BL heights, and w on a 2d horizontal domain,
-    and get a histogram or contour plot of BL heigths
-    for an individual case
-    added function to get ticks and labels based on mean and standard deviation
-              
-"""
-#TODO: a mess right now.  but can be tidied up once regression code is included
+cython.embedsignature(True)
+@cython.cdivision(True)
+@cython.wraparound(False)
+@cython.boundscheck(False)
+def get_fit(object theta, object height):
+    """
+       fits 3 lines to a vertical theta profile
+       
+       parameters
+       ----------
 
-def get_ticks(mean, stddev, max, min):
+        theta, height: numpy 1d array of floating point numbers
+        
+       returns:
+       --------
 
-     """
+       fitvals: numpy 1d array of floating point numbers   
+       RSS: numpy 2d array of floating point numbers
+       j, k: integers
+       
+       example
+       -------
+             
+    """   
+    theta=np.ascontiguousarray(theta)
+    theta=theta.astype(np.float64)
+    cdef double* dataPtr= <double*> np.PyArray_DATA(theta)
 
-     gets ticks and tick lavels for contour plot based on mean and standard deviation
+    height=np.ascontiguousarray(height)
+    height=height.astype(np.float64)
+    cdef double* dataPtr= <double*> np.PyArray_DATA(height)
     
-     Arguments:    
-     mean, stddev, max, min
-
-     Returns:       
-     ticks, tick_labels
+    cdef double binsize=(maxdata-mindata)/float(the_numbins)
+    cdef np.float64_t[:] fitvals=np.empty([theta.size],dtype=np.float64)
+    cdef np.float64_t[:] RSS=np.empty([298, 298],dtype=np.float64)
     
-     """
-     tick_list = []
-     label_list = []     
-     int1=int(np.ceil((mean-min)/stddev))     
-     int2=int(np.ceil((max-mean)/stddev))
-     
-     
-     
-     for i in range(int1):
-         if int1==1:
-             tick_list.append(min)
-             label_list.append(r'$\mu - %.1f \sigma$' %((mean-min)/stddev))
-             
-         elif i > 0:
-             tick_list.append(mean - (int1-i)*stddev)
-             
-             label_list.append(r'$\mu - %.1f \sigma$' %(int1-i))
-             
-         #else:
-             #tick_list.append(min)
-             
-             #label_list.append(r'$\mu - %.1f \sigma$' %((mean-min)/stddev))
-             
-     tick_list.append(mean)       
-     label_list.append(r'$\mu$')
-     
-     
-     for i in range(int2):
-         
-         if int2==1:
-             tick_list.append(max)
-             
-             label_list.append(r'$\mu + %.1f \sigma$' %((max-mean)/stddev))
-             
-         elif i< int2-1:
-             tick_list.append(mean + (i+1)*stddev)
-             
-             label_list.append(r'$\mu + %.1f \sigma$' %(i+1))
-             
-         #else:
-             #tick_list.append(max)
-             
-             #label_list.append(r'$\mu + %.1f \sigma$' %((max-mean)/stddev))
-             
-     return label_list, tick_list
-
-
-def get_fit(theta, height):
-     """
-        Fitting the local theta profile with three lines
-     
-     """
-     
-     fitvals = np.zeros_like(theta)
-     RSS = np.empty((298, 290))+ np.nan
-     print RSS[0,0]
+    cdef int i, j, k
+    cdef double b_1, a_1, num_b_11, num_b_12, num_b_13, dem_b_11, dem_b_12
+    cdef double b_2, a_2, num_b_21, num_b_22, dem_b_21, dem_b_22, num_a_21, num_a_22
+    cdef double num_b_31, num_b_32, dem_b_31, dem_b_32, num_a_31, num_a_32
+    cdef double b_1, a_1, b_2, a_2, b_3, a_3, num_b, dem_b, num_b2, dem_b2, num_b_3, dem_b_3
+    
      for j in range(298):
           if j > 2:
                for k in range(298):
@@ -166,21 +114,12 @@ def get_fit(theta, height):
                          if j==3 and k==5:
                               RSS_min = RSS[j, k]
                               print RSS_min, 'first if'
-                         #if np.isnan(RSS_min)==True and np.isnan(RSS[j, k])==False :
-                         #     RSS_min = RSS[j, k]
-                         #     print RSS_min, 'second if'
+                         
                          if RSS[j, k]<RSS_min : 
                               RSS_min = RSS[j, k]
                               J, K = j, k
                               print RSS_min, 'third if'
                               
-                                   
-                              
-                        
-     #RSS = ma.masked_where(np.isnan(RSS), RSS)
-     #[j, k] = np.unravel_index(ma.argmin(RSS), RSS.shape)
-     #print RSS[j, k], RSS_min
-
      [j, k] = [J, K]
      b_1 = (np.sum(np.multiply(height[:j], theta[:j])) - 1/j*np.sum(height[:j]*np.sum(theta[:j])))/(np.sum(height[:j]**2) - 1/j*np.sum(height[2:j])**2)
      a_1 = np.sum(np.multiply(height[:j], theta[:j]))/np.sum(height[:j]) - b_1*np.sum(height[:j]**2)/np.sum(height[:j])
@@ -200,55 +139,6 @@ def get_fit(theta, height):
      return fitvals, RSS, j, k                                                              
                                                                                 
                                                                               
-
-#Lists of times relating to output (nc) files
-dump_time_list, time_hrs = Make_Timelists(1, 600, 28800)
-dump_time = dump_time_list[29]
-
-for k in range(1):
-     #getting variables from nc files
-     [wvels, theta, tracer, height] = nc.Get_Var_Arrays("/tera2/nchaparr/Dec252013/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time, k+1)
-
-     #getting points of maximum theta gradient, getting rid of this soon
-     [dvardz, grad_peaks] = nc.Domain_Grad(theta, height) 
-     tops_indices=np.where(np.abs(grad_peaks - 1400)<10)
-     
-     #choosing one horizontal point
-     for i in range(4):
-          top_index = [tops_indices[0][i], tops_indices[1][i]]
-          [l, m] = top_index
-          
-          thetavals = theta[:, l, m]
-          
-          startTime = datetime.now()
-          #print 'Start', startTime#1     
-          fitvals, RSS, J, K = get_fit(thetavals, height)
-          #print 'RSS time', (datetime.now()-startTime)
-          #set up plot
-          theFig = plt.figure(i)
-          theFig.clf()
-          theAx = theFig.add_subplot(121)
-          theAx.set_title('')
-          theAx.set_xlabel('')
-          theAx.set_ylabel('z (m)')
-
-          theAx1 = theFig.add_subplot(122)
-          theAx1.set_title('')
-          theAx1.set_xlabel('')
-          theAx1.set_ylabel('')
-
-          theAx1.plot(thetavals, height[:], 'wo')
-          theAx.plot(fitvals[:J], height[:J], 'r-')
-          theAx.plot(fitvals[J:K], height[J:K], 'b-')
-          theAx.plot(fitvals[K:298], height[K:298], 'g-')
-          print fitvals[:298].shape, height[:298].shape
-          theAx1.plot(fitvals[:298], height[:298], 'r-')
-          
-          theAx1.set_xlim(300, 320)
-          theAx1.set_ylim(0, 6000)
-          theAx.set_ylim(0, 6000)
-          theAx.set_xlim(300, 320)
-          plt.show()
 
 
 
