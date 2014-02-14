@@ -163,10 +163,25 @@ def get_fit(theta, height):
                               RSS_3 = RSS_3 + (theta[k+i] - (a_3 + b_3*height[k+i]))**2
                          RSS[j, k] = RSS_1 + RSS_2 + RSS_3
 
+                         if j==3 and k==5:
+                              RSS_min = RSS[j, k]
+                              print RSS_min, 'first if'
+                         #if np.isnan(RSS_min)==True and np.isnan(RSS[j, k])==False :
+                         #     RSS_min = RSS[j, k]
+                         #     print RSS_min, 'second if'
+                         if RSS[j, k]<RSS_min : 
+                              RSS_min = RSS[j, k]
+                              J, K = j, k
+                              print RSS_min, 'third if'
+                              
+                                   
+                              
                         
      RSS = ma.masked_where(np.isnan(RSS), RSS)
      [j, k] = np.unravel_index(ma.argmin(RSS), RSS.shape)
-     
+     print RSS[j, k], RSS_min
+
+     [j, k] = [J, K]
      b_1 = (np.sum(np.multiply(height[:j], theta[:j])) - 1/j*np.sum(height[:j]*np.sum(theta[:j])))/(np.sum(height[:j]**2) - 1/j*np.sum(height[2:j])**2)
      a_1 = np.sum(np.multiply(height[:j], theta[:j]))/np.sum(height[:j]) - b_1*np.sum(height[:j]**2)/np.sum(height[:j])
                          
