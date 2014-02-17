@@ -152,7 +152,7 @@ for k in range(1):
      tops_indices=np.where(np.abs(grad_peaks - 1400)<10)
      
      #choosing one horizontal point
-     for i in range(4):
+     for i in range(1):
           top_index = [tops_indices[0][i], tops_indices[1][i]]
           [i, j] = top_index
           thetavals = theta[:, i, j]
