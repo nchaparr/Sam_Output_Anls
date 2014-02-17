@@ -159,8 +159,23 @@ for k in range(1):
 
           startTime = datetime.now()
           print 'Start', startTime#1     
-          fitvals, RSS, J, K = fsft.get_fit(thetavals, height)
+          RSS, J, K = fsft.get_fit(thetavals, height)
           print 'RSS time', (datetime.now()-startTime)
+          fitvals = np.zeros_like(thetavals)
+          b_1 = (np.sum(np.multiply(height[:J], thetavals[:J])) - 1/J*np.sum(height[:J]*np.sum(thetavals[:J])))/(np.sum(height[:J]**2) - 1/J*np.sum(height[2:J])**2)
+          a_1 = np.sum(np.multiply(height[:J], thetavals[:J]))/np.sum(height[:J]) - b_1*np.sum(height[:J]**2)/np.sum(height[:J])
+                         
+          b_2 = (np.sum(thetavals[J:K]) - (K-J)*(a_1+b_1*height[J]))/(np.sum(height[J:K]) - (K-J)*height[J])                         
+          a_2 = np.sum(np.multiply(height[J:K], thetavals[J:K]))/np.sum(height[J:K]) - b_2*np.sum(height[J:K]**2)/np.sum(height[J:K])
+
+          b_3 = (np.sum(thetavals[K:290]) - (290-K)*(a_2+b_2*height[K]))/(np.sum(height[K:290]) - (290-K)*height[K])
+          a_3 = np.sum(np.multiply(height[K:290], thetavals[K:290]))/np.sum(height[K:290]) - b_3*np.sum(height[K:290]**2)/np.sum(height[K:290])
+                         
+     
+          fitvals[:J] = b_1*height[:J] + a_1
+          fitvals[J:K] = b_2*height[J:K] + a_2
+          fitvals[K:290] = b_3*height[K:290] + a_3
+
           #set up plot
           theFig = plt.figure(i)
           theFig.clf()

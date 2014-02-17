@@ -49,24 +49,10 @@ def get_fit(theta, height):
                          
                          
      RSS = ma.masked_where(np.isnan(RSS), RSS)
-     [j, k] = np.unravel_index(ma.argmin(RSS), RSS.shape)
+     [j, k] = np.unravel_index(ma.argmin(RSS), RSS.shape) 
      
-     b_1 = (np.sum(np.multiply(height[:j], theta[:j])) - 1/j*np.sum(height[:j]*np.sum(theta[:j])))/(np.sum(height[:j]**2) - 1/j*np.sum(height[2:j])**2)
-     a_1 = np.sum(np.multiply(height[:j], theta[:j]))/np.sum(height[:j]) - b_1*np.sum(height[:j]**2)/np.sum(height[:j])
-                         
-     b_2 = (np.sum(theta[j:k]) - (k-j)*(a_1+b_1*height[j]))/(np.sum(height[j:k]) - (k-j)*height[j])                         
-     a_2 = np.sum(np.multiply(height[j:k], theta[j:k]))/np.sum(height[j:k]) - b_2*np.sum(height[j:k]**2)/np.sum(height[j:k])
 
-     b_3 = (np.sum(theta[k:290]) - (290-k)*(a_2+b_2*height[k]))/(np.sum(height[k:290]) - (290-k)*height[k])
-     a_3 = np.sum(np.multiply(height[k:290], theta[k:290]))/np.sum(height[k:290]) - b_3*np.sum(height[k:290]**2)/np.sum(height[k:290])
-                         
-     
-     fitvals[:j] = b_1*height[:j] + a_1
-     fitvals[j:k] = b_2*height[j:k] + a_2
-     fitvals[k:290] = b_3*height[k:290] + a_3
-
-
-     return fitvals, RSS, j, k                                                              
+     return RSS, j, k                                                              
                                                                                
 
 
