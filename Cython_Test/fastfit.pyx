@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.ma as ma
 cimport numpy as np
 from libc.stdint cimport int32_t
 cimport cython
@@ -38,7 +39,7 @@ def get_fit(object theta, object height):
     
     
     cdef np.float64_t[:] fitvals=np.empty([theta.size],dtype=np.float64)
-    cdef np.float64_t[:,:] RSS=np.empty([298, 298],dtype=np.float64)
+    cdef np.float64_t[:,:] RSS=np.empty([290, 290],dtype=np.float64)
     
     cdef int i, j, k, J, K
     cdef double num_b_11, num_b_12, num_b_13, dem_b_11, dem_b_12
@@ -46,7 +47,7 @@ def get_fit(object theta, object height):
     cdef double num_b_31, num_b_32, dem_b_31, dem_b_32, num_a_31, num_a_32
     cdef double b_1, a_1, b_2, a_2, b_3, a_3, num_b, dem_b, num_b2, dem_b2, num_b_3, dem_b_3
       
-    
+    RSS = np.empty([290, 290]) + np.nan
     for j in range(290):
         if j > 2:            
             for k in range(290):                
@@ -104,7 +105,7 @@ def get_fit(object theta, object height):
                     a_3 = np.sum(np.multiply(height[k:290], theta[k:290]))/np.sum(height[k:290]) - b_3*np.sum(height[k:290]**2)/np.sum(height[k:290])
                               
                     #print 'checking'                                                  
-                    RSS[j, k] = np.sum(np.add(theta[2:j], -(a_1+ b_1*height[2:j]))**2) + np.sum(np.add(theta[j:k], -(a_2+ b_2*height[j:k]))**2) + np.sum(np.add(theta[k:290], -(a_3+ b_3*height[k:290]))**2)
+                    RSS[j, k] = np.sum(np.add(theta[:j], -(a_1+ b_1*height[:j]))**2) + np.sum(np.add(theta[j:k], -(a_2+ b_2*height[j:k]))**2) + np.sum(np.add(theta[k:290], -(a_3+ b_3*height[k:290]))**2)
                     
                     #RSS_1 = 0
                     #for i in range(j):
@@ -121,14 +122,26 @@ def get_fit(object theta, object height):
                     #print RSS_3, np.sum(np.add(theta[k:298], -(a_3+ b_3*height[k:298]))**2)
                     #RSS[j, k] = RSS_1 + RSS_2 + RSS_3
 
-                    if j==3 and k==5:
-                        RSS_min = RSS[j, k]                           
+                    #if j==3 and k==5:
+                    #    RSS_min = RSS[j, k]                           
                          
-                    if RSS[j, k]<RSS_min: 
-                        RSS_min = RSS[j, k]
-                        J, K = j, k
+                    #if RSS[j, k]<RSS_min: 
+                    #    RSS_min = RSS[j, k]
+                    #    J, K = j, k
                     #print RSS[j, k], RSS_check
+
                     #print "checking"
+
+    #RSS = ma.masked_where(np.isnan(RSS), RSS)
+    #print RSS.shape
+    print np.nanmin(RSS)
+    RSSmin = np.nanmin(RSS)
+    RSSmin_where = np.where(RSS = RSSmin)
+    print RSSmin_where
+    J, K = RSSmin_where[0][0], RSSmin_where[0][1]
+    print J, K
+                     
+    
     return RSS, J, K
                               
                                                                                 
