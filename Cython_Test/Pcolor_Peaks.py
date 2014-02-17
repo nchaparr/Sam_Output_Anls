@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 #from Percentiles import *
 from matplotlib.patches import Patch
 import sys
-#sys.path.insert(0, '/tera/phil/nchaparr/python')
+sys.path.insert(0, '/tera2/nchaparr/Dec252013/python')
 import nchap_fun as nc
 from Make_Timelist import *
 import warnings
@@ -97,13 +97,13 @@ def get_fit(theta, height):
      
      """
      
-     fitvals = np.zeros_like(theta)
-     RSS = np.empty((298, 290))+ np.nan
-     print RSS[0,0]
+     
+     RSS = np.empty((298, 298))+ np.nan
+     
      for j in range(298):
           if j > 2:
                for k in range(298):
-                    if k>j+1 and k<279:
+                    if k>j+1 and k<297:
                          b_1, a_1, num_b_11, num_b_12, num_b_13, dem_b_11, dem_b_12 = 0, 0, 0, 0, 0, 0, 0  
                          for i in range(j):
                               num_b_11 = num_b_11 + height[i]*theta[i]
@@ -152,16 +152,20 @@ def get_fit(theta, height):
                          #print np.sum(theta[k:298]), num_b_31 NOTE: sum seems to round up to 1 dec                                   
                          #print np.sum(np.multiply(height[k:298], theta[k:298])), num_a_31 NOTE: again rounding but this time not decimal places!!      
                                                                       
-                         RSS[j, k] = np.sum(np.add(theta[2:j], -(a_1+ b_1*height[2:j]))**2) + np.sum(np.add(theta[j:k], -(a_2+ b_2*height[j:k]))**2) + np.sum(np.add(theta[k:298], -(a_2+ b_2*height[k:298]))**2) 
+                         RSS_check = np.sum(np.add(theta[:j], -(a_1+ b_1*height[:j]))**2) + np.sum(np.add(theta[j:k], -(a_2+ b_2*height[j:k]))**2) + np.sum(np.add(theta[k:298], -(a_3+ b_3*height[k:298]))**2) 
                          RSS_1 = 0
                          for i in range(j):
                               RSS_1 = RSS_1 + (theta[i] -(a_1 + b_1*height[i]))**2
+                         print ''     
+                         print RSS_1, np.sum(np.add(theta[:j], -(a_1+ b_1*height[:j]))**2)
                          RSS_2 = 0     
                          for i in range(k-j):
                               RSS_2 = RSS_2 + (theta[j+i] - (a_2 + b_2*height[j+i]))**2
+                         print RSS_2, np.sum(np.add(theta[j:k], -(a_2+ b_2*height[j:k]))**2)      
                          RSS_3 = 0
                          for i in range(298-k):
                               RSS_3 = RSS_3 + (theta[k+i] - (a_3 + b_3*height[k+i]))**2
+                         print RSS_3, np.sum(np.add(theta[k:298], -(a_3+ b_3*height[k:298]))**2)     
                          RSS[j, k] = RSS_1 + RSS_2 + RSS_3
 
                          if j==3 and k==5:
@@ -173,32 +177,10 @@ def get_fit(theta, height):
                          if RSS[j, k]<RSS_min : 
                               RSS_min = RSS[j, k]
                               J, K = j, k
-                              print RSS_min, 'third if'
-                              
+                         print RSS[j, k], RSS_check
+                         print ''     
                                    
-                              
-                        
-     #RSS = ma.masked_where(np.isnan(RSS), RSS)
-     #[j, k] = np.unravel_index(ma.argmin(RSS), RSS.shape)
-     #print RSS[j, k], RSS_min
-
-     [j, k] = [J, K]
-     b_1 = (np.sum(np.multiply(height[:j], theta[:j])) - 1/j*np.sum(height[:j]*np.sum(theta[:j])))/(np.sum(height[:j]**2) - 1/j*np.sum(height[2:j])**2)
-     a_1 = np.sum(np.multiply(height[:j], theta[:j]))/np.sum(height[:j]) - b_1*np.sum(height[:j]**2)/np.sum(height[:j])
-                         
-     b_2 = (np.sum(theta[j:k]) - (k-j)*(a_1+b_1*height[j]))/(np.sum(height[j:k]) - (k-j)*height[j])                         
-     a_2 = np.sum(np.multiply(height[j:k], theta[j:k]))/np.sum(height[j:k]) - b_2*np.sum(height[j:k]**2)/np.sum(height[j:k])
-
-     b_3 = (np.sum(theta[k:298]) - (298-k)*(a_2+b_2*height[k]))/(np.sum(height[k:298]) - (298-k)*height[k])
-     a_3 = np.sum(np.multiply(height[k:298], theta[k:298]))/np.sum(height[k:298]) - b_2*np.sum(height[k:298]**2)/np.sum(height[k:298])
-                         
-     
-     fitvals[:j] = b_1*height[:j] + a_1
-     fitvals[j:k] = b_2*height[j:k] + a_2
-     fitvals[k:298] = b_3*height[k:298] + a_3
-
-
-     return fitvals, RSS, j, k                                                              
+     return RSS, J, K                                                              
                                                                                 
                                                                               
 
@@ -215,7 +197,7 @@ for k in range(1):
      tops_indices=np.where(np.abs(grad_peaks - 1400)<10)
      
      #choosing one horizontal point
-     for i in range(4):
+     for i in range(1):
           top_index = [tops_indices[0][i], tops_indices[1][i]]
           [l, m] = top_index
           
