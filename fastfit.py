@@ -53,13 +53,8 @@ def get_fit(theta, height):
                          if RSS[j, k]<RSS_min: 
                               RSS_min = RSS[j, k]
                               J, K = j, k
-                    
-                         
-     RSS = ma.masked_where(np.isnan(RSS), RSS)
-     [l, m] = np.unravel_index(ma.argmin(RSS), RSS.shape) 
-     print RSS_min, J, K, RSS[J, K], RSS[l, m], l, m
-
-     return RSS, l, m                                                              
+     
+     return RSS, J, K                                                              
                                                                                
 
 
