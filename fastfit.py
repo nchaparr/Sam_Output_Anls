@@ -1,36 +1,63 @@
 from __future__ import division
-from netCDF4 import Dataset
-import glob,os.path
+
 import numpy as np
 import numpy.ma as ma
-from scipy.interpolate import UnivariateSpline
-from matplotlib import cm
-from matplotlib import ticker
-import matplotlib.pyplot as plt
-#import site
-#site.addsitedir('/tera/phil/nchaparr/SAM2/sam_main/python')
-#from Percentiles import *
-from matplotlib.patches import Patch
-import sys
-#sys.path.insert(0, '/tera/phil/nchaparr/python')
-import nchap_fun as nc
-from Make_Timelist import *
-import warnings
-warnings.simplefilter('ignore', np.RankWarning)
-#import pywt
-from scipy import stats
-from datetime import datetime
+cimport numpy as np
+from libc.stdint cimport int32_t
+cimport cython
+from libc.stdio cimport printf
 
+@cython.embedsignature(True)
+@cython.cdivision(True)
+@cython.wraparound(False)
+@cython.boundscheck(False)
+def get_fit(object theta, object height):
+    """
+       fits 3 lines to a vertical theta profile
+       
+       parameters
+       ----------
 
-def get_fit(theta, height):
-     """
-        Fitting the local theta profile with three lines
+        theta, height: numpy 1d array of floating point numbers
+        
+       returns:
+       --------
+
+       fitvals: numpy 1d array of floating point numbers   
+       RSS: numpy 2d array of floating point numbers
+       j, k: integers
+       
+       example
+       -------
+             
+    """   
+    theta=np.ascontiguousarray(theta)
+    theta=theta.astype(np.float64)
+    cdef double* thetaPtr= <double*> np.PyArray_DATA(theta)
+
+    height=np.ascontiguousarray(height)
+    height=height.astype(np.float64)
+    cdef double* heightPtr= <double*> np.PyArray_DATA(height)
+    
+    
+    cdef np.float64_t[:] fitvals=np.empty([theta.size],dtype=np.float64)
+    cdef np.float64_t[:,:] RSS=np.empty([290, 290],dtype=np.float64)
+    
+    cdef int i, j, k, J, K
+    #cdef double num_b_11, num_b_12, num_b_13, dem_b_11, dem_b_12
+    #cdef double num_b_21, num_b_22, dem_b_21, dem_b_22, num_a_21, num_a_22
+    #cdef double num_b_31, num_b_32, dem_b_31, dem_b_32, num_a_31, num_a_32
+    #cdef double b_1, a_1, b_2, a_2, b_3, a_3, num_b, dem_b, num_b2, dem_b2, num_b_3, dem_b_3
+
+#def get_fit(theta, height):
+#     """
+#        Fitting the local theta profile with three lines
+#     
+#     """
      
-     """
      
-     
-     RSS = np.empty((290, 290))+ np.nan
-     print RSS[0,0]
+     #RSS = np.empty((290, 290))+ np.nan
+     #print RSS[0,0]
      for j in range(290):
           if j > 2:
                for k in range(290):
