@@ -20,6 +20,7 @@ warnings.simplefilter('ignore', np.RankWarning)
 #import pywt
 from scipy import stats
 from datetime import datetime
+import fastfit as fsft
 
 """
     In testing phase -- get_fit() for identifying ML top
@@ -158,7 +159,7 @@ for k in range(1):
 
           startTime = datetime.now()
           print 'Start', startTime#1     
-          fitvals, RSS, J, K = get_fit(thetavals, height)
+          fitvals, RSS, J, K = fsft.get_fit(thetavals, height)
           print 'RSS time', (datetime.now()-startTime)
           #set up plot
           theFig = plt.figure(i)
