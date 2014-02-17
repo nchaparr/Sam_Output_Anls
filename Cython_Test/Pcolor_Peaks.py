@@ -20,7 +20,7 @@ warnings.simplefilter('ignore', np.RankWarning)
 #import pywt
 from scipy import stats
 from datetime import datetime
-import fastfit as fsft
+import fastfit1 as fsft
 
 """
     In testing phase -- get_fit() for identifying ML top
@@ -204,7 +204,7 @@ for k in range(1):
           thetavals = theta[:, l, m]
           
           startTime = datetime.now()
-          print 'Start', startTime#1     
+          print 'Start Pcolor Peaks', startTime#1     
           RSS, J, K = fsft.get_fit(thetavals, height)
           fitvals = np.zeros_like(thetavals)
           b_1 = (np.sum(np.multiply(height[:J], thetavals[:J])) - 1/J*np.sum(height[:J]*np.sum(thetavals[:J])))/(np.sum(height[:J]**2) - 1/J*np.sum(height[2:J])**2)
