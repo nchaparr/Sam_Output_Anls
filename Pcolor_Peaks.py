@@ -143,7 +143,7 @@ def get_fit(theta, height):
 dump_time_list, time_hrs = Make_Timelists(1, 600, 28800)
 dump_time = dump_time_list[29]
 
-for k in range(1):
+for k in range(4):
      #getting variables from nc files
      [wvels, theta, tracer, height] = nc.Get_Var_Arrays("/tera2/nchaparr/Dec252013/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time, k+1)
 
