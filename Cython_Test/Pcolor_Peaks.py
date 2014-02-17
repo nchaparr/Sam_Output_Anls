@@ -213,13 +213,13 @@ for k in range(1):
           b_2 = (np.sum(thetavals[J:K]) - (K-J)*(a_1+b_1*height[J]))/(np.sum(height[J:K]) - (K-J)*height[J])                         
           a_2 = np.sum(np.multiply(height[J:K], thetavals[J:K]))/np.sum(height[J:K]) - b_2*np.sum(height[J:K]**2)/np.sum(height[J:K])
 
-          b_3 = (np.sum(thetavals[K:298]) - (298-K)*(a_2+b_2*height[K]))/(np.sum(height[K:298]) - (298-K)*height[K])
-          a_3 = np.sum(np.multiply(height[K:298], thetavals[K:298]))/np.sum(height[K:298]) - b_2*np.sum(height[K:298]**2)/np.sum(height[K:298])
+          b_3 = (np.sum(thetavals[K:290]) - (290-K)*(a_2+b_2*height[K]))/(np.sum(height[K:290]) - (290-K)*height[K])
+          a_3 = np.sum(np.multiply(height[K:290], thetavals[K:290]))/np.sum(height[K:290]) - b_3*np.sum(height[K:290]**2)/np.sum(height[K:290])
                          
      
           fitvals[:J] = b_1*height[:J] + a_1
           fitvals[J:K] = b_2*height[J:K] + a_2
-          fitvals[K:298] = b_3*height[K:298] + a_3
+          fitvals[K:290] = b_3*height[K:290] + a_3
 
 
     #return fitvals, RSS, j, k                                                              
@@ -241,9 +241,9 @@ for k in range(1):
           theAx1.plot(thetavals, height[:], 'wo')
           theAx.plot(fitvals[:J], height[:J], 'r-')
           theAx.plot(fitvals[J:K], height[J:K], 'b-')
-          theAx.plot(fitvals[K:298], height[K:298], 'g-')
-          print fitvals[:298].shape, height[:298].shape
-          theAx1.plot(fitvals[:298], height[:298], 'r-')
+          theAx.plot(fitvals[K:290], height[K:290], 'g-')
+          print fitvals[:298].shape, height[:290].shape
+          theAx1.plot(fitvals[:290], height[:290], 'r-')
           
           theAx1.set_xlim(300, 320)
           theAx1.set_ylim(0, 6000)
