@@ -211,45 +211,22 @@ if go_ahead == 1:
                theAx.text(-.5, 1.25, r"$ \theta^{,} $ ",  fontdict=None, withdash=False, fontsize = 16)
 
                #2d Hist
-              # wvelmin, wvelmax, thetamin, thetamax = -3, 3, -1.5, 1.5  
-              # wvelbin, thetabin = 50, 50
-               
-               #bin_wvel = do_bins(wvelperts, wvelbin, wvelmin, wvelmax, -99999, -77777)
-               #bin_theta = do_bins(thetaperts, thetabin, thetamin, thetamax, -99999, -77777)
-               #wvel_centers = bin_wvel['bin_centers']
-               #theta_centers = bin_theta['bin_centers']
-               
-               #wvel_centers, theta_centers, counts = do_2dhist(wvelperts, thetaperts, 10, 10, -3, 3, -1.5, 1.5)
-               #for i in range(5):
-               #     for j in range(5):
-               #          print wvel_centers[i], theta_centers[j], counts[i, j]
-               #counts = the_hist['count_grid']
-               
-               #cmap = cm.YlOrRd
                cmap = cm.autumn
-
                # Estimate the 2D histogram
-
                nbins = 200
                H, xedges, yedges = np.histogram2d(wvelperts, thetaperts, bins=nbins)
- 
-               # H needs to be rotated and flipped
+                # H needs to be rotated and flipped
                H = np.rot90(H)
                H = np.flipud(H)
- 
                # Mask zeros
                Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value of zero
- 
-               # Plot 2D histogram using pcolor
-
+                # Plot 2D histogram using pcolor
                im = theAx2.pcolormesh(xedges,yedges,Hmasked, vmin = 0, vmax = 120, cmap =cmap)
-               #theFig2.xlabel('x')
-               #theFig2.ylabel('y')
                cbar = theFig2.colorbar(im)
-               #cbar.theAx2.set_ylabel('Counts')
+               cbar.ax.set_ylabel(r'$Counts$')
                
                
-               #theFig2.canvas.draw()
+               
                theAx2.spines['left'].set_position('zero')
                theAx2.spines['right'].set_color('none')
                theAx2.spines['bottom'].set_position('zero')
