@@ -3,13 +3,19 @@ import glob,os.path
 import numpy as np
 from scipy.interpolate import UnivariateSpline
 import matplotlib
+from matplotlib import cm
 import matplotlib.pyplot as plt
 import site
 from datetime import datetime
 site.addsitedir('/tera/phil/nchaparr/python')
-from Make_Timelist import *
 import nchap_fun as nc
+from matplotlib.colors import Normalize
+from Make_Timelist import *
 from nchap_class import *
+
+#site.addsitedir('/tera2/nchaparr/Dcc252013/hist2d')
+#from nchap_2dhist import *
+
 
 """  
      For plotting Flux quadrants    
@@ -102,6 +108,46 @@ def Main_Fun(dump_time, hflux):
      return height, wvelperts, thetaperts, upwarm_bar[slice_lev], downwarm_bar[slice_lev], upcold_bar[slice_lev], downcold_bar[slice_lev], wvelthetapert_bar[slice_lev]
 
 
+def do_2dhist(xvals, yvals, numbins_x, numbins_y, min_x, max_x, min_y, max_y):
+    
+    binsize_x, binsize_y = 1.0*(max_x-min_x)/numbins_x, 1.0*(max_y-min_y)/numbins_y
+
+    xbins = np.array([min_x + (i+1)*binsize_x for i in range(numbins_x)])
+    ybins = np.array([min_y + (i+1)*binsize_y for i in range(numbins_y)])
+
+    xcenters = np.array([min_x + (i+1)*binsize_x - binsize_x/2 for i in range(numbins_x)])
+    ycenters = np.array([min_y + (i+1)*binsize_y - binsize_y/2 for i in range(numbins_x)])
+
+
+    bin_counts = np.zeros([numbins_x, numbins_y])
+    print xvals.shape, yvals.shape, xbins.shape
+    for i in range(xvals.shape[0]):
+        #print i 
+        #print xvals[i], yvals[i] 
+        for j in range(xbins.shape[0]):
+             #print 'X', binsize_x, xvals[i], xbins[j]
+             if xvals[i] < xbins[j]:
+                  if np.abs(xbins[j] - xvals[i]) < binsize_x:
+                       xbindex=j
+                       #if xvals[i]<-1:
+                       #     print 'X', binsize_x, xvals[i], xbins[j]
+
+        for j in range(ybins.shape[0]):
+             #print 'Y', binsize_y, yvals[i], ybins[j]
+             if yvals[i] < ybins[j]:
+                  if np.abs(ybins[j] - yvals[i]) < binsize_y:
+                       ybindex= j
+                       #if yvals[i]<-2:
+                       #     print 'Y', binsize_y, yvals[i], ybins[j]
+        
+        bin_counts[xbindex, ybindex] = bin_counts[xbindex, ybindex] + 1     
+                
+        
+    return xcenters, ycenters, bin_counts
+
+
+
+
 go_ahead = np.int(raw_input('have you changed the write out folder paths? 1 or 0: '))
 if go_ahead == 1:
        
@@ -116,17 +162,24 @@ if go_ahead == 1:
      #theAx = nc.Do_Plot(3, r"$Flux \ Quadrants$", fontsize= 16, '', '', 111)
      #Todo: add option to take args to Do_Plot
 
-     theFig = plt.figure(4)     
-     theFig.clf()
-     theAx1 = theFig.add_subplot(111)
+     theFig1 = plt.figure(4)     
+     theFig1.clf()
+     theAx1 = theFig1.add_subplot(111)
      theAx1.set_title(r"$Flux \ Profiles$", fontsize= 16)
-     theAx1 = nc.Do_Plot(fignum, title, ylabel, xlabel, sub)
+     #theAx1 = nc.Do_Plot(fignum, title, ylabel, xlabel, sub)
 
+     theFig2 = plt.figure(5)     
+     theFig2.clf()
+     theAx2 = theFig2.add_subplot(111)
+     theAx2.set_title(r"$2d \ Histogram \ of \ Flux \ Quadrants$", fontsize= 16)
+     #theAx2 = nc.Do_Plot(fignum, title, ylabel, xlabel, sub)
+
+     
      #get horizontally averaged ensemble averaged variable and plot
      colorlist=['k', 'b', 'c', 'g', 'r', 'm', 'y', '.75']
      for i in range(32):
           if i == 19:      
-               height, wvelperts, thetaperts, upwarm, downwarm, upcold, downcold, avflux = Main_Fun(dump_time_list[i], hvals[i, 4])
+               height, wvelperts, thetaperts, upwarm, downwarm, upcold, downcold, avflux = Main_Fun(dump_time_list[i], hvals[i, 2])
                
                av_quad_profs = np.genfromtxt('/tera/phil/nchaparr/python/Plotting/Nov302013/data/flux_quads' + dump_time_list[i])
 
@@ -139,7 +192,7 @@ if go_ahead == 1:
                theAx1.set_ylim(100, 2000)
                plt.legend(loc = 'upper right', prop={'size':8})
                
-               theAx.plot(wvelperts, thetaperts, 'yo', markersize=1, markeredgecolor='none')
+               theAx.plot(wvelperts, thetaperts, 'ro', markersize=1, markeredgecolor='none')
                theAx.spines['left'].set_position('zero')
                theAx.spines['right'].set_color('none')
                theAx.spines['bottom'].set_position('zero')
@@ -148,14 +201,73 @@ if go_ahead == 1:
                theAx.xaxis.set_ticks_position('bottom')
                theAx.yaxis.set_ticks_position('left')
                theAx.set_ylim(-1.5, 1.5)
-               theAx.set_xlim(-3, 3)
+               theAx.set_xlim(-3, 5)
                               
                theAx.text(2, 1, "$%.5f$"%upwarm,  fontdict=None, withdash=False, fontsize = 16)
                theAx.text(2, -1, "$%.5f$"%upcold,  fontdict=None, withdash=False, fontsize = 16)
                theAx.text(-2, 1, "$%.5f$"%downwarm,  fontdict=None, withdash=False, fontsize = 16)
                theAx.text(-2, -1, "$%.5f$"%downcold,  fontdict=None, withdash=False, fontsize = 16)
-               theAx.text(2.7, .2, r"$w^{'}$",  fontdict=None, withdash=False, fontsize = 16)
-               theAx.text(-.5, 1.3, r"$\theta^{'}$",  fontdict=None, withdash=False, fontsize = 16)
+               theAx.text(3.5, .2, r"$ w^{,} $ ",  fontdict=None, withdash=False, fontsize = 16)
+               theAx.text(-.5, 1.25, r"$ \theta^{,} $ ",  fontdict=None, withdash=False, fontsize = 16)
+
+               #2d Hist
+              # wvelmin, wvelmax, thetamin, thetamax = -3, 3, -1.5, 1.5  
+              # wvelbin, thetabin = 50, 50
+               
+               #bin_wvel = do_bins(wvelperts, wvelbin, wvelmin, wvelmax, -99999, -77777)
+               #bin_theta = do_bins(thetaperts, thetabin, thetamin, thetamax, -99999, -77777)
+               #wvel_centers = bin_wvel['bin_centers']
+               #theta_centers = bin_theta['bin_centers']
+               
+               #wvel_centers, theta_centers, counts = do_2dhist(wvelperts, thetaperts, 10, 10, -3, 3, -1.5, 1.5)
+               #for i in range(5):
+               #     for j in range(5):
+               #          print wvel_centers[i], theta_centers[j], counts[i, j]
+               #counts = the_hist['count_grid']
+               
+               #cmap = cm.YlOrRd
+               cmap = cm.autumn
+
+               # Estimate the 2D histogram
+
+               nbins = 200
+               H, xedges, yedges = np.histogram2d(wvelperts, thetaperts, bins=nbins)
+ 
+               # H needs to be rotated and flipped
+               H = np.rot90(H)
+               H = np.flipud(H)
+ 
+               # Mask zeros
+               Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value of zero
+ 
+               # Plot 2D histogram using pcolor
+
+               im = theAx2.pcolormesh(xedges,yedges,Hmasked, vmin = 0, vmax = 120, cmap =cmap)
+               #theFig2.xlabel('x')
+               #theFig2.ylabel('y')
+               cbar = theFig2.colorbar(im)
+               #cbar.theAx2.set_ylabel('Counts')
+               
+               
+               #theFig2.canvas.draw()
+               theAx2.spines['left'].set_position('zero')
+               theAx2.spines['right'].set_color('none')
+               theAx2.spines['bottom'].set_position('zero')
+               theAx2.spines['top'].set_color('none')
+               theAx2.xaxis.set_ticks_position('bottom')
+               theAx2.yaxis.set_ticks_position('left')
+               theAx2.text(3.5, .2, r"$ w^{,} $ ",  fontdict=None, withdash=False, fontsize = 16)
+               theAx2.text(-.5, 1.25, r"$ \theta^{,} $ ",  fontdict=None, withdash=False, fontsize = 16)
+
+               #theAx2.set_xlim(wveledges[0], wveledges[-1])
+               #theAx2.set_ylim(thetaedges[0], thetaedges[-1])
+               
+
+               theAx2.set_ylim(-1.5, 1.5)
+               theAx2.set_xlim(-3, 5)
+               theFig2.canvas.draw()
+               #theFig2.savefig('')
+               
      plt.show()
 
 else:
