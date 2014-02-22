@@ -10,6 +10,7 @@ import sys
 sys.path.insert(0, '/tera/phil/nchaparr/python')
 import nchap_fun as nc
 from Make_Timelist import *
+import fastfit as fsft
 
 """
   Gets 2d horizontal domain of gradient maxima ie BL heights
@@ -17,33 +18,27 @@ from Make_Timelist import *
       
 """
 #TODO: needs to change not that maximum gradient isn't to be used
-def Get_Var_Arrays(dump_time):
-     """Pulls output from an ensemble cases, gets ensemble averages and perturbations and
-     their horizontal averageses
+def Main_Fun(dump_time):
+     """Loops over ensemble cases.  Pulls temperature, pressure, height from nc output files using nchap_class
+    gets height of mixed layer at each horizontal point using fast_fit and saves as a txt file.   
 
     Arguments:
     dump_time -- time of output eg '0000000720'
 
     Returns:
-    var_bar -- 64 array of horizontally averaged, ensemble averages or perturbations (covariances)
+    ML_Heights -- 
     
     """
      #create list of filenames for given dump_time
      ncfile_list = ["/tera2/nchaparr/Dec252013/runs/sam_case" + str(i+1) + "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_" + dump_time + ".nc" for i in range(9)]
      #print ncfile_list
-     #create lists for variable arrays from each case
-     wvels_list = []
-     press_list = []
-     height_list = []
-     temp_list = []
-     thetas_list = []
-     tracer_list = []
-     grad_max = []
+     #create lists for variable arrays from each case  
+     
      for i in range(len(ncfile_list)): #loop over list of nc files
           thefile = ncfile_list[i]
           print thefile
           ncdata = Dataset(thefile,'r')
-          wvel = np.squeeze(ncdata.variables['W'][...])
+          #wvel = np.squeeze(ncdata.variables['W'][...])
           
           press = np.squeeze(ncdata.variables['p'][...])#pressure already horizontally averaged
           height = np.squeeze(ncdata.variables['z'][...])
@@ -57,15 +52,14 @@ def Get_Var_Arrays(dump_time):
           for j in range(312):
                theta[j, :, :] = temp[j, :, :]*thetafact[j]
 
-          thetas_list.append(theta)    #append array lists 
-          wvels_list.append(wvel)
-          
-          press_list.append(press)
-          height_list.append(height)
-          temp_list.append(temp)
-          #tracer_list.append(tracer)
-          grad, peaks = nc.Domain_Grad(theta, height)
-          grad_max.append(peaks)
+          ML_Heights = np.empty([128, 192])
+          for i in range(128):
+               for j in range(192):
+                    RSS, J, K = fsft.fastfit(theta[:, i, j], height)
+                    ML_Heights[i, j] = height[J]          
+          np.savetxt('/tera/phil/nchaparr/python/Plotting/Dec252013/data/mixed_layer_height_'+ str(i+1) + '_' + dump_time, ML_Heights, delimiter=' ')
+
+
 
      peaks = np.reshape(grad_max, (1, 9*128*192))     
      #get arrays of enseble averaged variables
@@ -97,7 +91,7 @@ if __name__ == "__main__":
      theAx.set_xlabel(r"$z \ (m)$")
      theAx.set_ylabel(r"$Number \ in \ z \ Bin$")
      dump_time = dump_time_list[5]
-     [ens_peaks, heights, peaks] = Get_Var_Arrays(dump_time)
+     [ens_peaks, heights, peaks] = Main_Fun(dump_time)
      #n, bins, patches = theAx.hist(peaks, bins=20)
      height_bin_vols = nc.Bin_Peaks(peaks, heights)
      theAx.bar(heights, height_bin_vols)
@@ -105,6 +99,7 @@ if __name__ == "__main__":
      plt.ylim(0, 25000)
      plt.xlim(0, 2000)
      plt.show()
+     
 
 
 
