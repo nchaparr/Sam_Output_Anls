@@ -135,26 +135,28 @@ def get_fit(theta, height):
      fitvals[k:290] = b_3*height[k:290] + a_3
 
 
-     return fitvals, RSS, j, k                                                              
+     return fitvals, RSS, j, k                                                
                                                                                 
                                                                               
 
 #Lists of times relating to output (nc) files
 dump_time_list, time_hrs = Make_Timelists(1, 600, 28800)
 dump_time = dump_time_list[29]
+print dump_time
 
-for k in range(4):
+for k in range(1):
      #getting variables from nc files
      [wvels, theta, tracer, height] = nc.Get_Var_Arrays("/tera2/nchaparr/Dec252013/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time, k+1)
 
      #getting points of maximum theta gradient, getting rid of this soon
-     [dvardz, grad_peaks] = nc.Domain_Grad(theta, height) 
-     tops_indices=np.where(np.abs(grad_peaks - 1400)<10)
+     #[dvardz, grad_peaks] = nc.Domain_Grad(theta, height) 
+     #tops_indices=np.where(np.abs(grad_peaks - 1400)<10)
      
      #choosing one horizontal point
      for i in range(1):
-          top_index = [tops_indices[0][i], tops_indices[1][i]]
-          [i, j] = top_index
+          #top_index = [tops_indices[0][i], tops_indices[1][i]]
+          #[i, j] = top_index
+          [i, j] = [53, 150]
           thetavals = theta[:, i, j]
 
           startTime = datetime.now()

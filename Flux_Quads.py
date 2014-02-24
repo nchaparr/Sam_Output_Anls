@@ -60,11 +60,14 @@ def Main_Fun(dump_time, hflux):
           thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
           thetapert = np.zeros_like(thetapert_rough)
           [znum, ynum, xnum] = wvels_list[i].shape
+
+
           for j in range(znum):#something like this is done in statistics.f90, staggered grid!
                if j == 0:
                     thetapert[j,:,:] = thetapert_rough[j,:,:]
                else:
                     thetapert[j,:,:] = 0.5*np.add(thetapert_rough[j,:,:], thetapert_rough[j-1,:,:])
+
           wvelpert = wvels_list[i]
           
           slice_lev = np.where(np.abs(height - hflux) < 20)[0][0]        
@@ -107,7 +110,6 @@ def Main_Fun(dump_time, hflux):
      
      return height, wvelperts, thetaperts, upwarm_bar[slice_lev], downwarm_bar[slice_lev], upcold_bar[slice_lev], downcold_bar[slice_lev], wvelthetapert_bar[slice_lev]
 
-
 def do_2dhist(xvals, yvals, numbins_x, numbins_y, min_x, max_x, min_y, max_y):
     
     binsize_x, binsize_y = 1.0*(max_x-min_x)/numbins_x, 1.0*(max_y-min_y)/numbins_y
@@ -144,9 +146,6 @@ def do_2dhist(xvals, yvals, numbins_x, numbins_y, min_x, max_x, min_y, max_y):
                 
         
     return xcenters, ycenters, bin_counts
-
-
-
 
 go_ahead = np.int(raw_input('have you changed the write out folder paths? 1 or 0: '))
 if go_ahead == 1:
@@ -224,9 +223,7 @@ if go_ahead == 1:
                im = theAx2.pcolormesh(xedges,yedges,Hmasked, vmin = 0, vmax = 120, cmap =cmap)
                cbar = theFig2.colorbar(im)
                cbar.ax.set_ylabel(r'$Counts$')
-               
-               
-               
+                                      
                theAx2.spines['left'].set_position('zero')
                theAx2.spines['right'].set_color('none')
                theAx2.spines['bottom'].set_position('zero')
@@ -235,11 +232,7 @@ if go_ahead == 1:
                theAx2.yaxis.set_ticks_position('left')
                theAx2.text(3.5, .2, r"$ w^{,} $ ",  fontdict=None, withdash=False, fontsize = 16)
                theAx2.text(-.5, 1.25, r"$ \theta^{,} $ ",  fontdict=None, withdash=False, fontsize = 16)
-
-               #theAx2.set_xlim(wveledges[0], wveledges[-1])
-               #theAx2.set_ylim(thetaedges[0], thetaedges[-1])
                
-
                theAx2.set_ylim(-1.5, 1.5)
                theAx2.set_xlim(-3, 5)
                theFig2.canvas.draw()
