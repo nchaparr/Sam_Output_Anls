@@ -156,16 +156,19 @@ for k in range(1):
      for i in range(1):
           #top_index = [tops_indices[0][i], tops_indices[1][i]]
           #[i, j] = top_index
-          [i, j] = [53, 150]
+          [i, j] = [53, 151]
           thetavals = theta[:, i, j]
 
           startTime = datetime.now()
           print 'Start', startTime#1     
           RSS, J, K = fsft.get_fit(thetavals, height)
+          print J, height[J]
           print 'RSS time', (datetime.now()-startTime)
           fitvals = np.zeros_like(thetavals)
-          b_1 = (np.sum(np.multiply(height[:J], thetavals[:J])) - 1/J*np.sum(height[:J]*np.sum(thetavals[:J])))/(np.sum(height[:J]**2) - 1/J*np.sum(height[2:J])**2)
-          a_1 = np.sum(np.multiply(height[:J], thetavals[:J]))/np.sum(height[:J]) - b_1*np.sum(height[:J]**2)/np.sum(height[:J])
+          b_1 = (np.sum(np.multiply(height[9:J], thetavals[9:J])) - 1.0/(J-9)*np.sum(height[9:J]*np.sum(thetavals[9:J])))/(np.sum(height[9:J]**2) - 1.0/(J-9)*np.sum(height[9:J])**2)
+          print np.sum(np.multiply(height[9:J], thetavals[9:J])),  - 1.0/(J-9)*np.sum(height[9:J]*np.sum(thetavals[9:J])), np.sum(height[9:J]**2), - 1.0/(J-9)*np.sum(height[9:J])**2
+
+          a_1 = np.sum(np.multiply(height[9:J], thetavals[9:J]))/np.sum(height[9:J]) - b_1*np.sum(height[9:J]**2)/np.sum(height[9:J])
                          
           b_2 = (np.sum(thetavals[J:K]) - (K-J)*(a_1+b_1*height[J]))/(np.sum(height[J:K]) - (K-J)*height[J])                         
           a_2 = np.sum(np.multiply(height[J:K], thetavals[J:K]))/np.sum(height[J:K]) - b_2*np.sum(height[J:K]**2)/np.sum(height[J:K])
