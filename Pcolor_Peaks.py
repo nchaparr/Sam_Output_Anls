@@ -200,10 +200,10 @@ for k in range(1):
           theAx.plot(fitvals[K:290], height[K:290], 'g-')
           theAx1.plot(fitvals[:290], height[:290], 'r-')
 
-theAx1.set_xlim(300, 310)
+theAx1.set_xlim(300, 320)
 theAx1.set_ylim(0, 4000)
 theAx.set_ylim(0, 4000)
-theAx.set_xlim(300, 310)
+theAx.set_xlim(300, 320)
 plt.show()
 
 

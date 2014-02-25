@@ -35,7 +35,7 @@ def Main_Fun(dump_time):
     """
      
      #pulls data using class Get_Var_Arrays1     
-     Vars = Get_Var_Arrays1("/tera2/nchaparr/Nov302013/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time)
+     Vars = Get_Var_Arrays1("/tera2/nchaparr/Jan152014_1/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time)
      thetas_list, press_list = Vars.get_thetas() 
      wvels_list= Vars.get_wvelperts()
      height = Vars.get_height()
@@ -95,14 +95,14 @@ def Main_Fun(dump_time):
      
      #save text files
      #np.savetxt('/tera/phil/nchaparr/python/Plotting/Nov42013/data/flux_quads' + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar])), delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/Nov302013/data/wvelthetapert'+dump_time, wvelthetapert_bar, delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/Nov302013/data/theta_bar'+dump_time, theta_bar, delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/Nov302013/data/heights'+dump_time, height, delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/Nov302013/data/press'+dump_time, ens_press, delimiter=' ')
+     np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/wvelthetapert'+dump_time, wvelthetapert_bar, delimiter=' ')
+     np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/theta_bar'+dump_time, theta_bar, delimiter=' ')
+     np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/heights'+dump_time, height, delimiter=' ')
+     np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/press'+dump_time, ens_press, delimiter=' ')
      #np.savetxt('/tera/phil/nchaparr/python/Plotting/Nov42013/data/tracers'+dump_time, tracer_bar, delimiter=' ')
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Dec252013/data/rootmeanvsq'+dump_time, rtwvelpertsq_bar, delimiter=' ')
+     np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/rootmeanwsq'+dump_time, rtwvelpertsq_bar, delimiter=' ')
      
-     return wvelthetapert_bar, height
+     return theta_bar, height
 
 
 go_ahead = np.int(raw_input('have you changed the write out folder paths? 1 or 0: '))
@@ -110,15 +110,15 @@ if go_ahead == 1:
 
      #MLZero_Vars = np.genfromtxt('/tera/phil/nchaparr/python/Plotting/Nov42013/data/MLZero_Vars.txt')
      
-     dump_time_list, Times = Make_Timelists(1, 900, 28800)
+     dump_time_list, Times = Make_Timelists(1, 600, 28800)
      
 
      #set up plot
      theAx = nc.Do_Plot(3, r"Horizontally Averaged, Ensemble Averaged $w^{'}\theta^{'}$ Profiles", 'Height (m)', r"$\overline{w^{'}\theta^{'}}$ (mK/s)", 111)
      #get horizontally averaged ensemble averaged variable and plot
      colorlist=['k', 'b', 'c', 'g', 'r', 'm', 'y', '.75']
-     for i in range(32):
-          if np.mod(i, 20)==0:
+     for i in range(48):
+          if np.mod(i, 1)==0:
                print i
                
                #make plots for MLZero
@@ -156,7 +156,7 @@ if go_ahead == 1:
      #theAx.plot(theta_0, height_0, label = 'initial sounding')
      plt.legend(loc = 'lower right', prop={'size':8})
      plt.ylim(50, 2000)
-     #plt.xlim(300, 306)
+     plt.xlim(300, 320)
      plt.show()
 
 else:
