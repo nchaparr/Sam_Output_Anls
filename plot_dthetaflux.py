@@ -20,21 +20,41 @@ Fig1.clf()
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
-Ax1 = Fig1.add_subplot(121)
-Ax1.set_title( r'$Scaled \ \frac{\partial \theta}{\partial z}$', fontsize=20)
+
+Ax = Fig1.add_subplot(131)
+Ax.set_title( r'$\theta$', fontsize=20)
+#Ax1.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
+#Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
+Ax.set_xlabel(r"$\theta$", fontsize=20)
+#Ax1.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
+Ax.set_ylabel(r"$z$", fontsize=20)
+plt.xlim(300, 310)
+plt.ylim(0, 2000)
+
+
+
+Ax1 = Fig1.add_subplot(132)
+#Ax1.set_title( r'$Scaled \ \frac{\partial \theta}{\partial z}$', fontsize=20)
 Ax1.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
 Ax1.set_xlabel(r"$\frac{\partial \theta}{\partial z}$", fontsize=20)
 #Ax1.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
+start, end = -.01, .05
+
+Ax1.set_xticks(np.arange(start, end, 1.0*(end-start)/4))
 Ax1.set_ylabel(r"$z$", fontsize=20)
-#plt.xlim(-.01, .012)
+#plt.xlim(299, 310)
 plt.ylim(0, 2000)
 
-Ax2 = Fig1.add_subplot(122)
+Ax2 = Fig1.add_subplot(133)
 Ax2.set_title(r"$\overline{w^{'} \theta^{'}}$", fontsize=20)
 #Ax2.set_title(r"$Scaled \ \overline{w^{'} \theta^{'}}$", fontsize=20)
 Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
 #Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
+start, end = -.02, .08
+
+Ax2.set_xticks(np.arange(start, end, 1.0*(end-start)/5))
+
 Ax2.set_ylabel(r"$z$", fontsize=20)
 #Ax2.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 plt.ylim(0, 2000)
@@ -42,11 +62,11 @@ plt.ylim(0, 2000)
 
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
  
-theta_file_list = ["/tera/phil/nchaparr/python/Plotting/Dec252013/data/theta_bar"+ dump_time for dump_time in dump_time_list]
-press_file_list = ["/tera/phil/nchaparr/python/Plotting/Dec252013/data/press"+ dump_time for dump_time in dump_time_list]
-flux_file_list = ["/tera/phil/nchaparr/python/Plotting/Dec252013/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
-height_file = "/tera/phil/nchaparr/python/Plotting/Dec252013/data/heights0000000600"
-AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/AvProfLims")
+theta_file_list = ["/tera/phil/nchaparr/python/Plotting/Dec142013/data/theta_bar"+ dump_time for dump_time in dump_time_list]
+press_file_list = ["/tera/phil/nchaparr/python/Plotting/Dec142013/data/press"+ dump_time for dump_time in dump_time_list]
+flux_file_list = ["/tera/phil/nchaparr/python/Plotting/Dec142013/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
+height_file = "/tera/phil/nchaparr/python/Plotting/Dec142013/data/heights0000000600"
+AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec142013/data/AvProfLims")
 
 #loop over text files files
 for i in range(len(theta_file_list)):
@@ -66,9 +86,10 @@ for i in range(len(theta_file_list)):
     dthetadz=np.hstack((dthetadz, element0))
         
     #only need up to 2500meters
-    top_index = np.where(abs(2545 - height) < 26.)[0][0]
+    top_index = np.where(abs(2545 - height) < 40.)[0][0]
 
     #where gradient is max, and flux is min
+    print AvProfVars[:,1].shape, height.shape
     scaled_height = [1.0*h/AvProfVars[i,1] for h in height]
 
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/60
@@ -78,6 +99,9 @@ for i in range(len(theta_file_list)):
         
         fluxes[0] = np.nan
         zeros = np.zeros_like(height)
+
+        Ax.plot(theta, height, '-') #, label = str(Times[i])+'hrs'
+        
         Ax1.plot(1.0*dthetadz, height, '-', label = str(Times[i])+'hrs')
         
         Ax2.plot(wvelthetapert, height, '-', label = str(Times[i])+'hrs')    
@@ -100,7 +124,7 @@ dthetadz0=np.hstack((element0, dthetadz0))
 #Ax1.plot(dthetadz0, scaled_height[0:top_index], '--', label = 'Initial Sounding')
 Ax1.plot(zeros, height)#zeros line for reference
 #Ax1.plot(gamma, scaled_height)#zeros line for reference
-Ax1.plot(zeros+.0025, height)#zeros line for reference
+Ax1.plot(zeros+.01, height)#zeros line for reference
 Ax2.plot(zeros, height)#zeros line for reference
 #Ax2.plot(zeros, scaled_height)#zeros line for reference 
 plt.legend(loc = 'Lower right', prop={'size':8})
@@ -108,7 +132,7 @@ plt.legend(loc = 'Lower right', prop={'size':8})
 #plt.xlim(300, 310)
 plt.legend(loc = 'upper right', prop={'size':8})
 plt.show()
-
+Fig1.savefig('/tera/phil/nchaparr/python/Plotting/Dec142013/pngs/theta_flux_profs.png')
 
 
 

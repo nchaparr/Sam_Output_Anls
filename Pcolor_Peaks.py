@@ -156,7 +156,7 @@ for k in range(1):
      for i in range(1):
           #top_index = [tops_indices[0][i], tops_indices[1][i]]
           #[i, j] = top_index
-          [i, j] = [53, 151]
+          [i, j] = [110, 3]
           thetavals = theta[:, i, j]
 
           startTime = datetime.now()
@@ -185,14 +185,14 @@ for k in range(1):
           theFig = plt.figure(i)
           theFig.clf()
           theAx = theFig.add_subplot(121)
-          theAx.set_title('')
-          theAx.set_xlabel('')
+          theAx.set_title('Fit')
+          theAx.set_xlabel(r'$\theta (K)$')
           theAx.set_ylabel('z (m)')
 
           theAx1 = theFig.add_subplot(122)
-          theAx1.set_title('')
-          theAx1.set_xlabel('')
-          theAx1.set_ylabel('')
+          theAx1.set_title('Profile and Fit')
+          theAx1.set_xlabel(r'$\theta (K) $')
+          theAx1.set_ylabel('z (m)')
 
           theAx1.plot(thetavals, height[:], 'wo')
           theAx.plot(fitvals[:J], height[:J], 'r-')
@@ -200,10 +200,10 @@ for k in range(1):
           theAx.plot(fitvals[K:290], height[K:290], 'g-')
           theAx1.plot(fitvals[:290], height[:290], 'r-')
 
-theAx1.set_xlim(300, 320)
-theAx1.set_ylim(0, 4000)
-theAx.set_ylim(0, 4000)
-theAx.set_xlim(300, 320)
+theAx1.set_xlim(300, 306)
+theAx1.set_ylim(0, 2000)
+theAx.set_ylim(0, 2000)
+theAx.set_xlim(300, 306)
 plt.show()
 
 

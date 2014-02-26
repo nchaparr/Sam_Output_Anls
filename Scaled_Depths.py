@@ -21,11 +21,11 @@ from Make_Timelist import *
 #create lists of txt file to loop over
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
 
-ELLimits = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/ELLims_hist")
+#ELLimits = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/ELLims_hist")
 #ELLimits1 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Sep302013/data/ELLims_hist1")
   
-AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/AvProfLims")
-rinovals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/invrinos")
+AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/AvProfLims")
+rinovals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/invrinos")
 
 #stull_data = np.genfromtxt('/tera/phil/nchaparr/python/Plotting/July1112013/data/stull_vars.txt')
 #mol_etc = nc.from_lmo()
@@ -43,10 +43,10 @@ Ax3 = Fig2.add_subplot(111)
 #Ax3.plot(-stull_data[2, 0:6], np.zeros_like(stull_data[2, 0:6])+.8, 'k--')
 Ax3.plot(Times[11:], np.divide(AvProfVars[:,0], AvProfVars[:,1])[11:],'ko', label = r"$from \ \frac{\partial \overline{\theta}}{\partial z}$")
 Ax3.plot(Times[11:], np.divide(AvProfVars[:,2], AvProfVars[:,1])[11:], 'ko')
-#Ax3.plot(Times[11:], np.divide(AvProfVars[:,3], AvProfVars[:,1])[11:],'b*', label = r"$from \ \overline{w^{'}\theta^{'}}$")
-#Ax3.plot(Times[11:], np.divide(AvProfVars[:,5], AvProfVars[:,1])[11:], 'b*')
-Ax3.plot(Times[11:], np.divide(ELLimits[:,0], AvProfVars[:,1])[11:],'b*', label = r"$from \ Percentiles$")
-Ax3.plot(Times[11:], np.divide(ELLimits[:,2], AvProfVars[:,1])[11:], 'b*')
+Ax3.plot(Times[11:], np.divide(AvProfVars[:,3], AvProfVars[:,1])[11:],'b*', label = r"$from \ \overline{w^{'}\theta^{'}}$")
+Ax3.plot(Times[11:], np.divide(AvProfVars[:,5], AvProfVars[:,1])[11:], 'b*')
+#Ax3.plot(Times[11:], np.divide(ELLimits[:,0], AvProfVars[:,1])[11:],'b*', label = r"$from \ Percentiles$")
+#Ax3.plot(Times[11:], np.divide(ELLimits[:,2], AvProfVars[:,1])[11:], 'b*')
 
 plt.legend(loc = 'lower right', prop={'size':8})
 Ax3.set_title(r"$Scaled \ EL \ Limits$", fontsize=20)
@@ -54,7 +54,7 @@ Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=20)
 Ax3.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 plt.ylim(0, 1.5)
 plt.show()
-
+Fig2.savefig('/tera/phil/nchaparr/python/Plotting/Jan152014_1/pngs/ellimstime.png')
 
 
     

@@ -117,8 +117,9 @@ def Main_Fun(dump_time, case):
      for i in range(128):
           for j in range(192):               
                RSS, J, K = fsft.get_fit(theta[:, i, j], height)
-               ML_Heights[i, j] = height[J]          
-               print i, j, J, height[J]
+               ML_Heights[i, j] = height[J]
+               if height[J] < 500:
+                    print i, j, J, height[J]
                
      print '/tera/phil/nchaparr/python/Plotting/Dec252013/data/mixed_layer_height_'+ str(case) + '_' + dump_time           
      np.savetxt('/tera/phil/nchaparr/python/Plotting/Dec252013/data/mixed_layer_height_'+ str(case) + '_' + dump_time, ML_Heights, delimiter=' ')
@@ -163,6 +164,7 @@ if __name__ == "__main__":
                bar.formatter= ticker.FixedFormatter(label_list)
                bar.update_ticks()
                plt.show()
+               print time_hrs[i]
                theFig.savefig('/tera/phil/nchaparr/python/Plotting/Dec252013/pngs/cont_'+str(time_hrs[i])+'_hrs.png')
      
 

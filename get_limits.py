@@ -20,10 +20,10 @@ rcParams.update({'font.size': 10})
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
 Times = np.array(Times)
  
-theta_file_list = ["/tera/phil/nchaparr/python/Plotting/Dec202013/data/theta_bar"+ dump_time for dump_time in dump_time_list]
-press_file_list = ["/tera/phil/nchaparr/python/Plotting/Dec202013/data/press"+ dump_time for dump_time in dump_time_list]
-flux_file_list = ["/tera/phil/nchaparr/python/Plotting/Dec202013/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
-height_file = "/tera/phil/nchaparr/python/Plotting/Dec202013/data/heights0000000600"
+theta_file_list = ["/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/theta_bar"+ dump_time for dump_time in dump_time_list]
+press_file_list = ["/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/press"+ dump_time for dump_time in dump_time_list]
+flux_file_list = ["/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
+height_file = "/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/heights0000000600"
 
 AvProfLims = []
 invrinos = []
@@ -81,8 +81,8 @@ for i in range(len(theta_file_list)):
     tau = 1.0*height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]/wstar
     invrinos.append([rino, invrino, wstar, S, tau])
     
-np.savetxt('/tera/phil/nchaparr/python/Plotting/Dec202013/data/AvProfLims', np.array(AvProfLims), delimiter=' ')
-np.savetxt('/tera/phil/nchaparr/python/Plotting/Dec202013/data/invrinos', np.array(invrinos), delimiter=' ')
+np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/AvProfLims', np.array(AvProfLims), delimiter=' ')
+np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/invrinos', np.array(invrinos), delimiter=' ')
 
 
 

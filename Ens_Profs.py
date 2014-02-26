@@ -37,7 +37,7 @@ def Main_Fun(dump_time):
      #pulls data using class Get_Var_Arrays1     
      Vars = Get_Var_Arrays1("/tera2/nchaparr/Jan152014_1/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time)
      thetas_list, press_list = Vars.get_thetas() 
-     wvels_list= Vars.get_wvelperts()
+     wvels_list= Vars.get_uvelperts()
      height = Vars.get_height()
                   
      #get arrays of ensemble averaged variables
@@ -95,12 +95,12 @@ def Main_Fun(dump_time):
      
      #save text files
      #np.savetxt('/tera/phil/nchaparr/python/Plotting/Nov42013/data/flux_quads' + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar])), delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/wvelthetapert'+dump_time, wvelthetapert_bar, delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/theta_bar'+dump_time, theta_bar, delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/heights'+dump_time, height, delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/press'+dump_time, ens_press, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/wvelthetapert'+dump_time, wvelthetapert_bar, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/theta_bar'+dump_time, theta_bar, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/heights'+dump_time, height, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/press'+dump_time, ens_press, delimiter=' ')
      #np.savetxt('/tera/phil/nchaparr/python/Plotting/Nov42013/data/tracers'+dump_time, tracer_bar, delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/rootmeanwsq'+dump_time, rtwvelpertsq_bar, delimiter=' ')
+     np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/rootmeanusq'+dump_time, rtwvelpertsq_bar, delimiter=' ')
      
      return theta_bar, height
 
@@ -118,7 +118,7 @@ if go_ahead == 1:
      #get horizontally averaged ensemble averaged variable and plot
      colorlist=['k', 'b', 'c', 'g', 'r', 'm', 'y', '.75']
      for i in range(48):
-          if np.mod(i, 1)==0:
+          if np.mod(i+1, 6)==0:
                print i
                
                #make plots for MLZero

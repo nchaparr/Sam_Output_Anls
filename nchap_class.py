@@ -34,7 +34,7 @@ class Get_Var_Arrays1:
                ncdata = Dataset(thefile,'r')          
                uvelperts_list.append(np.squeeze(ncdata.variables['U'][...]))
                ncdata.close()
-          return wvelperts_list
+          return uvelperts_list
 
      def get_vvelperts(self):
           vvelperts_list = []
