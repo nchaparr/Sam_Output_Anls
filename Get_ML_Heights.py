@@ -93,7 +93,7 @@ def Main_Fun(dump_time, case):
     
     """
      #create list of filenames for given dump_time
-     ncfile = "/tera2/nchaparr/Dec252013/runs/sam_case" + str(case) + "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_" + dump_time + ".nc"
+     ncfile = "/tera2/nchaparr/Dec202013/runs/sam_case" + str(case) + "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_" + dump_time + ".nc"
      
           
      thefile = ncfile
@@ -121,8 +121,8 @@ def Main_Fun(dump_time, case):
                if height[J] < 500:
                     print i, j, J, height[J]
                
-     print '/tera/phil/nchaparr/python/Plotting/Dec252013/data/mixed_layer_height_'+ str(case) + '_' + dump_time           
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/Dec252013/data/mixed_layer_height_'+ str(case) + '_' + dump_time, ML_Heights, delimiter=' ')
+     print '/tera/phil/nchaparr/python/Plotting/Dec202013/data/mixed_layer_height_'+ str(case) + '_' + dump_time           
+     np.savetxt('/tera/phil/nchaparr/python/Plotting/Dec202013/data/mixed_layer_height_'+ str(case) + '_' + dump_time, ML_Heights, delimiter=' ')
      
      return ML_Heights
 
@@ -165,7 +165,7 @@ if __name__ == "__main__":
                bar.update_ticks()
                plt.show()
                print time_hrs[i]
-               theFig.savefig('/tera/phil/nchaparr/python/Plotting/Dec252013/pngs/cont_'+str(time_hrs[i])+'_hrs.png')
+               theFig.savefig('/tera/phil/nchaparr/python/Plotting/Dec202013/pngs/cont_'+str(time_hrs[i])+'_hrs.png')
      
 
 

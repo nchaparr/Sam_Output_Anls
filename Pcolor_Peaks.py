@@ -146,7 +146,7 @@ print dump_time
 
 for k in range(1):
      #getting variables from nc files
-     [wvels, theta, tracer, height] = nc.Get_Var_Arrays("/tera2/nchaparr/Dec252013/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time, k+1)
+     [wvels, theta, tracer, height] = nc.Get_Var_Arrays("/tera2/nchaparr/Dec202013/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time, k+1)
 
      #getting points of maximum theta gradient, getting rid of this soon
      #[dvardz, grad_peaks] = nc.Domain_Grad(theta, height) 
@@ -156,7 +156,7 @@ for k in range(1):
      for i in range(1):
           #top_index = [tops_indices[0][i], tops_indices[1][i]]
           #[i, j] = top_index
-          [i, j] = [110, 3]
+          [i, j] = [127, 191]
           thetavals = theta[:, i, j]
 
           startTime = datetime.now()
@@ -166,16 +166,16 @@ for k in range(1):
           print 'RSS time', (datetime.now()-startTime)
           fitvals = np.zeros_like(thetavals)
           b_1 = (np.sum(np.multiply(height[9:J], thetavals[9:J])) - 1.0/(J-9)*np.sum(height[9:J]*np.sum(thetavals[9:J])))/(np.sum(height[9:J]**2) - 1.0/(J-9)*np.sum(height[9:J])**2)
-          print np.sum(np.multiply(height[9:J], thetavals[9:J])),  - 1.0/(J-9)*np.sum(height[9:J]*np.sum(thetavals[9:J])), np.sum(height[9:J]**2), - 1.0/(J-9)*np.sum(height[9:J])**2
+          #print np.sum(np.multiply(height[9:J], thetavals[9:J])),  - 1.0/(J-9)*np.sum(height[9:J]*np.sum(thetavals[9:J])), np.sum(height[9:J]**2), - 1.0/(J-9)*np.sum(height[9:J])**2
 
           a_1 = np.sum(np.multiply(height[9:J], thetavals[9:J]))/np.sum(height[9:J]) - b_1*np.sum(height[9:J]**2)/np.sum(height[9:J])
                          
           b_2 = (np.sum(thetavals[J:K]) - (K-J)*(a_1+b_1*height[J]))/(np.sum(height[J:K]) - (K-J)*height[J])                         
           a_2 = np.sum(np.multiply(height[J:K], thetavals[J:K]))/np.sum(height[J:K]) - b_2*np.sum(height[J:K]**2)/np.sum(height[J:K])
-
+          
           b_3 = (np.sum(thetavals[K:290]) - (290-K)*(a_2+b_2*height[K]))/(np.sum(height[K:290]) - (290-K)*height[K])
           a_3 = np.sum(np.multiply(height[K:290], thetavals[K:290]))/np.sum(height[K:290]) - b_3*np.sum(height[K:290]**2)/np.sum(height[K:290])
-                         
+          print b_2, b_3               
      
           fitvals[:J] = b_1*height[:J] + a_1
           fitvals[J:K] = b_2*height[J:K] + a_2
@@ -200,10 +200,10 @@ for k in range(1):
           theAx.plot(fitvals[K:290], height[K:290], 'g-')
           theAx1.plot(fitvals[:290], height[:290], 'r-')
 
-theAx1.set_xlim(300, 306)
-theAx1.set_ylim(0, 2000)
-theAx.set_ylim(0, 2000)
-theAx.set_xlim(300, 306)
+theAx1.set_xlim(300, 340)
+theAx1.set_ylim(0, 9000)
+theAx.set_ylim(0, 9000)
+theAx.set_xlim(300, 340)
 plt.show()
 
 

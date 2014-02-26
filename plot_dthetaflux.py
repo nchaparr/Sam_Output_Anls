@@ -39,11 +39,10 @@ Ax1.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
 Ax1.set_xlabel(r"$\frac{\partial \theta}{\partial z}$", fontsize=20)
 #Ax1.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-start, end = -.01, .05
-
+start, end = -.025, .025
 Ax1.set_xticks(np.arange(start, end, 1.0*(end-start)/4))
 Ax1.set_ylabel(r"$z$", fontsize=20)
-#plt.xlim(299, 310)
+plt.xlim(-.025, .025)
 plt.ylim(0, 2000)
 
 Ax2 = Fig1.add_subplot(133)
@@ -52,21 +51,20 @@ Ax2.set_title(r"$\overline{w^{'} \theta^{'}}$", fontsize=20)
 Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
 #Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
 start, end = -.02, .08
-
 Ax2.set_xticks(np.arange(start, end, 1.0*(end-start)/5))
 
 Ax2.set_ylabel(r"$z$", fontsize=20)
 #Ax2.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 plt.ylim(0, 2000)
-#plt.xlim(306, 310)
+plt.xlim(-.02, .08)
 
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
  
-theta_file_list = ["/tera/phil/nchaparr/python/Plotting/Dec142013/data/theta_bar"+ dump_time for dump_time in dump_time_list]
-press_file_list = ["/tera/phil/nchaparr/python/Plotting/Dec142013/data/press"+ dump_time for dump_time in dump_time_list]
-flux_file_list = ["/tera/phil/nchaparr/python/Plotting/Dec142013/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
-height_file = "/tera/phil/nchaparr/python/Plotting/Dec142013/data/heights0000000600"
-AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec142013/data/AvProfLims")
+theta_file_list = ["/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/theta_bar"+ dump_time for dump_time in dump_time_list]
+press_file_list = ["/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/press"+ dump_time for dump_time in dump_time_list]
+flux_file_list = ["/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
+height_file = "/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/heights0000000600"
+AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/AvProfLims")
 
 #loop over text files files
 for i in range(len(theta_file_list)):
@@ -89,7 +87,7 @@ for i in range(len(theta_file_list)):
     top_index = np.where(abs(2545 - height) < 40.)[0][0]
 
     #where gradient is max, and flux is min
-    print AvProfVars[:,1].shape, height.shape
+    #print AvProfVars[:,1].shape, height.shape
     scaled_height = [1.0*h/AvProfVars[i,1] for h in height]
 
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/60
@@ -114,7 +112,7 @@ f=interp1d(height_0, theta_0)
 
 #Now plot inital sounding
 top_index = np.where(height <= 2500)[0][-1]
-gamma = np.zeros_like(height) + .01
+gamma = np.zeros_like(height) + .005
 theta_0 = f(height[0:top_index])
 dtheta0 = np.diff(theta_0)
 dthetadz0 = np.divide(dtheta0, dheight[0:top_index-1])
@@ -124,7 +122,7 @@ dthetadz0=np.hstack((element0, dthetadz0))
 #Ax1.plot(dthetadz0, scaled_height[0:top_index], '--', label = 'Initial Sounding')
 Ax1.plot(zeros, height)#zeros line for reference
 #Ax1.plot(gamma, scaled_height)#zeros line for reference
-Ax1.plot(zeros+.01, height)#zeros line for reference
+Ax1.plot(zeros+.005, height)#zeros line for reference
 Ax2.plot(zeros, height)#zeros line for reference
 #Ax2.plot(zeros, scaled_height)#zeros line for reference 
 plt.legend(loc = 'Lower right', prop={'size':8})
@@ -132,7 +130,7 @@ plt.legend(loc = 'Lower right', prop={'size':8})
 #plt.xlim(300, 310)
 plt.legend(loc = 'upper right', prop={'size':8})
 plt.show()
-Fig1.savefig('/tera/phil/nchaparr/python/Plotting/Dec142013/pngs/theta_flux_profs.png')
+Fig1.savefig('/tera/phil/nchaparr/python/Plotting/Jan152014_1/pngs/theta_flux_profs.png')
 
 
 
