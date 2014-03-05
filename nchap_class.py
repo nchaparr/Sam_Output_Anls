@@ -1,5 +1,7 @@
 from netCDF4 import Dataset
 import numpy as np
+import nchap_fun as nc
+            
 
 class Get_Var_Arrays1:
      """
@@ -74,6 +76,41 @@ class Get_Var_Arrays1:
           ncdata.close()
           return height
 
-    
-    
+     def get_wvelthetaperts(self):
+          wvels_list = self.get_wvelperts()
+          thetas_list, press_list = self.get_thetas()
+          #print 'checking thetas_list', len(thetas_list), thetas_list[0].shape
+          ens_avthetas = nc.Ensemble1_Average(thetas_list)
+          wvelthetaperts_list = []
+          for i in range(len(wvels_list)):  
+               [znum, ynum, xnum] = wvels_list[i].shape
+               thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
+               thetapert = np.zeros_like(thetapert_rough)
+               for j in range(znum):#something like this is done in statistics.f90, staggered grid!
+                    if j == 0:
+                         thetapert[j,:,:] = thetapert_rough[j,:,:]
+                    else:
+                         thetapert[j,:,:] = 0.5*np.add(thetapert_rough[j,:,:], thetapert_rough[j-1,:,:])
+               wvelpert = wvels_list[i]     
+               wvelthetapert = np.multiply(wvelpert, thetapert)
+               wvelthetaperts_list.append(wvelthetapert)
+
+          return wvelthetaperts_list
+     
+     def get_sqvel(self, vel_dir):
+          if vel_dir == 'w':
+               vel_list = self.get_wvelperts()
+          elif vel_dir == 'v':
+               vel_list = self.get_vvelperts()
+          elif vel_dir == 'u':
+               vel_list = self.get_uvelperts()
+               
+          velpertsq_list = []
+
+          for i in range(len(vel_list)):
+               velpert = vel_list[i]
+               velpertsq = np.multiply(velpert, velpert)
+               velpertsq_list.append(velpertsq)
+
+          return velpertsq_list
     

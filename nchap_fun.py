@@ -367,9 +367,10 @@ def Ensemble1_Average(list):
 
     """
     to_av = list[0]
-    
-    for k in range(len(list)-1): 
-        to_av = np.add(to_av, list[k+1])
+        
+    for k in range(len(list)-1):
+         #print k, 'array sizes', to_av.shape, list[k+1].shape 
+         to_av = np.add(to_av, list[k+1])
     ens_avs = 1.0*to_av/len(list)
     
     return ens_avs

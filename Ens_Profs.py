@@ -6,7 +6,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import site
 from datetime import datetime
-site.addsitedir('/tera/phil/nchaparr/python')
+#site.addsitedir('/tera/phil/nchaparr/python')
 #from nchap_fun import *
 from Make_Timelist import *
 #import sys
@@ -51,30 +51,10 @@ def Main_Fun(dump_time):
               
      #now get the perturbations
      #wvelperts_list = []
-     wvelpertsq_list = []
+     wvelpertsq_list = Vars.get_sqvel('w')
      #thetaperts_list = []
-     wvelthetaperts_list = []
-     for i in range(len(wvels_list)):  #TODO: this should be a function
-          [znum, ynum, xnum] = wvels_list[i].shape
-          thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
-          thetapert = np.zeros_like(thetapert_rough)
-          for j in range(znum):#something like this is done in statistics.f90, staggered grid!
-               if j == 0:
-                   thetapert[j,:,:] = thetapert_rough[j,:,:]
-               else:
-                    thetapert[j,:,:] = 0.5*np.add(thetapert_rough[j,:,:], thetapert_rough[j-1,:,:])
-          wvelpert = wvels_list[i]
-          
-          wvelpertsq = np.multiply(wvelpert, wvelpert)
-          
-         
-          wvelthetapert = np.multiply(wvelpert, thetapert)
-     #     wvelperts_list.append(wvelpert)
-          wvelpertsq_list.append(wvelpertsq)
-          #thetaperts_list.append(thetapert)
-                    
-          wvelthetaperts_list.append(wvelthetapert)     
-          
+     wvelthetaperts_list = Vars.get_wvelthetaperts()           
+               
      #and ensemble average them
      #print (datetime.now()-startTime)
      
@@ -100,9 +80,9 @@ def Main_Fun(dump_time):
      #np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/heights'+dump_time, height, delimiter=' ')
      #np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/press'+dump_time, ens_press, delimiter=' ')
      #np.savetxt('/tera/phil/nchaparr/python/Plotting/Nov42013/data/tracers'+dump_time, tracer_bar, delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/rootmeanusq'+dump_time, rtwvelpertsq_bar, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/rootmeanusq'+dump_time, rtwvelpertsq_bar, delimiter=' ')
      
-     return theta_bar, height
+     return wvelthetapert_bar, height
 
 
 go_ahead = np.int(raw_input('have you changed the write out folder paths? 1 or 0: '))
@@ -156,7 +136,7 @@ if go_ahead == 1:
      #theAx.plot(theta_0, height_0, label = 'initial sounding')
      plt.legend(loc = 'lower right', prop={'size':8})
      plt.ylim(50, 2000)
-     plt.xlim(300, 320)
+     #plt.xlim(300, 320)
      plt.show()
 
 else:

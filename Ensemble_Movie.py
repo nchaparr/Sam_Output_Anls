@@ -18,7 +18,7 @@ from Make_Timelist import *
 """
     Profiles/2d ims  at a point
     for a movie
-    may be pointless now data at longer delta ts
+    may be pointless now -- data at longer delta ts
 """
 
 
