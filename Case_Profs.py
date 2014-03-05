@@ -18,7 +18,9 @@ print ncFiles
    initial sounding from setdata.f90
    and potential temperature derived from abs temp from initial nc file
 
-   have made changes tracer conc   
+   have made changes tracer conc
+
+   Don't use it anymore
 """
 #set up plot
 theAx = nc.Do_Plot(1, 'Potential Temperature Profile Evolution', 'Height (m)', 'Potential Temperature (K)', 111)
