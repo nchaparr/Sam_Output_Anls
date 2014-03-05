@@ -6,10 +6,10 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from matplotlib import ticker
-#import site
-#site.addsitedir('/tera/phil/nchaparr/python/')
+import site
+site.addsitedir('/tera2/nchaparr/Dec252013/python')
 import sys
-sys.path.insert(0, '/tera/phil/nchaparr/python')
+#sys.path.insert(0, '/tera/phil/nchaparr/python')
 import nchap_fun as nc
 from Make_Timelist import *
 import fastfit as fsft
@@ -80,7 +80,7 @@ def get_ticks(mean, stddev, max, min):
 
 
 #TODO: needs to change not that maximum gradient isn't to be used
-def Main_Fun(dump_time, case):
+def Main_Fun(dump_time_index, case, date):
      """Loops over ensemble cases.  Pulls temperature, pressure, height from nc output files using nchap_class
     gets height of mixed layer at each horizontal point using fast_fit and saves as a txt file.   
 
@@ -92,10 +92,10 @@ def Main_Fun(dump_time, case):
     ML_Heights -- 128*192 array as txt file
     
     """
-     #create list of filenames for given dump_time
-     ncfile = "/tera2/nchaparr/Dec202013/runs/sam_case" + str(case) + "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_" + dump_time + ".nc"
-     
-          
+     dump_time_list, time_hrs = Make_Timelists(1, 3600, 28800)
+    
+     ncfile = "/tera2/nchaparr/"+ date +"/runs/sam_case" + str(case) + "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_" + dump_time_list[dump_time_index] + ".nc"
+               
      thefile = ncfile
      print thefile
      ncdata = Dataset(thefile,'r')
@@ -114,59 +114,81 @@ def Main_Fun(dump_time, case):
           theta[j, :, :] = temp[j, :, :]*thetafact[j]
 
      ML_Heights = np.empty([128, 192])
-     for i in range(128):
-          for j in range(192):               
-               RSS, J, K = fsft.get_fit(theta[:, i, j], height)
+     for i in range(128): #change to 128          
+          for j in range(192):#change to 192
+               top = np.where(np.abs(height-2300)<100)[0][0]
+               RSS, J, K = fsft.get_fit(theta[:, i, j], height, top)
                ML_Heights[i, j] = height[J]
-               if height[J] < 500:
-                    print i, j, J, height[J]
-               
-     print '/tera/phil/nchaparr/python/Plotting/Dec202013/data/mixed_layer_height_'+ str(case) + '_' + dump_time           
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/Dec202013/data/mixed_layer_height_'+ str(case) + '_' + dump_time, ML_Heights, delimiter=' ')
+               #if height[J] < 500:
+               #print i, j, J, height[J]
+               b_1 = (np.sum(np.multiply(height[:J], theta[:J, i, j])) - 1.0/J*np.sum(height[:J])*np.sum(theta[:J, i, j]))/(np.sum(height[:J]**2) - 1.0/J*np.sum(height[:J])**2)
+               a_1 = np.sum(np.multiply(height[:J], theta[:J, i, j]))/np.sum(height[:J]) - b_1*np.sum(height[:J]**2)/np.sum(height[:J])                          
+                                   
+               b_2 = (np.sum(theta[J:K, i, j]) - (K-J)*(a_1+b_1*height[J]))/(np.sum(height[J:K]) - (K-J)*height[J])                                    
+               a_2 = np.sum(np.multiply(height[J:K], theta[J:K, i, j]))/np.sum(height[J:K]) - b_2*np.sum(height[J:K]**2)/np.sum(height[J:K])
+               b_3 = (np.sum(theta[K:290, i, j]) - (290-K)*(a_2+b_2*height[K]))/(np.sum(height[K:290]) - (290-K)*height[K])               
+               if b_3-b_2>.002:     
+                    #print i, j, J, height[J], height[K], b_3, b_2, b_3-b_2
+                    ML_Heights[i, j] = height[K]
+                    
+     print '/tera/phil/nchaparr/python/Plotting/'+date+'/data/mixed_layer_height_'+ str(case) + '_' + dump_time_list[dump_time_index]           
+     np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/mixed_layer_height_'+ str(case) + '_' + dump_time_list[dump_time_index], ML_Heights, delimiter=' ')
      
      return ML_Heights
 
-dump_time_list, time_hrs = Make_Timelists(1, 3600, 28800)
+def Call_Main_Fun(date):
+     dump_time_no = 8
+     case_no = 10
+     #date = 'Dec252013'
+     for i in range(dump_time_no):
+          for j in range(case_no):
+               ML_Heights = Main_Fun(i, j+1, date)
+               #theFig = plt.figure(i)
+               #theFig.clf()
+               #theAx = theFig.add_subplot(111)
+               #theAx.set_title(r"$Contour \ of \ Local \ h \ after \ " + str(time_hrs[i]) +" \ hours$")
+               #theAx.set_xlabel(r"$x \ (m)$")
+               #theAx.set_ylabel(r"$y \ (m)$")
 
-if __name__ == "__main__":
- 
-     #set up plot
-     
-     for i in range(len(dump_time_list)):
-          if i == 4:
-               for j in range(1):
-                    ML_Heights = Main_Fun(dump_time_list[i], j+1)
+               #v_max, v_min, mean, stddev = np.amax(ML_Heights), np.amin(ML_Heights), np.mean(ML_Heights), np.std(ML_Heights)
 
-               theFig = plt.figure(i)
-               theFig.clf()
-               theAx = theFig.add_subplot(111)
-               theAx.set_title(r"$Contour \ of \ Local \ h \ after \ " + str(time_hrs[i]) +" \ hours$")
-               theAx.set_xlabel(r"$x \ (m)$")
-               theAx.set_ylabel(r"$y \ (m)$")
-
-               v_max, v_min, mean, stddev = np.amax(ML_Heights), np.amin(ML_Heights), np.mean(ML_Heights), np.std(ML_Heights)
-
-               filler_array = np.zeros([64, 192])
-               ML_Heights = np.vstack((ML_Heights, filler_array))
-               x = np.arange(0, 4800, 25)
-               y = np.arange(0, 4800, 25)
-               X,Y = np.meshgrid(x, y)
+               #filler_array = np.zeros([64, 192])
+               #ML_Heights = np.vstack((ML_Heights, filler_array))
+               #x = np.arange(0, 4800, 25)
+               #y = np.arange(0, 4800, 25)
+               #X,Y = np.meshgrid(x, y)
          
-               im = theAx.pcolor(X, Y, ML_Heights, cmap=cm.bone, vmax=v_max, vmin=v_min)
-               bar = plt.colorbar(im)
-               plt.ylim(0, 3200)
-               plt.xlim(0, 4800)
+               #im = theAx.pcolor(X, Y, ML_Heights, cmap=cm.bone, vmax=v_max, vmin=v_min)
+               #bar = plt.colorbar(im)
+               #plt.ylim(0, 3200)
+               #plt.xlim(0, 4800)
                
                #v_max, v_min, mean, stddev = np.amax(grad_peaks), np.amin(grad_peaks), np.mean(grad_peaks), np.std(grad_peaks)
-               label_list, tick_list = get_ticks(mean, stddev,v_max, v_min)
+               #label_list, tick_list = get_ticks(mean, stddev,v_max, v_min)
      
-               bar.locator = ticker.FixedLocator(tick_list)
-               bar.formatter= ticker.FixedFormatter(label_list)
-               bar.update_ticks()
-               plt.show()
+               #bar.locator = ticker.FixedLocator(tick_list)
+               #bar.formatter= ticker.FixedFormatter(label_list)
+               #bar.update_ticks()
+               #plt.show()
                print time_hrs[i]
-               theFig.savefig('/tera/phil/nchaparr/python/Plotting/Dec202013/pngs/cont_'+str(time_hrs[i])+'_hrs.png')
+               #theFig.savefig('/tera/phil/nchaparr/python/Plotting/'+date+'/pngs/cont_'+str(time_hrs[i])+'_hrs.png')
      
+
+dump_time_list, time_hrs = Make_Timelists(1, 3600, 28800)
+print time_hrs
+#date = 'Dec252013'
+
+if __name__ == "__main__":
+
+     import argparse
+     parser = argparse.ArgumentParser()
+     parser.add_argument("--run_name", type=str, help='name of run')
+     args = parser.parse_args()
+     date = args.run_name
+     print date
+     Call_Main_Fun(date)
+     
+     #set up plot
 
 
 

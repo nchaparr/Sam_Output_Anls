@@ -21,11 +21,11 @@ from Make_Timelist import *
 #create lists of txt file to loop over
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
 
-#ELLimits = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/ELLims_hist")
+#ELLimits = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/ELLims_hist")
 #ELLimits1 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Sep302013/data/ELLims_hist1")
   
-AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/AvProfLims")
-rinovals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/invrinos")
+AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/AvProfLims")
+rinovals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/invrinos")
 
 #stull_data = np.genfromtxt('/tera/phil/nchaparr/python/Plotting/July1112013/data/stull_vars.txt')
 #mol_etc = nc.from_lmo()
@@ -54,7 +54,7 @@ Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=20)
 Ax3.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 plt.ylim(0, 1.5)
 plt.show()
-Fig2.savefig('/tera/phil/nchaparr/python/Plotting/Jan152014_1/pngs/ellimstime.png')
+Fig2.savefig('/tera/phil/nchaparr/python/Plotting/Dec252013/pngs/ellimstime.png')
 
 
     

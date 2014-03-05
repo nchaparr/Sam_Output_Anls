@@ -4,10 +4,12 @@ import matplotlib
 import matplotlib.pyplot as plt
 from Make_Timelist import *
 import sys
-sys.path.insert(0, '/tera/phil/nchaparr/python')
+#sys.path.insert(0, '/tera/phil/nchaparr/python')
 import nchap_fun as nc
 from matplotlib import rcParams
 rcParams.update({'font.size': 10})
+
+#TODO: flux and gamm need to be passed as arguments
 
 """calculates temperature gradients (discrete) from txt files inturn from ensemble run 3D files
    gets levels where gradient exceeds zero, and where it resumes gamma, and zero crossings for fluxes
@@ -16,14 +18,16 @@ rcParams.update({'font.size': 10})
    Dumps them in a text file.
    Calcs and dumps rino, invrino, wstar
 """
-
-dump_time_list, Times = Make_Timelists(1, 600, 28800)
-Times = np.array(Times)
+rundate = 'Jan152014_1'
+gamma = .005
+flux_s = 150
+dump_time_list, Times = Make_Timelists(1,600, 28800)
+Times = np.array(Times)  
  
-theta_file_list = ["/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/theta_bar"+ dump_time for dump_time in dump_time_list]
-press_file_list = ["/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/press"+ dump_time for dump_time in dump_time_list]
-flux_file_list = ["/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
-height_file = "/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/heights0000000600"
+theta_file_list = ["/tera/phil/nchaparr/python/Plotting/" + rundate + "/data/theta_bar"+ dump_time for dump_time in dump_time_list]
+press_file_list = ["/tera/phil/nchaparr/python/Plotting/" + rundate + "/data/press"+ dump_time for dump_time in dump_time_list]
+flux_file_list = ["/tera/phil/nchaparr/python/Plotting/" + rundate + "/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
+height_file = "/tera/phil/nchaparr/python/Plotting/" + rundate + "/data/heights0000000600"
 
 AvProfLims = []
 invrinos = []
@@ -57,7 +61,7 @@ for i in range(len(theta_file_list)):
 
     #where gradient resumes as gamma    
     for k in range(len(dthetadz[:top_index])-1):        
-        if np.abs(dthetadz[k+2]-.005)<.0002 and np.abs(dthetadz[k+1]-.005)<.0002 and dthetadz[k-1]>.005:            
+        if np.abs(dthetadz[k+2]-gamma)<.0002 and np.abs(dthetadz[k+1]-gamma)<.0002 and dthetadz[k-1]>gamma:            
             dtheta_index_t = k+1                        
             break
     
@@ -74,15 +78,18 @@ for i in range(len(theta_file_list)):
             break
         
     print height[dtheta_index_b], height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], height[dtheta_index_t], height[flux_index_b], height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]], height[flux_index_t]
-    print height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*60/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t]
-    [rino, invrino, wstar, S] =  nc.calc_rino(height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*60/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t])
+    print height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*flux_s/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t]
+    mltheta = np.mean(theta[0:dtheta_index_b])
+    deltatheta = -theta[dtheta_index_b]+theta[dtheta_index_t]
+    
+    [rino, invrino, wstar, S] =  nc.calc_rino(height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*flux_s/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t], .01)
 
     AvProfLims.append([height[dtheta_index_b], height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], height[dtheta_index_t], height[flux_index_b], height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]], height[flux_index_t], -theta[dtheta_index_b]+theta[dtheta_index_t], np.mean(theta[0:dtheta_index_b])])
     tau = 1.0*height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]/wstar
-    invrinos.append([rino, invrino, wstar, S, tau])
+    invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta])
     
-np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/AvProfLims', np.array(AvProfLims), delimiter=' ')
-np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/invrinos', np.array(invrinos), delimiter=' ')
+np.savetxt('/tera/phil/nchaparr/python/Plotting/' + rundate + '/data/AvProfLims', np.array(AvProfLims), delimiter=' ')
+np.savetxt('/tera/phil/nchaparr/python/Plotting/' + rundate + '/data/invrinos', np.array(invrinos), delimiter=' ')
 
 
 

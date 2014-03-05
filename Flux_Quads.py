@@ -70,7 +70,7 @@ def Main_Fun(dump_time, hflux):
 
           wvelpert = wvels_list[i]
           
-          slice_lev = np.where(np.abs(height - hflux) < 20)[0][0]        
+          slice_lev = np.where(np.abs(height - hflux) < 26)[0][0]        
 
           wvelthetapert = np.multiply(wvelpert, thetapert)
           wvelperts_list.append(wvelpert[slice_lev, :, :])       
@@ -178,7 +178,7 @@ if go_ahead == 1:
      colorlist=['k', 'b', 'c', 'g', 'r', 'm', 'y', '.75']
      for i in range(32):
           if i == 19:      
-               height, wvelperts, thetaperts, upwarm, downwarm, upcold, downcold, avflux = Main_Fun(dump_time_list[i], hvals[i, 2])
+               height, wvelperts, thetaperts, upwarm, downwarm, upcold, downcold, avflux = Main_Fun(dump_time_list[i], 1.25*hvals[i, 5])
                
                av_quad_profs = np.genfromtxt('/tera/phil/nchaparr/python/Plotting/Nov302013/data/flux_quads' + dump_time_list[i])
 
@@ -236,8 +236,9 @@ if go_ahead == 1:
                theAx2.set_ylim(-1.5, 1.5)
                theAx2.set_xlim(-3, 5)
                theFig2.canvas.draw()
-               #theFig2.savefig('')
-               
+               theFig.savefig('/tera/phil/nchaparr/python/Plotting/Nov302013/pngs/fluxquadprofs4.png')
+               theFig1.savefig('/tera/phil/nchaparr/python/Plotting/Nov302013/pngs/fluxquads4.png')
+               theFig2.savefig('/tera/phil/nchaparr/python/Plotting/Nov302013/pngs/fluxquadhist4.png')
      plt.show()
 
 else:

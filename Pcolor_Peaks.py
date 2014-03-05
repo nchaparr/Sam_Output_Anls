@@ -160,8 +160,9 @@ for k in range(1):
           thetavals = theta[:, i, j]
 
           startTime = datetime.now()
-          print 'Start', startTime#1     
-          RSS, J, K = fsft.get_fit(thetavals, height)
+          print 'Start', startTime#1
+          top = np.where(np.abs(height-2300)<100)[0][0]
+          RSS, J, K = fsft.get_fit(thetavals, height, top)
           print J, height[J]
           print 'RSS time', (datetime.now()-startTime)
           fitvals = np.zeros_like(thetavals)
@@ -200,10 +201,10 @@ for k in range(1):
           theAx.plot(fitvals[K:290], height[K:290], 'g-')
           theAx1.plot(fitvals[:290], height[:290], 'r-')
 
-theAx1.set_xlim(300, 340)
-theAx1.set_ylim(0, 9000)
-theAx.set_ylim(0, 9000)
-theAx.set_xlim(300, 340)
+theAx1.set_xlim(300, 310)
+theAx1.set_ylim(0, 2500)
+theAx.set_ylim(0, 2500)
+theAx.set_xlim(300, 310)
 plt.show()
 
 
