@@ -109,16 +109,16 @@ def Main_Fun(dump_time, hflux):
      #for a single case, and to look closer
      #print 'where thetapert is less than -.5', np.where(thetaperts[0]<-.5)
      #print 'wherre wvelpert is greater than .5', np.where(wvelperts[0]>.5)
-     #wvelperts_slice = wvelperts[0]
-     #thetaperts_slice = thetaperts[0]    
+     wvelperts_slice = wvelperts[0]
+     thetaperts_slice = thetaperts[0]    
 
      #wvelperts = np.reshape(wvelperts[0], ynum*xnum)
      #thetaperts = np.reshape(thetaperts[0], ynum*xnum)
-     wvelpertslice = wvelperts[0]
-     thetapertslice = thetaperts[0]
+     #wvelpertslice = wvelperts[0]
+     #thetapertslice = thetaperts[0]
      
-     #wvelperts = np.reshape(wvelperts, enum*ynum*xnum)
-     #thetaperts = np.reshape(thetaperts, enum*ynum*xnum)
+     wvelperts = np.reshape(wvelperts, enum*ynum*xnum)
+     thetaperts = np.reshape(thetaperts, enum*ynum*xnum)
      
      return height, wvelperts, thetaperts, wvelperts_slice, thetaperts_slice, upwarm_bar[slice_lev], downwarm_bar[slice_lev], upcold_bar[slice_lev], downcold_bar[slice_lev], wvelthetapert_bar[slice_lev]
 
@@ -184,7 +184,7 @@ if go_ahead == 1:
      theFig2.clf()
      theAx2 = theFig2.add_subplot(111)
      theAx2.set_title(r"$2d \ Histogram \ of \ Flux \ Quadrants$", fontsize= 16)
-     theAx2 = nc.Do_Plot(fignum, title, ylabel, xlabel, sub)
+     #theAx2 = nc.Do_Plot(fignum, title, ylabel, xlabel, sub)
 
      #for single case contours of theta, w
      #theFig3 = plt.figure(2)     
@@ -231,7 +231,7 @@ if go_ahead == 1:
                cmap = cm.autumn
                # Estimate the 2D histogram
                nbins = 200
-               3H, xedges, yedges = np.histogram2d(wvelperts, thetaperts, bins=nbins)
+               H, xedges, yedges = np.histogram2d(wvelperts, thetaperts, bins=nbins)
                 # H needs to be rotated and flipped
                H = np.rot90(H)
                H = np.flipud(H)
@@ -272,10 +272,10 @@ if go_ahead == 1:
                #theAx3.set_ylim(0, 3200)
                #theAx3.set_xlim(0, 4800)
                               
-               theFig3.canvas.draw()
+               theFig2.canvas.draw()
                #theFig.savefig('/tera/phil/nchaparr/python/Plotting/Mar12014/pngs/fluxquadprofs0.png')
                #theFig1.savefig('/tera/phil/nchaparr/python/Plotting/Mar12014/pngs/fluxquads0.png')
-               theFig2.savefig('/tera/phil/nchaparr/python/Plotting/Dec202013/pngs/fluxquadhist0_1.png')
+               theFig2.savefig('/tera/phil/nchaparr/python/Plotting/Dec202013/pngs/fluxquadhist0.png')
      plt.show()
 
 else:
