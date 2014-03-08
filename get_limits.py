@@ -9,7 +9,7 @@ import nchap_fun as nc
 from matplotlib import rcParams
 rcParams.update({'font.size': 10})
 
-#TODO: flux and gamm need to be passed as arguments
+
 
 """calculates temperature gradients (discrete) from txt files inturn from ensemble run 3D files
    gets levels where gradient exceeds zero, and where it resumes gamma, and zero crossings for fluxes
@@ -18,9 +18,12 @@ rcParams.update({'font.size': 10})
    Dumps them in a text file.
    Calcs and dumps rino, invrino, wstar
 """
-rundate = 'Jan152014_1'
-gamma = .005
-flux_s = 150
+#to be changed for each run
+rundate = 'Mar12014'
+gamma = .01
+flux_s = 60
+
+#output times
 dump_time_list, Times = Make_Timelists(1,600, 28800)
 Times = np.array(Times)  
  
@@ -77,15 +80,23 @@ for i in range(len(theta_file_list)):
             flux_index_t = m+1
             break
         
-    print height[dtheta_index_b], height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], height[dtheta_index_t], height[flux_index_b], height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]], height[flux_index_t]
-    print height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*flux_s/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t]
     mltheta = np.mean(theta[0:dtheta_index_b])
     deltatheta = -theta[dtheta_index_b]+theta[dtheta_index_t]
+    eltop_dthetadz = height[dtheta_index_t]
+    elbot_dthetadz = height[dtheta_index_b]
+    eltop_flux = height[flux_index_t]
+    elbot_flux = height[flux_index_b]
+    h = height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]
+    h_flux = height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]]
     
-    [rino, invrino, wstar, S] =  nc.calc_rino(height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*flux_s/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t], .01)
+    #TODO: this can be tidied up, ie name valriables and pass the named variables to calc_rino    
+    print height[dtheta_index_b], height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], height[dtheta_index_t], height[flux_index_b], height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]], height[flux_index_t]
+    print height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*flux_s/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t]
+    
+    [rino, invrino, wstar, S] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma)
 
-    AvProfLims.append([height[dtheta_index_b], height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], height[dtheta_index_t], height[flux_index_b], height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]], height[flux_index_t], -theta[dtheta_index_b]+theta[dtheta_index_t], np.mean(theta[0:dtheta_index_b])])
-    tau = 1.0*height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]/wstar
+    AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta])
+    tau = 1.0*h/wstar
     invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta])
     
 np.savetxt('/tera/phil/nchaparr/python/Plotting/' + rundate + '/data/AvProfLims', np.array(AvProfLims), delimiter=' ')

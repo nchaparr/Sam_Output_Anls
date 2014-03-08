@@ -120,7 +120,7 @@ def Main_Fun(dump_time_index, case, date):
                RSS, J, K = fsft.get_fit(theta[:, i, j], height, top)
                ML_Heights[i, j] = height[J]
                #if height[J] < 500:
-               #print i, j, J, height[J]
+               #print i, j, J, height[J]#TODO:this could definitely be a function
                b_1 = (np.sum(np.multiply(height[:J], theta[:J, i, j])) - 1.0/J*np.sum(height[:J])*np.sum(theta[:J, i, j]))/(np.sum(height[:J]**2) - 1.0/J*np.sum(height[:J])**2)
                a_1 = np.sum(np.multiply(height[:J], theta[:J, i, j]))/np.sum(height[:J]) - b_1*np.sum(height[:J]**2)/np.sum(height[:J])                          
                                    
@@ -138,45 +138,45 @@ def Main_Fun(dump_time_index, case, date):
 
 def Call_Main_Fun(date):
      dump_time_no = 8
-     case_no = 10
+     case_no = 1
      #date = 'Dec252013'
      for i in range(dump_time_no):
-          for j in range(case_no):
-               ML_Heights = Main_Fun(i, j+1, date)
-               #theFig = plt.figure(i)
-               #theFig.clf()
-               #theAx = theFig.add_subplot(111)
-               #theAx.set_title(r"$Contour \ of \ Local \ h \ after \ " + str(time_hrs[i]) +" \ hours$")
-               #theAx.set_xlabel(r"$x \ (m)$")
-               #theAx.set_ylabel(r"$y \ (m)$")
+          if i==4:
+               for j in range(case_no):
+                    ML_Heights = Main_Fun(i, j+1, date)
+                    theFig = plt.figure(i)
+                    theFig.clf()
+                    theAx = theFig.add_subplot(111)
+                    theAx.set_title(r"$Contour \ of \ Local \ h \ after \ " + str(time_hrs[i]) +" \ hours$")
+                    theAx.set_xlabel(r"$x \ (m)$")
+                    theAx.set_ylabel(r"$y \ (m)$")
 
-               #v_max, v_min, mean, stddev = np.amax(ML_Heights), np.amin(ML_Heights), np.mean(ML_Heights), np.std(ML_Heights)
+                    v_max, v_min, mean, stddev = np.amax(ML_Heights), np.amin(ML_Heights), np.mean(ML_Heights), np.std(ML_Heights)
 
-               #filler_array = np.zeros([64, 192])
-               #ML_Heights = np.vstack((ML_Heights, filler_array))
-               #x = np.arange(0, 4800, 25)
-               #y = np.arange(0, 4800, 25)
-               #X,Y = np.meshgrid(x, y)
+                    filler_array = np.zeros([64, 192])
+                    ML_Heights = np.vstack((ML_Heights, filler_array))
+                    x = np.arange(0, 4800, 25)
+                    y = np.arange(0, 4800, 25)
+                    X,Y = np.meshgrid(x, y)
          
-               #im = theAx.pcolor(X, Y, ML_Heights, cmap=cm.bone, vmax=v_max, vmin=v_min)
-               #bar = plt.colorbar(im)
-               #plt.ylim(0, 3200)
-               #plt.xlim(0, 4800)
+                    im = theAx.pcolor(X, Y, ML_Heights, cmap=cm.bone, vmax=v_max, vmin=v_min)
+                    bar = plt.colorbar(im)
+                    plt.ylim(0, 3200)
+                    plt.xlim(0, 4800)
                
-               #v_max, v_min, mean, stddev = np.amax(grad_peaks), np.amin(grad_peaks), np.mean(grad_peaks), np.std(grad_peaks)
-               #label_list, tick_list = get_ticks(mean, stddev,v_max, v_min)
+                    label_list, tick_list = get_ticks(mean, stddev,v_max, v_min)
      
-               #bar.locator = ticker.FixedLocator(tick_list)
-               #bar.formatter= ticker.FixedFormatter(label_list)
-               #bar.update_ticks()
-               #plt.show()
-               print time_hrs[i]
-               #theFig.savefig('/tera/phil/nchaparr/python/Plotting/'+date+'/pngs/cont_'+str(time_hrs[i])+'_hrs.png')
+                    bar.locator = ticker.FixedLocator(tick_list)
+                    bar.formatter= ticker.FixedFormatter(label_list)
+                    bar.update_ticks()
+                    plt.show()
+                    print time_hrs[i]
+                    theFig.savefig('/tera/phil/nchaparr/python/Plotting/'+date+'/pngs/cont_'+str(time_hrs[i])+'_hrs.png')
      
 
 dump_time_list, time_hrs = Make_Timelists(1, 3600, 28800)
 print time_hrs
-#date = 'Dec252013'
+date = "Mar12014"
 
 if __name__ == "__main__":
 
@@ -184,7 +184,7 @@ if __name__ == "__main__":
      parser = argparse.ArgumentParser()
      parser.add_argument("--run_name", type=str, help='name of run')
      args = parser.parse_args()
-     date = args.run_name
+     #date = args.run_name
      print date
      Call_Main_Fun(date)
      

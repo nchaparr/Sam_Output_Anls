@@ -33,16 +33,16 @@ def Main_Fun(dump_time):
     height -- array of height values
     
     """
-     
+     date = "Mar52014" #TODO: this should be an argument passed to Main_Fun
      #pulls data using class Get_Var_Arrays1     
-     Vars = Get_Var_Arrays1("/tera2/nchaparr/Jan152014_1/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time)
+     Vars = Get_Var_Arrays1("/tera2/nchaparr/"+date+"/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time)
      thetas_list, press_list = Vars.get_thetas() 
      wvels_list= Vars.get_uvelperts()
      height = Vars.get_height()
                   
      #get arrays of ensemble averaged variables
-     ens_avthetas = nc.Ensemble1_Average(thetas_list)
-     #avthetas = nc.Horizontal_Average(thetas_list[0])
+     ens_avthetas = nc.Ensemble1_Average(thetas_list) #TODO: 1 could be removed from this in nchap_fun
+     #avthetas = nc.Horizontal_Average(thetas_list[0])  #for fake perturbations from a single case
      #ens_avthetas = np.zeros_like(theta)
      #for i in range(312):
      #     ens_avthetas[i,:,:] = avthetas[i]
@@ -73,14 +73,14 @@ def Main_Fun(dump_time):
      #for testing w scale -- slows script down
      rtwvelpertsq_bar = nc.Horizontal_Average(rtens_avwvelpertsq)
      
-     #save text files
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Nov42013/data/flux_quads' + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar])), delimiter=' ')
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/wvelthetapert'+dump_time, wvelthetapert_bar, delimiter=' ')
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/theta_bar'+dump_time, theta_bar, delimiter=' ')
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/heights'+dump_time, height, delimiter=' ')
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/press'+dump_time, ens_press, delimiter=' ')
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Nov42013/data/tracers'+dump_time, tracer_bar, delimiter=' ')
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/rootmeanusq'+dump_time, rtwvelpertsq_bar, delimiter=' ')
+     #save text files, TODO: make more purdy
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads' + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar])), delimiter=' ')
+     np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/wvelthetapert'+dump_time, wvelthetapert_bar, delimiter=' ')
+     np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/theta_bar'+dump_time, theta_bar, delimiter=' ')
+     np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/heights'+dump_time, height, delimiter=' ')
+     np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/press'+dump_time, ens_press, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/"+date+"/data/tracers'+dump_time, tracer_bar, delimiter=' ')
+     np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/rootmeanwsq'+dump_time, rtwvelpertsq_bar, delimiter=' ')
      
      return wvelthetapert_bar, height
 
@@ -98,7 +98,7 @@ if go_ahead == 1:
      #get horizontally averaged ensemble averaged variable and plot
      colorlist=['k', 'b', 'c', 'g', 'r', 'm', 'y', '.75']
      for i in range(48):
-          if np.mod(i+1, 6)==0:
+          if np.mod(i+1, 1)==0:
                print i
                
                #make plots for MLZero
@@ -113,7 +113,7 @@ if go_ahead == 1:
                #wvelpert_bar = np.multiply(wvelpert_bar, np.zeros_like(wvelpert_bar)+1004) #for converting to watts/m2
                
                theAx.plot(wvelpert_bar, height, color, label = str(Times[i]) + 'hrs')
-               #Encroachment/Thermodynamic Model
+               #Encroachment/Thermodynamic Model #TODO: delete this? when sure no longer needed
                #X = 1.0*(i+120)*60*80/(1004*1.225)#Wm-2s
                #h = np.sqrt(200*X)
                #T = 1.0*(h + 60000)/200
