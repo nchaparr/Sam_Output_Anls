@@ -122,43 +122,6 @@ def Main_Fun(dump_time, hflux):
      
      return height, wvelperts, thetaperts, wvelperts_slice, thetaperts_slice, upwarm_bar[slice_lev], downwarm_bar[slice_lev], upcold_bar[slice_lev], downcold_bar[slice_lev], wvelthetapert_bar[slice_lev]
 
-def do_2dhist(xvals, yvals, numbins_x, numbins_y, min_x, max_x, min_y, max_y):
-    
-    binsize_x, binsize_y = 1.0*(max_x-min_x)/numbins_x, 1.0*(max_y-min_y)/numbins_y
-
-    xbins = np.array([min_x + (i+1)*binsize_x for i in range(numbins_x)])
-    ybins = np.array([min_y + (i+1)*binsize_y for i in range(numbins_y)])
-
-    xcenters = np.array([min_x + (i+1)*binsize_x - binsize_x/2 for i in range(numbins_x)])
-    ycenters = np.array([min_y + (i+1)*binsize_y - binsize_y/2 for i in range(numbins_x)])
-
-
-    bin_counts = np.zeros([numbins_x, numbins_y])
-    print xvals.shape, yvals.shape, xbins.shape
-    for i in range(xvals.shape[0]):
-        #print i 
-        #print xvals[i], yvals[i] 
-        for j in range(xbins.shape[0]):
-             #print 'X', binsize_x, xvals[i], xbins[j]
-             if xvals[i] < xbins[j]:
-                  if np.abs(xbins[j] - xvals[i]) < binsize_x:
-                       xbindex=j
-                       #if xvals[i]<-1:
-                       #     print 'X', binsize_x, xvals[i], xbins[j]
-
-        for j in range(ybins.shape[0]):
-             #print 'Y', binsize_y, yvals[i], ybins[j]
-             if yvals[i] < ybins[j]:
-                  if np.abs(ybins[j] - yvals[i]) < binsize_y:
-                       ybindex= j
-                       #if yvals[i]<-2:
-                       #     print 'Y', binsize_y, yvals[i], ybins[j]
-        
-        bin_counts[xbindex, ybindex] = bin_counts[xbindex, ybindex] + 1     
-                
-        
-    return xcenters, ycenters, bin_counts
-
 go_ahead = np.int(raw_input('have you changed the write out folder paths? 1 or 0: '))
 if go_ahead == 1:
        
