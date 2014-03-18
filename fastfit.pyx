@@ -115,15 +115,19 @@ def get_fit(object theta, object height, int top):
                             RSS_3 = RSS_3 + (thetaPtr[k+i] - (a_3 + b_3*heightPtr[k+i]))**2
                         #print RSS_3, np.sum(np.add(theta[k:298], -(a_3+ b_3*height[k:298]))**2)
                         RSS[j, k] = RSS_1 + RSS_3 #+ RSS_3
+
+                        #print j, k
                         
                         
                         if j==13 and k==15:
                              RSS_min = RSS[j, k]                           
-                         
+                             J=13
+                             K=15
                         if RSS[j, k]<RSS_min: 
                              RSS_min = RSS[j, k]
-
+                             #print "Assigning J and K", J, K
                              J, K = j, k
+    #print J, K                          
                                                                                                                   
     return RSS, J, K                                                              
                                                                                

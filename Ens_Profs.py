@@ -33,7 +33,7 @@ def Main_Fun(dump_time):
     height -- array of height values
     
     """
-     date = "Mar52014" #TODO: this should be an argument passed to Main_Fun
+     date = "Dec142013" #TODO: this should be an argument passed to Main_Fun
      #pulls data using class Get_Var_Arrays1     
      Vars = Get_Var_Arrays1("/tera2/nchaparr/"+date+"/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time)
      thetas_list, press_list = Vars.get_thetas() 
@@ -51,7 +51,7 @@ def Main_Fun(dump_time):
               
      #now get the perturbations
      #wvelperts_list = []
-     wvelpertsq_list = Vars.get_sqvel('w')
+     wvelpertsq_list = Vars.get_sqvel('v')
      #thetaperts_list = []
      wvelthetaperts_list = Vars.get_wvelthetaperts()           
                
@@ -75,14 +75,14 @@ def Main_Fun(dump_time):
      
      #save text files, TODO: make more purdy
      #np.savetxt('/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads' + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar])), delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/wvelthetapert'+dump_time, wvelthetapert_bar, delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/theta_bar'+dump_time, theta_bar, delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/heights'+dump_time, height, delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/press'+dump_time, ens_press, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/wvelthetapert'+dump_time, wvelthetapert_bar, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/theta_bar'+dump_time, theta_bar, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/heights'+dump_time, height, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/press'+dump_time, ens_press, delimiter=' ')
      #np.savetxt('/tera/phil/nchaparr/python/Plotting/"+date+"/data/tracers'+dump_time, tracer_bar, delimiter=' ')
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/rootmeanwsq'+dump_time, rtwvelpertsq_bar, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/rootmeanvsq'+dump_time, rtwvelpertsq_bar, delimiter=' ')
      
-     return wvelthetapert_bar, height
+     return rtwvelpertsq_bar, height
 
 
 go_ahead = np.int(raw_input('have you changed the write out folder paths? 1 or 0: '))
@@ -131,12 +131,12 @@ if go_ahead == 1:
      #f=interp1d(height_0, theta_0) #not sure i need this
 
      #Now plot inital sounding
-     top_index = np.where(height <= 1130)[0][-1]
+     #top_index = np.where(height <= 1130)[0][-1]
      #theta_0 = f(height[0:top_index])
      #theAx.plot(theta_0, height_0, label = 'initial sounding')
      plt.legend(loc = 'lower right', prop={'size':8})
      plt.ylim(50, 2000)
-     #plt.xlim(300, 320)
+     plt.xlim(300, 320)
      plt.show()
 
 else:

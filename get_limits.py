@@ -19,9 +19,9 @@ rcParams.update({'font.size': 10})
    Calcs and dumps rino, invrino, wstar
 """
 #to be changed for each run
-rundate = 'Mar12014'
+rundate = 'Mar52014'
 gamma = .01
-flux_s = 60
+flux_s = 150
 
 #output times
 dump_time_list, Times = Make_Timelists(1,600, 28800)
@@ -39,6 +39,7 @@ for i in range(len(theta_file_list)):
     
     theta = np.genfromtxt(theta_file_list[i])
     height = np.genfromtxt(height_file)
+    
     press = np.genfromtxt(press_file_list[i])
     rhow = nc.calc_rhow(press, height, theta[0])
     wvelthetapert = np.genfromtxt(flux_file_list[i])
@@ -53,7 +54,7 @@ for i in range(len(theta_file_list)):
     dthetadz=np.hstack((element0, dthetadz))
         
     #only need up to 1900meters
-    top_index = np.where(abs(1625 - height) < 26.)[0][0]
+    top_index = np.where(abs(2000 - height) < 26.)[0][0]
        
     #TODO: see test_lamda
     #where gradient is greater than zero    
@@ -90,8 +91,8 @@ for i in range(len(theta_file_list)):
     h_flux = height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]]
     
     #TODO: this can be tidied up, ie name valriables and pass the named variables to calc_rino    
-    print height[dtheta_index_b], height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], height[dtheta_index_t], height[flux_index_b], height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]], height[flux_index_t]
-    print height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*flux_s/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t]
+    print i, height[dtheta_index_b], height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], height[dtheta_index_t], height[flux_index_b], height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]], height[flux_index_t]
+    print i, height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*flux_s/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t]
     
     [rino, invrino, wstar, S] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma)
 
