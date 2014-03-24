@@ -129,7 +129,8 @@ if go_ahead == 1:
      
      dump_time_list, Times = Make_Timelists(1, 600, 28800)
      hvals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
-     lev_index=2
+     lev_index=np.int(raw_input('which height level, 0, 1 or 2 (h0, h or h1)?:'))
+     
         
      #set up plots
      #theFig = plt.figure(3)     
@@ -224,11 +225,11 @@ if go_ahead == 1:
                theAx3.set_xlabel(r"$x \ (m)$")
                theAx3.set_ylabel(r"$y \ (m)$")
 
-               v_max, v_min, mean, stddev = np.amax(thetaperts_slice), np.amin(thetaperts_slice), np.mean(thetaperts_slice), np.std(thetaperts_slice)
+               v_max, v_min, mean, stddev = np.amax(wvelperts_slice), np.amin(wvelperts_slice), np.mean(wvelperts_slice), np.std(wvelperts_slice)
 
                filler_array = np.zeros([64, 192])
                
-               Slice = np.vstack((thetaperts_slice, filler_array))
+               Slice = np.vstack((wvelperts_slice, filler_array))
                x = np.arange(0, 4800, 25)
                y = np.arange(0, 4800, 25)
                X,Y = np.meshgrid(x, y)
@@ -242,7 +243,7 @@ if go_ahead == 1:
                #theFig.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/fluxquadprofs0.png")
                #theFig1.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/fluxquads0.png")
                #theFig2.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/fluxquadhist0.png")
-               theFig3.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/theta_cont"+str(lev_index)+".png")
+               #theFig3.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/theta_cont"+str(lev_index)+".png")
      plt.show()
 
 else:
