@@ -21,7 +21,7 @@ from nchap_class import *
      For plotting Flux quadrants    
 """
 
-def Main_Fun(dump_time, hflux):
+def Main_Fun(daate, dump_time, hflux):
      
      """Pulls output from an ensemble cases, gets ensemble averages and perturbations and
      their horizontal averages
@@ -34,7 +34,7 @@ def Main_Fun(dump_time, hflux):
     
     """
      #create list of filenames for given dump_time     
-     ncfile_list = ["/tera2/nchaparr/Dec202013/runs/sam_case" + str(i+1) + "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_" + dump_time + ".nc" for i in range(10)]
+     ncfile_list = ["/tera2/nchaparr/"+date+"/runs/sam_case" + str(i+1) + "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_" + dump_time + ".nc" for i in range(10)]
 
      #create lists for variable arrays from each case
      upwarm_list = []
@@ -45,7 +45,7 @@ def Main_Fun(dump_time, hflux):
      thetaperts_list = []
 
      #get velocity perts and thetas
-     Vars =  Get_Var_Arrays1("/tera2/nchaparr/Dec202013/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time)         
+     Vars =  Get_Var_Arrays1("/tera2/nchaparr/"+date+"/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time)         
      thetas_list, press_list = Vars.get_thetas()     
      wvels_list = Vars.get_wvelperts()          
      height = Vars.get_height()
@@ -56,7 +56,7 @@ def Main_Fun(dump_time, hflux):
                
      #now get the perturbations
      wvelthetaperts_list = []
-     for i in range(len(wvels_list)):  #TODO: this should be a function                  
+     for i in range(len(wvels_list)):  #TODO: this should be more modular, see nchap_class                  
           thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
           thetapert = np.zeros_like(thetapert_rough)
           [znum, ynum, xnum] = wvels_list[i].shape
@@ -99,7 +99,7 @@ def Main_Fun(dump_time, hflux):
      wvelthetapert_bar = nc.Horizontal_Average(ens_avwvelthetaperts)
           
      #save text files
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/Mar12014/data/flux_quads' + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
+     np.savetxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
      
      #flatten the arrays, TODO: make a function or class method
      wvelperts = np.array(wvelperts_list)
@@ -124,11 +124,13 @@ def Main_Fun(dump_time, hflux):
 
 go_ahead = np.int(raw_input('have you changed the write out folder paths? 1 or 0: '))
 if go_ahead == 1:
-       
-     dump_time_list, Times = Make_Timelists(1, 600, 28800)
-     hvals = np.genfromtxt('/tera/phil/nchaparr/python/Plotting/Dec202013/data/AvProfLims')
 
-         
+     date = "Dec252013"
+     
+     dump_time_list, Times = Make_Timelists(1, 600, 28800)
+     hvals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
+     lev_index=2
+        
      #set up plots
      #theFig = plt.figure(3)     
      #theFig.clf()
@@ -143,25 +145,26 @@ if go_ahead == 1:
      #theAx1.set_title(r"$Flux \ Profiles$", fontsize= 16)
      #theAx1 = nc.Do_Plot(fignum, title, ylabel, xlabel, sub)
 
-     theFig2 = plt.figure(5)     
-     theFig2.clf()
-     theAx2 = theFig2.add_subplot(111)
-     theAx2.set_title(r"$2d \ Histogram \ of \ Flux \ Quadrants$", fontsize= 16)
+     #theFig2 = plt.figure(5)     
+     #theFig2.clf()
+     #theAx2 = theFig2.add_subplot(111)
+     #theAx2.set_title(r"$2d \ Histogram \ of \ Flux \ Quadrants$", fontsize= 16)
      #theAx2 = nc.Do_Plot(fignum, title, ylabel, xlabel, sub)
 
      #for single case contours of theta, w
-     #theFig3 = plt.figure(2)     
-     #theFig3.clf()
-     #theAx3 = theFig3.add_subplot(111)
+     theFig3 = plt.figure(2)     
+     theFig3.clf()
+     theAx3 = theFig3.add_subplot(111)
      #theAx3.set_title(r"$Contour \ of \theta^{,}$", fontsize= 16)
      
      #get horizontally averaged ensemble averaged variable and plot
      colorlist=['k', 'b', 'c', 'g', 'r', 'm', 'y', '.75']
      for i in range(48):
-          if i == 29:      
-               height, wvelperts, thetaperts, wvelperts_slice, thetaperts_slice, upwarm, downwarm, upcold, downcold, avflux = Main_Fun(dump_time_list[i], 0.5*hvals[i, 3])
+          if i == 11:
                
-               av_quad_profs = np.genfromtxt('/tera/phil/nchaparr/python/Plotting/Dec202013/data/flux_quads' + dump_time_list[i])
+               height, wvelperts, thetaperts, wvelperts_slice, thetaperts_slice, upwarm, downwarm, upcold, downcold, avflux = Main_Fun(date, dump_time_list[i], hvals[i, lev_index])
+               
+               av_quad_profs = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time_list[i])
 
                #theAx1.plot(av_quad_profs[:, 0], height,'r-', label = 'up warm')
                #theAx1.plot(av_quad_profs[:, 1], height, 'b--', label = 'down warm')
@@ -191,54 +194,55 @@ if go_ahead == 1:
                #theAx.text(-.5, 1.25, r"$ \theta^{,} $ ",  fontdict=None, withdash=False, fontsize = 16)
 
                #2d Hist
-               cmap = cm.autumn
+               #cmap = cm.autumn
                # Estimate the 2D histogram
-               nbins = 200
-               H, xedges, yedges = np.histogram2d(wvelperts, thetaperts, bins=nbins)
+               #nbins = 200
+               #H, xedges, yedges = np.histogram2d(wvelperts, thetaperts, bins=nbins)
                 # H needs to be rotated and flipped
-               H = np.rot90(H)
-               H = np.flipud(H)
+               #H = np.rot90(H)
+               #H = np.flipud(H)
                # Mask zeros
-               Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value of zero
+               #Hmasked = np.ma.masked_where(H==0,H) # Mask pixels with a value of zero
                 # Plot 2D histogram using pcolor
-               im = theAx2.pcolormesh(xedges,yedges,Hmasked, vmin = 0, vmax = 120, cmap =cmap)
-               cbar = theFig2.colorbar(im)
-               cbar.ax.set_ylabel(r'$Counts$')
+               #im = theAx2.pcolormesh(xedges,yedges,Hmasked, vmin = 0, vmax = 120, cmap =cmap)
+               #cbar = theFig2.colorbar(im)
+               #cbar.ax.set_ylabel(r'$Counts$')
                                       
-               theAx2.spines['left'].set_position('zero')
-               theAx2.spines['right'].set_color('none')
-               theAx2.spines['bottom'].set_position('zero')
-               theAx2.spines['top'].set_color('none')
-               theAx2.xaxis.set_ticks_position('bottom')
-               theAx2.yaxis.set_ticks_position('left')
-               theAx2.text(3.5, .2, r"$ w^{,} $ ",  fontdict=None, withdash=False, fontsize = 16)
-               theAx2.text(-.5, 1.25, r"$ \theta^{,} $ ",  fontdict=None, withdash=False, fontsize = 16)
+               #theAx2.spines['left'].set_position('zero')
+               #theAx2.spines['right'].set_color('none')
+               #theAx2.spines['bottom'].set_position('zero')
+               #theAx2.spines['top'].set_color('none')
+               #theAx2.xaxis.set_ticks_position('bottom')
+               #theAx2.yaxis.set_ticks_position('left')
+               #theAx2.text(3.5, .2, r"$ w^{,} $ ",  fontdict=None, withdash=False, fontsize = 16)
+               #theAx2.text(-.5, 1.25, r"$ \theta^{,} $ ",  fontdict=None, withdash=False, fontsize = 16)
                
-               theAx2.set_ylim(-1.5, 1.5)
-               theAx2.set_xlim(-3, 5)
+               #theAx2.set_ylim(-1.5, 1.5)
+               #theAx2.set_xlim(-3, 5)
 
                #theAx3.set_title(r"$Contour \ of \ \theta^{,} \ after \ " + str(Times[i]) +"\ hours$")
-               #theAx3.set_xlabel(r"$x \ (m)$")
-               #theAx3.set_ylabel(r"$y \ (m)$")
+               theAx3.set_xlabel(r"$x \ (m)$")
+               theAx3.set_ylabel(r"$y \ (m)$")
 
-               #v_max, v_min, mean, stddev = np.amax(thetaperts_slice), np.amin(thetaperts_slice), np.mean(thetaperts_slice), np.std(thetaperts_slice)
+               v_max, v_min, mean, stddev = np.amax(thetaperts_slice), np.amin(thetaperts_slice), np.mean(thetaperts_slice), np.std(thetaperts_slice)
 
-               #filler_array = np.zeros([64, 192])
+               filler_array = np.zeros([64, 192])
                
-               #Slice = np.vstack((thetaperts_slice, filler_array))
-               #x = np.arange(0, 4800, 25)
-               #y = np.arange(0, 4800, 25)
-               #X,Y = np.meshgrid(x, y)
+               Slice = np.vstack((thetaperts_slice, filler_array))
+               x = np.arange(0, 4800, 25)
+               y = np.arange(0, 4800, 25)
+               X,Y = np.meshgrid(x, y)
          
-               #im = theAx3.pcolor(X, Y, Slice, cmap=cm.bone, vmax=v_max, vmin=v_min)
-               #bar = theFig3.colorbar(im)
-               #theAx3.set_ylim(0, 3200)
-               #theAx3.set_xlim(0, 4800)
+               im = theAx3.pcolor(X, Y, np.transpose(Slice), cmap=cm.hot, vmax=v_max, vmin=v_min)
+               bar = theFig3.colorbar(im)
+               theAx3.set_xlim(0, 3200)
+               theAx3.set_ylim(0, 4800)
                               
-               theFig2.canvas.draw()
-               #theFig.savefig('/tera/phil/nchaparr/python/Plotting/Mar12014/pngs/fluxquadprofs0.png')
-               #theFig1.savefig('/tera/phil/nchaparr/python/Plotting/Mar12014/pngs/fluxquads0.png')
-               theFig2.savefig('/tera/phil/nchaparr/python/Plotting/Dec202013/pngs/fluxquadhist0.png')
+               theFig3.canvas.draw()
+               #theFig.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/fluxquadprofs0.png")
+               #theFig1.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/fluxquads0.png")
+               #theFig2.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/fluxquadhist0.png")
+               theFig3.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/theta_cont"+str(lev_index)+".png")
      plt.show()
 
 else:
