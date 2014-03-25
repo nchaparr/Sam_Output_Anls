@@ -19,12 +19,12 @@ rcParams.update({'font.size': 10})
    Calcs and dumps rino, invrino, wstar
 """
 #to be changed for each run
-rundate = 'Mar52014'
+rundate = 'Dec142013'
 gamma = .01
-flux_s = 150
+flux_s = 100
 
 #output times
-dump_time_list, Times = Make_Timelists(1,600, 28800)
+dump_time_list, Times = Make_Timelists(1, 600, 28800)
 Times = np.array(Times)  
  
 theta_file_list = ["/tera/phil/nchaparr/python/Plotting/" + rundate + "/data/theta_bar"+ dump_time for dump_time in dump_time_list]
@@ -54,7 +54,7 @@ for i in range(len(theta_file_list)):
     dthetadz=np.hstack((element0, dthetadz))
         
     #only need up to 1900meters
-    top_index = np.where(abs(2000 - height) < 26.)[0][0]
+    top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
        
     #TODO: see test_lamda
     #where gradient is greater than zero    
