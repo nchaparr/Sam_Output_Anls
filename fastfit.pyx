@@ -45,7 +45,7 @@ def get_fit(object theta, object height, int top):
      
     #RSS = np.empty((290, 290))+ np.nan
      #print RSS[0,0]
-    for j in range(top):
+    for j in range(top):         
          if j > 12:              
               for k in range(top):
                    if k>j+1 and k<top-1:
@@ -114,7 +114,7 @@ def get_fit(object theta, object height, int top):
                         for i in range(top-k):
                             RSS_3 = RSS_3 + (thetaPtr[k+i] - (a_3 + b_3*heightPtr[k+i]))**2
                         #print RSS_3, np.sum(np.add(theta[k:298], -(a_3+ b_3*height[k:298]))**2)
-                        RSS[j, k] = RSS_1 + RSS_3 #+ RSS_3
+                        RSS[j, k] = RSS_1 + RSS_2 + RSS_3
 
                         #print j, k
                         

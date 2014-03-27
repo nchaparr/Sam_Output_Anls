@@ -141,12 +141,12 @@ def get_fit(theta, height):
 
 #Lists of times relating to output (nc) files
 dump_time_list, time_hrs = Make_Timelists(1, 600, 28800)
-dump_time = dump_time_list[29]
+dump_time = dump_time_list[11]
 print dump_time
 
 for k in range(1):
      #getting variables from nc files
-     [wvels, theta, tracer, height] = nc.Get_Var_Arrays("/tera2/nchaparr/Dec202013/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time, k+1)
+     [wvels, theta, tracer, height] = nc.Get_Var_Arrays("/tera2/nchaparr/Mar52014/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time, k+1)
 
      #getting points of maximum theta gradient, getting rid of this soon
      #[dvardz, grad_peaks] = nc.Domain_Grad(theta, height) 
@@ -156,16 +156,17 @@ for k in range(1):
      for i in range(1):
           #top_index = [tops_indices[0][i], tops_indices[1][i]]
           #[i, j] = top_index
-          [i, j] = [127, 191]
+          [i, j] = [50, 50]
           thetavals = theta[:, i, j]
 
           startTime = datetime.now()
-          print 'Start', startTime#1
+          #print 'Start', startTime#1
           top = np.where(np.abs(height-2300)<100)[0][0]
+          print top, height[top]
           RSS, J, K = fsft.get_fit(thetavals, height, top)
-          print J, height[J]
-          print 'RSS time', (datetime.now()-startTime)
-          fitvals = np.zeros_like(thetavals)
+          #print J, height[J]
+          #print 'RSS time', (datetime.now()-startTime)
+          fitvals = np.zeros_like(thetavals[:top])
           b_1 = (np.sum(np.multiply(height[9:J], thetavals[9:J])) - 1.0/(J-9)*np.sum(height[9:J]*np.sum(thetavals[9:J])))/(np.sum(height[9:J]**2) - 1.0/(J-9)*np.sum(height[9:J])**2)
           #print np.sum(np.multiply(height[9:J], thetavals[9:J])),  - 1.0/(J-9)*np.sum(height[9:J]*np.sum(thetavals[9:J])), np.sum(height[9:J]**2), - 1.0/(J-9)*np.sum(height[9:J])**2
 
@@ -174,37 +175,37 @@ for k in range(1):
           b_2 = (np.sum(thetavals[J:K]) - (K-J)*(a_1+b_1*height[J]))/(np.sum(height[J:K]) - (K-J)*height[J])                         
           a_2 = np.sum(np.multiply(height[J:K], thetavals[J:K]))/np.sum(height[J:K]) - b_2*np.sum(height[J:K]**2)/np.sum(height[J:K])
           
-          b_3 = (np.sum(thetavals[K:290]) - (290-K)*(a_2+b_2*height[K]))/(np.sum(height[K:290]) - (290-K)*height[K])
-          a_3 = np.sum(np.multiply(height[K:290], thetavals[K:290]))/np.sum(height[K:290]) - b_3*np.sum(height[K:290]**2)/np.sum(height[K:290])
-          print b_2, b_3               
+          b_3 = (np.sum(thetavals[K:top]) - (top-K)*(a_2+b_2*height[K]))/(np.sum(height[K:top]) - (top-K)*height[K])
+          a_3 = np.sum(np.multiply(height[K:top], thetavals[K:top]))/np.sum(height[K:top]) - b_3*np.sum(height[K:top]**2)/np.sum(height[K:top])
+          #print b_2, b_3               
      
           fitvals[:J] = b_1*height[:J] + a_1
           fitvals[J:K] = b_2*height[J:K] + a_2
-          fitvals[K:290] = b_3*height[K:290] + a_3
+          fitvals[K:top] = b_3*height[K:top] + a_3
 
           #set up plot
           theFig = plt.figure(i)
           theFig.clf()
           theAx = theFig.add_subplot(121)
           theAx.set_title('Fit')
-          theAx.set_xlabel(r'$\theta (K)$')
+          theAx.set_xlabel(r'$\overline{\theta} (K)$')
           theAx.set_ylabel('z (m)')
 
           theAx1 = theFig.add_subplot(122)
           theAx1.set_title('Profile and Fit')
-          theAx1.set_xlabel(r'$\theta (K) $')
+          theAx1.set_xlabel(r'$\overline{\theta} (K) $')
           theAx1.set_ylabel('z (m)')
 
           theAx1.plot(thetavals, height[:], 'wo')
           theAx.plot(fitvals[:J], height[:J], 'r-')
           theAx.plot(fitvals[J:K], height[J:K], 'b-')
-          theAx.plot(fitvals[K:290], height[K:290], 'g-')
-          theAx1.plot(fitvals[:290], height[:290], 'r-')
+          theAx.plot(fitvals[K:top], height[K:top], 'g-')
+          theAx1.plot(fitvals[:top], height[:top], 'r-')
 
-theAx1.set_xlim(300, 310)
-theAx1.set_ylim(0, 2500)
-theAx.set_ylim(0, 2500)
-theAx.set_xlim(300, 310)
+theAx1.set_xlim(300, 320)
+theAx1.set_ylim(0, 2000)
+theAx.set_ylim(0, 2000)
+theAx.set_xlim(300, 320)
 plt.show()
 
 

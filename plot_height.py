@@ -11,9 +11,12 @@ from matplotlib.lines import Line2D
 from matplotlib import rcParams
 rcParams.update({'font.size': 10})
 
-"""plots scaled dhdt vs inverse richardson number based on average profile
-   now has option to do least squares, and plot 
 """
+   plots heights, rinos, etc
+  
+"""
+
+#TODO: so much repetition in this, can definitely make it more modular
 
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
 Times = np.array(Times)
@@ -27,10 +30,16 @@ dhdtplot3 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/
 dhdtplot4 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Mar12014/data/dhdtinvriplt.txt")
 dhdtplot5 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Mar52014/data/dhdtinvriplt.txt")
 
-#HistVars =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec142013/data/ELLims_hist")
-#HistVars0 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Nov302013/data/ELLims_hist")
-#HistVars1 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec202013/data/ELLims_hist")
-#HistVars2 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/ELLims_hist")
+#These are only one per hour, so a different timelist will need to be calculated
+#invri, S, max, min, mean, var
+#HistVars =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec142013/data/ml_height_hist_vars")
+#HistVars0 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Nov302013/data/ml_height_hist_vars")
+#HistVars1 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec202013/data/ml_height_hist_vars")
+#HistVars2 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/ml_height_hist_vars")
+#HistVars3 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/ml_height_hist_vars")
+#HistVars4 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Mar12014/data/ml_height_hist_vars")
+#HistVars5 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Mar52014/data/ml_height_hist_vars")
+
 AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec142013/data/AvProfLims")
 AvProfVars0 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Nov302013/data/AvProfLims")
 AvProfVars1 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec202013/data/AvProfLims")
@@ -81,13 +90,14 @@ dhdtinvriplt = np.vstack((rinovals5[11:, 1], scaled_dhdt))
 dhdtinvriplt = np.transpose(np.vstack((dhdtinvriplt,deltah[11:])))
 np.savetxt('/tera/phil/nchaparr/python/Plotting/Mar52014/data/dhdtinvriplt.txt', dhdtinvriplt, delimiter=' ')
 
-Ax3.plot(1.0/rinovals[11:, 3], Deltah0[11:], 'kv', label = '100/10')
-Ax3.plot(1.0/rinovals0[7:, 3], Deltah00[7:],'ko', label = '100/5')
-Ax3.plot(1.0/rinovals1[11:, 3], Deltah01[11:],'yo', label = '60/5')
-Ax3.plot(1.0/rinovals2[11:, 3], Deltah02[11:],'y*', label = '60/2.5')
-Ax3.plot(1.0/rinovals3[11:29, 3], Deltah03[11:29],'ro', label = '150/5')
-Ax3.plot(1.0/rinovals4[11:, 3], Deltah04[11:],'yv', label = '60/10')
-Ax3.plot(1.0/rinovals5[11:, 3], Deltah05[11:],'rv', label = '150/10')
+Ax3.plot(Times[11:], Deltah0[11:], 'kv', label = '100/10')
+Ax3.plot(Times0[7:], Deltah00[7:],'ko', label = '100/5')
+
+Ax3.plot(Times[11:], Deltah01[11:],'yo', label = '60/5')
+Ax3.plot(Times[11:], Deltah02[11:],'y*', label = '60/2.5')
+Ax3.plot(Times[11:], Deltah03[11:],'ro', label = '150/5')
+Ax3.plot(Times[11:], Deltah04[11:],'yv', label = '60/10')
+Ax3.plot(Times[11:], Deltah05[11:],'rv', label = '150/10')
 
 #Ax3.plot(Times[11:], HistVars[11:, 1], 'b*', label="h Dist")
 #Ax3.plot(rinovals[:,1], deltah[:], 'ko', label = '100/10')
@@ -129,7 +139,7 @@ Ax3.set_ylabel(r"$\frac{\Delta h}{h}$", fontsize=20)
 #Ax3.set_xlabel(r"$Time (hrs)$", fontsize=20)
 Ax3.set_xlabel(r"$Ri^{-1}$", fontsize=20)
 #Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
-#plt.ylim(0, 1.4)
+plt.ylim(0, 1)
 plt.show()
 
 

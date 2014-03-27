@@ -140,7 +140,7 @@ def Main_Fun(dump_time_index, case, date):
 def Call_Main_Fun(date):
      dump_time_no = 8
      case_no = 10
-     date = 'Mar12014'
+     #date = 'Mar12014'
      for i in range(dump_time_no):
           if np.mod(i, 1)==0:
                for j in range(case_no):
