@@ -140,7 +140,7 @@ def Main_Fun(dump_time_index, case, date):
 def Call_Main_Fun(date):
      dump_time_no = 8
      case_no = 1
-     date = 'Mar52014'
+     date = 'Dec252013'
      for i in range(dump_time_no):
           if i == 1:
                for j in range(case_no):
@@ -160,10 +160,10 @@ def Call_Main_Fun(date):
                     y = np.arange(0, 4800, 25)
                     X,Y = np.meshgrid(x, y)
          
-                    im = theAx.pcolor(X, Y, ML_Heights, cmap=cm.hot, vmax=v_max, vmin=v_min)
+                    im = theAx.pcolor(X, Y, np.transpose(ML_Heights), cmap=cm.hot, vmax=v_max, vmin=v_min)
                     bar = plt.colorbar(im)
-                    plt.ylim(0, 3200)
-                    plt.xlim(0, 4800)
+                    plt.xlim(0, 3200)
+                    plt.ylim(0, 4800)
                
                     #label_list, tick_list = get_ticks(mean, stddev,v_max, v_min)
      
