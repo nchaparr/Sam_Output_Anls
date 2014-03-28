@@ -139,40 +139,40 @@ def Main_Fun(dump_time_index, case, date):
 
 def Call_Main_Fun(date):
      dump_time_no = 8
-     case_no = 10
-     #date = 'Mar12014'
+     case_no = 1
+     date = 'Mar52014'
      for i in range(dump_time_no):
-          if np.mod(i, 1)==0:
+          if i == 1:
                for j in range(case_no):
                     ML_Heights = Main_Fun(i, j+1, date)
-                    #theFig = plt.figure(i)
-                    #theFig.clf()
-                    #theAx = theFig.add_subplot(111)
-                    #theAx.set_title(r"$Contour \ of \ Local \ h \ after \ " + str(time_hrs[i]) +" \ hours$")
-                    #theAx.set_xlabel(r"$x \ (m)$")
-                    #theAx.set_ylabel(r"$y \ (m)$")
+                    theFig = plt.figure(i)
+                    theFig.clf()
+                    theAx = theFig.add_subplot(111)
+                    theAx.set_title(r"$Contour \ of \ Local \ h \ after \ " + str(time_hrs[i]) +" \ hours$")
+                    theAx.set_xlabel(r"$x \ (m)$")
+                    theAx.set_ylabel(r"$y \ (m)$")
 
-                    #v_max, v_min, mean, stddev = np.amax(ML_Heights), np.amin(ML_Heights), np.mean(ML_Heights), np.std(ML_Heights)
+                    v_max, v_min, mean, stddev = np.amax(ML_Heights), np.amin(ML_Heights), np.mean(ML_Heights), np.std(ML_Heights)
 
-                    #filler_array = np.zeros([64, 192])
-                    #ML_Heights = np.vstack((ML_Heights, filler_array))
-                    #x = np.arange(0, 4800, 25)
-                    #y = np.arange(0, 4800, 25)
-                    #X,Y = np.meshgrid(x, y)
+                    filler_array = np.zeros([64, 192])
+                    ML_Heights = np.vstack((ML_Heights, filler_array))
+                    x = np.arange(0, 4800, 25)
+                    y = np.arange(0, 4800, 25)
+                    X,Y = np.meshgrid(x, y)
          
-                    #im = theAx.pcolor(X, Y, ML_Heights, cmap=cm.bone, vmax=v_max, vmin=v_min)
-                    #bar = plt.colorbar(im)
-                    #plt.ylim(0, 3200)
-                    #plt.xlim(0, 4800)
+                    im = theAx.pcolor(X, Y, ML_Heights, cmap=cm.hot, vmax=v_max, vmin=v_min)
+                    bar = plt.colorbar(im)
+                    plt.ylim(0, 3200)
+                    plt.xlim(0, 4800)
                
                     #label_list, tick_list = get_ticks(mean, stddev,v_max, v_min)
      
                     #bar.locator = ticker.FixedLocator(tick_list)
                     #bar.formatter= ticker.FixedFormatter(label_list)
                     #bar.update_ticks()
-                    #plt.show()
+                    plt.show()
                     #print time_hrs[i]
-                    #theFig.savefig('/tera/phil/nchaparr/python/Plotting/'+date+'/pngs/cont_'+str(time_hrs[i])+'_hrs.png')
+                    theFig.savefig('/tera/phil/nchaparr/python/Plotting/'+date+'/pngs/h_cont_'+str(time_hrs[i])+'_hrs.png')
      
 
 dump_time_list, time_hrs = Make_Timelists(1, 3600, 28800)
