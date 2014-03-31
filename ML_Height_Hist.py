@@ -28,7 +28,7 @@ warnings.simplefilter('ignore', np.RankWarning)
 
 dump_time_list, time_hrs = Make_Timelists(1, 3600, 28800)
 
-date = "Nov302013"
+date = "Mar52014"
 
 rinovals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/invrinos")
 
@@ -49,6 +49,7 @@ for i in range(len(dump_time_list)):
           v_max, v_min, mean, var = np.amax(ML_Heights), np.amin(ML_Heights), np.mean(ML_Heights), np.var(ML_Heights)
           print 'max min std', v_max, v_min, mean, var
           rinovals_index = (i+1)*6-1
+          print rinovals_index
           ml_height_hist_vars.append([rinovals[rinovals_index,1], rinovals[rinovals_index,3], v_max, v_min, mean, var])
           #n, bins, patches = theAx.hist(tracer_peaks, bins=20)
           ML_Heights = np.reshape(ML_Heights, (zvals*yvals, xvals))
@@ -65,7 +66,7 @@ for i in range(len(dump_time_list)):
           theAx.set_xlim(0, 1500) #TODO:need to test axis limits first
           theAx.set_ylim(0, 60000)
           plt.show()
-          theFig.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/ML_Height_hist"+str(time_hrs[i])+".png")
+          theFig.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/ML_Height_hist.png")
 
 np.savetxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/ml_height_hist_vars", np.array(ml_height_hist_vars), delimiter=' ')
 
