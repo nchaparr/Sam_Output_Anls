@@ -125,7 +125,7 @@ def Main_Fun(date, dump_time, hflux):
 go_ahead = np.int(raw_input('have you changed the write out folder paths? 1 or 0: '))
 if go_ahead == 1:
 
-     date = "Nov302013"
+     date = "Mar52014"
      
      dump_time_list, Times = Make_Timelists(1, 900, 28800)
      hvals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
