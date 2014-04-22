@@ -60,7 +60,7 @@ Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}} \ (\frac{m}{s}K)$", fontsize=20)
 start, end = -.08, .14
 plt.xlim(-.08, .14)
 #start, end = -.6, 1.2
-Ax2.set_xticks([-.08, -.04, 0, .07, .14])
+Ax2.set_xticks([-.08, 0, .07, .14])
 
 #Ax2.set_ylabel(r"$z$", fontsize=20)
 #Ax2.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
