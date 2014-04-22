@@ -45,7 +45,7 @@ Ax1.set_xlabel(r"$\frac{\partial \theta}{\partial z} \ (\frac{K}{m})$", fontsize
 #Ax1.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 start, end = -.025, .025
 #start, end = -1, 2.5
-Ax1.set_xticks(np.arange(start, end, 1.0*(end-start)/4))
+Ax1.set_xticks([-.025, 0, .01, .025])
 #Ax1.set_ylabel(r"$z$", fontsize=20)
 plt.xlim(-.025, .025)
 #plt.xlim(-1, 2.5)
@@ -60,7 +60,7 @@ Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}} \ (\frac{m}{s}K)$", fontsize=20)
 start, end = -.08, .14
 plt.xlim(-.08, .14)
 #start, end = -.6, 1.2
-Ax2.set_xticks(np.arange(start, end, 1.0*(end-start)/5))
+Ax2.set_xticks([-.08, -.04, 0, .07, .14])
 
 #Ax2.set_ylabel(r"$z$", fontsize=20)
 #Ax2.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
@@ -104,7 +104,7 @@ for i in range(len(theta_file_list)):
 
     
     #if np.mod(i+1, 6) == 0:
-    if i == 27:
+    if i == 37:
         h0=AvProfVars[i,0]
         h=AvProfVars[i,1]
         h1=AvProfVars[i,2]
