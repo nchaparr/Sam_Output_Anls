@@ -19,9 +19,9 @@ rcParams.update({'font.size': 10})
    Calcs and dumps rino, invrino, wstar
 """
 #to be changed for each run
-rundate = 'Dec142013'
+rundate = 'Mar52014'
 gamma = .01
-flux_s = 100
+flux_s = 150
 
 #output times
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
@@ -89,16 +89,16 @@ for i in range(len(theta_file_list)):
     elbot_flux = height[flux_index_b]
     h = height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]
     h_flux = height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]]
-    
+    delta_h=height[dtheta_index_t]-height[dtheta_index_b]
     #TODO: this can be tidied up, ie name valriables and pass the named variables to calc_rino    
     print i, height[dtheta_index_b], height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], height[dtheta_index_t], height[flux_index_b], height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]], height[flux_index_t]
     print i, height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*flux_s/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t]
     
-    [rino, invrino, wstar, S] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma)
+    [rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
 
     AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta])
     tau = 1.0*h/wstar
-    invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta])
+    invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4])
     
 np.savetxt('/tera/phil/nchaparr/python/Plotting/' + rundate + '/data/AvProfLims', np.array(AvProfLims), delimiter=' ')
 np.savetxt('/tera/phil/nchaparr/python/Plotting/' + rundate + '/data/invrinos', np.array(invrinos), delimiter=' ')

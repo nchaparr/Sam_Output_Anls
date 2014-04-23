@@ -73,9 +73,9 @@ Deltah05 = np.divide(Deltah05, AvProfVars5[:,1])
 
 #plot the heights vs time
 #print Line2D.markers
-Fig2 = plt.figure(2)
-Fig2.clf()
-Ax3 = Fig2.add_subplot(111)
+#Fig2 = plt.figure(2)
+#Fig2.clf()
+#Ax3 = Fig2.add_subplot(111)
 FitFunc=np.polyfit(Times[11:], AvProfVars5[11:, 1], 2, full=False)
 Fit = FitFunc[0]*Times[11:]**2 + FitFunc[1]*Times[11:] + FitFunc[2]
 dhdt =1.0*(2*FitFunc[0]*Times[11:] + FitFunc[1])/3600
@@ -90,13 +90,13 @@ dhdtinvriplt = np.vstack((rinovals5[11:, 1], scaled_dhdt))
 dhdtinvriplt = np.transpose(np.vstack((dhdtinvriplt,deltah[11:])))
 np.savetxt('/tera/phil/nchaparr/python/Plotting/Mar52014/data/dhdtinvriplt.txt', dhdtinvriplt, delimiter=' ')
 
-Ax3.plot(rinovals[11:,8], Deltah0[11:], 'kv', label = '100/10')
-Ax3.plot(rinovals0[7:,8], Deltah00[7:], 'ko', label = '100/5')
-Ax3.plot(rinovals1[11:,8], Deltah01[11:], 'yo', label = '60/5')
-Ax3.plot(rinovals2[11:,8], Deltah02[11:], 'y*', label = '60/2.5')
-Ax3.plot(rinovals3[11:29,8], Deltah03[11:29], 'ro', label = '150/5')
-Ax3.plot(rinovals4[11:,8], Deltah04[11:], 'yv', label = '60/10')
-Ax3.plot(rinovals5[11:,8], Deltah05[11:], 'rv', label = '150/10')
+#Ax3.plot(rinovals[11:,7], Deltah0[11:], 'kv', label = '100/10')
+#Ax3.plot(rinovals0[7:,7], Deltah00[7:], 'ko', label = '100/5')
+#Ax3.plot(rinovals1[11:,7], Deltah01[11:], 'yo', label = '60/5')
+#Ax3.plot(rinovals2[11:,7], Deltah02[11:], 'y*', label = '60/2.5')
+#Ax3.plot(rinovals3[11:29,7], Deltah03[11:29], 'ro', label = '150/5')
+#Ax3.plot(rinovals4[11:,7], Deltah04[11:], 'yv', label = '60/10')
+#Ax3.plot(rinovals5[11:,7], Deltah05[11:], 'rv', label = '150/10')
 
 #Ax3.plot(Times[11:], HistVars[11:, 1], 'b*', label="h Dist")
 #Ax3.plot(rinovals[:,1], deltah[:], 'ko', label = '100/10')
@@ -120,7 +120,7 @@ Ax3.plot(rinovals5[11:,8], Deltah05[11:], 'rv', label = '150/10')
 #Ax3.plot(Times[11:], Fit, 'b-', label="2nd Order Polyfit")
 #Ax3.text(6, 1500, r'$ \frac{dh}{dt}  =  %.3f \frac{m}{s} $' %(1.0*M/3600),  fontdict=None, withdash=False, fontsize = 15)
 #Ax3.set_ylim(0, 2500)
-Ax3.legend(loc = 'lower right', prop={'size': 10}, numpoints=1)
+#Ax3.legend(loc = 'lower right', prop={'size': 10}, numpoints=1)
 #Ax3.set_title(r'$\Delta h (Flux)\ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$Scaled \ Time \ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$\frac{\Delta h}{h} \ vs \ Ri^{-1}$', fontsize=20)
@@ -129,7 +129,7 @@ Ax3.legend(loc = 'lower right', prop={'size': 10}, numpoints=1)
 #Ax3.set_title(r'$\overline{\theta} \ vs \ Time$', fontsize=20)
 #Ax3.set_xlabel(r"$\frac{Time}{\tau}$", fontsize=20)
 #Ax3.set_ylabel(r"$\frac{\Delta h}{h}$", fontsize=20)
-Ax3.set_ylabel(r"$\frac{\Delta h}{h}$", fontsize=20)
+#Ax3.set_ylabel(r"$\frac{\Delta h}{h}$", fontsize=20)
 #Ax3.set_ylabel(r"$\frac{w_{e}}{w^{*}}$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h (m)$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta \theta (K)$", fontsize=20)
@@ -137,10 +137,40 @@ Ax3.set_ylabel(r"$\frac{\Delta h}{h}$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h \ (m)$", fontsize=20)
 #Ax3.set_ylabel(r"$z \ (m)$", fontsize=20)
 #Ax3.set_xlabel(r"$Time (hrs)$", fontsize=20)
-Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
+#Ax3.set_xlabel(r"$\gamma \frac{h}{\Delta \theta}$", fontsize=20)
 #Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
 #plt.ylim(0, 1)
+
+
+#import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+
+#def randrange(n, vmin, vmax):
+#    return (vmax-vmin)*np.random.rand(n) + vmin
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+#n = 100
+#for c, m, zl, zh in [('r', 'o', -50, -25), ('b', '^', -30, -5)]:
+#xs = randrange(n, 23, 32)
+#ys = randrange(n, 0, 100)
+#zs = randrange(n, zl, zh)
+ax.scatter(rinovals[11:,1], Deltah0[11:], rinovals[11:,7], c='k', marker='v')
+ax.scatter(rinovals0[7:,1], Deltah00[7:], rinovals0[7:,7], c='k', marker='o')
+ax.scatter(rinovals1[11:,1], Deltah01[11:], rinovals1[11:,7], c='y', marker='o')
+ax.scatter(rinovals2[11:,1], Deltah02[11:], rinovals2[11:,7], c='y', marker='*')
+ax.scatter(rinovals3[11:29,1], Deltah03[11:29], rinovals3[11:29,7], c='r', marker='o')
+ax.scatter(rinovals4[11:,1], Deltah04[11:], rinovals4[11:,7], c='y', marker='v')
+ax.scatter(rinovals5[11:,1], Deltah05[11:], rinovals5[11:,7], c='r', marker='v')
+
+
+ax.set_xlabel(r'$Ri^{-1}$', fontsize=20)
+ax.set_ylabel(r'$\frac{\Delta h}{h}$', fontsize=20)
+ax.set_zlabel(r'$\gamma \frac{h}{\Delta \theta}$', fontsize=20)
+
 plt.show()
+
 
 
 
