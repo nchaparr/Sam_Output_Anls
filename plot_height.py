@@ -3,8 +3,9 @@ from scipy.interpolate import interp1d
 import matplotlib
 import matplotlib.pyplot as plt
 from Make_Timelist import *
-import sys
-sys.path.insert(0, '/tera/phil/nchaparr/python')
+#import sys
+#sys.path.insert(0, '/tera/phil/nchaparr/python')
+from nchap_class import *
 import nchap_fun as nc
 from matplotlib.lines import Line2D
 
@@ -22,7 +23,10 @@ dump_time_list, Times = Make_Timelists(1, 600, 28800)
 Times = np.array(Times)
 dump_time_list0, Times0 = Make_Timelists(1, 900, 28800)
 
-dhdtplot = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec142013/data/dhdtinvriplt.txt") 
+points = For_Plots("Dec142013")
+
+dhdtplot = points.dhdtplot()
+#dhdtplot = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec142013/data/dhdtinvriplt.txt") 
 dhdtplot0 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Nov302013/data/dhdtinvriplt.txt")
 dhdtplot1 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec202013/data/dhdtinvriplt.txt")
 dhdtplot2 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/dhdtinvriplt.txt")
@@ -76,27 +80,47 @@ Deltah05 = np.divide(Deltah05, AvProfVars5[:,1])
 Fig2 = plt.figure(2)
 Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
+
+#Getting w_{e} from a polyfit to the height vs time plot
 FitFunc=np.polyfit(Times[11:], AvProfVars5[11:, 1], 2, full=False)
 Fit = FitFunc[0]*Times[11:]**2 + FitFunc[1]*Times[11:] + FitFunc[2]
 dhdt =1.0*(2*FitFunc[0]*Times[11:] + FitFunc[1])/3600
+
 #Fit = FitFunc[0]*Times[120:]**3 + FitFunc[1]*Times[120:]**2 + FitFunc[2]*Times[120:] + FitFunc[3]
 #dhdt =1.0*(3*FitFunc[0]*Times[120:]**2 + 2*FitFunc[1]*Times[120:] + FitFunc[2])/3600
+
+#Not sure I need this, doing it already above
 deltah = np.subtract(AvProfVars5[:, 2], AvProfVars5[:, 0])
 deltah = np.divide(deltah, AvProfVars5[:, 1])
 tau = 1.0*rinovals5[:,4]/3600
 scaled_time = np.divide(Times, tau)
+
+#saving the scaled we vs invri plot points
 scaled_dhdt = np.divide(dhdt, rinovals5[11:, 2])
 dhdtinvriplt = np.vstack((rinovals5[11:, 1], scaled_dhdt))
 dhdtinvriplt = np.transpose(np.vstack((dhdtinvriplt,deltah[11:])))
 np.savetxt('/tera/phil/nchaparr/python/Plotting/Mar52014/data/dhdtinvriplt.txt', dhdtinvriplt, delimiter=' ')
 
-Ax3.plot(rinovals[11:,8], Deltah0[11:], 'kv', label = '100/10')
-Ax3.plot(rinovals0[7:,8], Deltah00[7:], 'ko', label = '100/5')
-Ax3.plot(rinovals1[11:,8], Deltah01[11:], 'yo', label = '60/5')
-Ax3.plot(rinovals2[11:,8], Deltah02[11:], 'y*', label = '60/2.5')
-Ax3.plot(rinovals3[11:29,8], Deltah03[11:29], 'ro', label = '150/5')
-Ax3.plot(rinovals4[11:,8], Deltah04[11:], 'yv', label = '60/10')
-Ax3.plot(rinovals5[11:,8], Deltah05[11:], 'rv', label = '150/10')
+label_list = ['100/10', '100/5', '60/5', '60/2.5', '150/5', '60/10', '150/10']
+legend_list = ['kv', 'ko', 'yo', 'y*', 'ro', 'yv', 'rv']
+Run_Date_List = ["Dec142013", "Nov302013", "Dec202013", "Dec252013", "Jan152014_1", "Mar12014", "Mar52014"]
+
+#to be loopified
+for i in range(len(label_list)):
+    points = For_Plots(Run_Date_List[i])
+    rinovals = points.rinovals()
+    Deltah = points.Deltah_over_h()
+    HistVars = points.HistVars()
+    AvProfVars = points.AvProfVars()
+    #TODO: alternative starting index for Nov302013
+    Ax3.plot(rinovals[11:,8], Deltah[11:], legend_list[i], label = label_list[i])
+
+#Ax3.plot(rinovals0[7:,8], Deltah00[7:], 'ko', label = '100/5')
+#Ax3.plot(rinovals1[11:,8], Deltah01[11:], 'yo', label = '60/5')
+#Ax3.plot(rinovals2[11:,8], Deltah02[11:], 'y*', label = '60/2.5')
+#Ax3.plot(rinovals3[11:29,8], Deltah03[11:29], 'ro', label = '150/5')
+#Ax3.plot(rinovals4[11:,8], Deltah04[11:], 'yv', label = '60/10')
+#Ax3.plot(rinovals5[11:,8], Deltah05[11:], 'rv', label = '150/10')
 
 #Ax3.plot(Times[11:], HistVars[11:, 1], 'b*', label="h Dist")
 #Ax3.plot(rinovals[:,1], deltah[:], 'ko', label = '100/10')

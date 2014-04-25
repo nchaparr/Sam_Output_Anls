@@ -3,30 +3,69 @@ import numpy as np
 import nchap_fun as nc
             
 
+class For_Plots:
+     """
+        for pulling data for plot_height.py ie plots representing all runs on one ax instance
+     
+     """
+     def __init__(self, Run_Date):
+          self.Run_Date = Run_Date          
+          self.path = "/tera/phil/nchaparr/python/Plotting/" + Run_Date + "/data/"
+
+          
+     def dhdtplot(self):
+          dhdtplot = np.genfromtxt(self.path + "dhdtinvriplt.txt")
+          return dhdtplot
+
+     def HistVars(self):
+          HistVars = np.genfromtxt(self.path + "ml_height_hist_vars")
+          return HistVars
+
+     def AvProfVars(self):
+          AvProfVars = np.genfromtxt(self.path + "AvProfLims")
+          return AvProfVars
+
+     def rinovals(self):
+          rinovals = np.genfromtxt(self.path + "invrinos")
+          return rinovals
+
+
+     def Deltah(self):
+          AvProfVars = np.genfromtxt(self.path + "AvProfLims")
+          Deltah = np.subtract(AvProfVars[:,2], AvProfVars[:,0])
+          #Deltah0 = np.divide(Deltah0, AvProfVars[:,1])
+          return Deltah
+          
+     def Deltah_over_h(self):
+          AvProfVars = np.genfromtxt(self.path + "AvProfLims")
+          Deltah = np.subtract(AvProfVars[:,2], AvProfVars[:,0])
+          Deltah_over_h = np.divide(Deltah, AvProfVars[:,1])
+          return Deltah_over_h         
+     
+
 class Get_Var_Arrays1:
      """
         for pulling velociy perturpations, temperature and pressure
         from nc files from the ensemble
        
      """
-
      def __init__(self, path1, path2, dump_time):
           self.path1 = path1
-          self.path2 = path2
-          
+          self.path2 = path2          
           self.dump_time = dump_time
           self.nc_file_list = [path1 + str(i+1) + path2 + dump_time + ".nc" for i in range(10)]
-
+     
+     
      def get_wvelperts(self):
           wvelperts_list = []
           for i in range(len(self.nc_file_list)): #loop over list of nc files, not efficient to do this for each variable but can't think of better way right now
                thefile = self.nc_file_list[i]
                print thefile
                ncdata = Dataset(thefile,'r')          
-               wvelperts_list.append(np.squeeze(ncdata.variables['W'][...]))
+               uvelperts_list.append(np.squeeze(ncdata.variables['W'][...]))
                ncdata.close()
           return wvelperts_list
-
+     
 
      def get_uvelperts(self):
           uvelperts_list = []
