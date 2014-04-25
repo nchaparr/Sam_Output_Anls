@@ -17,63 +17,9 @@ rcParams.update({'font.size': 10})
   
 """
 
-#TODO: so much repetition in this, can definitely make it more modular
-
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
 Times = np.array(Times)
 dump_time_list0, Times0 = Make_Timelists(1, 900, 28800)
-
-points = For_Plots("Dec142013")
-
-dhdtplot = points.dhdtplot()
-#dhdtplot = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec142013/data/dhdtinvriplt.txt") 
-dhdtplot0 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Nov302013/data/dhdtinvriplt.txt")
-dhdtplot1 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec202013/data/dhdtinvriplt.txt")
-dhdtplot2 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/dhdtinvriplt.txt")
-dhdtplot3 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/dhdtinvriplt.txt")
-dhdtplot4 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Mar12014/data/dhdtinvriplt.txt")
-dhdtplot5 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Mar52014/data/dhdtinvriplt.txt")
-
-#These are only one per hour, so a different timelist will need to be calculated
-#invri, S, max, min, mean, var
-HistVars =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec142013/data/ml_height_hist_vars")
-HistVars0 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Nov302013/data/ml_height_hist_vars")
-HistVars1 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec202013/data/ml_height_hist_vars")
-HistVars2 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/ml_height_hist_vars")
-HistVars3 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/ml_height_hist_vars")
-HistVars4 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Mar12014/data/ml_height_hist_vars")
-HistVars5 =  np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Mar52014/data/ml_height_hist_vars")
-
-AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec142013/data/AvProfLims")
-AvProfVars0 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Nov302013/data/AvProfLims")
-AvProfVars1 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec202013/data/AvProfLims")
-AvProfVars2 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/AvProfLims")
-AvProfVars3 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/AvProfLims")
-AvProfVars4 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Mar12014/data/AvProfLims")
-AvProfVars5 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Mar52014/data/AvProfLims")
-
-rinovals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec142013/data/invrinos")
-rinovals0 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Nov302013/data/invrinos")
-rinovals1 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec202013/data/invrinos")
-rinovals2 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Dec252013/data/invrinos")
-rinovals3 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Jan152014_1/data/invrinos")
-rinovals4 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Mar12014/data/invrinos")
-rinovals5 = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/Mar52014/data/invrinos")
-
-Deltah0 = np.subtract(AvProfVars[:,2], AvProfVars[:,0])
-Deltah0 = np.divide(Deltah0, AvProfVars[:,1])
-Deltah00 = np.subtract(AvProfVars0[:,2], AvProfVars0[:,0])
-Deltah00 = np.divide(Deltah00, AvProfVars0[:,1])
-Deltah01 = np.subtract(AvProfVars1[:,2], AvProfVars1[:,0])
-Deltah01 = np.divide(Deltah01, AvProfVars1[:,1])
-Deltah02 = np.subtract(AvProfVars2[:,2], AvProfVars2[:,0])
-Deltah02 = np.divide(Deltah02, AvProfVars2[:,1])
-Deltah03 = np.subtract(AvProfVars3[:,2], AvProfVars3[:,0])
-Deltah03 = np.divide(Deltah03, AvProfVars3[:,1])
-Deltah04 = np.subtract(AvProfVars4[:,2], AvProfVars4[:,0])
-Deltah04 = np.divide(Deltah04, AvProfVars4[:,1])
-Deltah05 = np.subtract(AvProfVars5[:,2], AvProfVars5[:,0])
-Deltah05 = np.divide(Deltah05, AvProfVars5[:,1])
 
 #plot the heights vs time
 #print Line2D.markers
@@ -101,11 +47,12 @@ dhdtinvriplt = np.vstack((rinovals5[11:, 1], scaled_dhdt))
 dhdtinvriplt = np.transpose(np.vstack((dhdtinvriplt,deltah[11:])))
 np.savetxt('/tera/phil/nchaparr/python/Plotting/Mar52014/data/dhdtinvriplt.txt', dhdtinvriplt, delimiter=' ')
 
+#Main Part -- pulling points and plotting them
 label_list = ['100/10', '100/5', '60/5', '60/2.5', '150/5', '60/10', '150/10']
 legend_list = ['kv', 'ko', 'yo', 'y*', 'ro', 'yv', 'rv']
 Run_Date_List = ["Dec142013", "Nov302013", "Dec202013", "Dec252013", "Jan152014_1", "Mar12014", "Mar52014"]
 
-#to be loopified
+
 for i in range(len(label_list)):
     points = For_Plots(Run_Date_List[i])
     rinovals = points.rinovals()
