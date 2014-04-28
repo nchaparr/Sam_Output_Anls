@@ -28,24 +28,24 @@ Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
 
 #Getting w_{e} from a polyfit to the height vs time plot
-FitFunc=np.polyfit(Times[11:], AvProfVars5[11:, 1], 2, full=False)
-Fit = FitFunc[0]*Times[11:]**2 + FitFunc[1]*Times[11:] + FitFunc[2]
-dhdt =1.0*(2*FitFunc[0]*Times[11:] + FitFunc[1])/3600
+#FitFunc=np.polyfit(Times[11:], AvProfVars5[11:, 1], 2, full=False)
+#Fit = FitFunc[0]*Times[11:]**2 + FitFunc[1]*Times[11:] + FitFunc[2]
+#dhdt =1.0*(2*FitFunc[0]*Times[11:] + FitFunc[1])/3600
 
 #Fit = FitFunc[0]*Times[120:]**3 + FitFunc[1]*Times[120:]**2 + FitFunc[2]*Times[120:] + FitFunc[3]
 #dhdt =1.0*(3*FitFunc[0]*Times[120:]**2 + 2*FitFunc[1]*Times[120:] + FitFunc[2])/3600
 
 #Not sure I need this, doing it already above
-deltah = np.subtract(AvProfVars5[:, 2], AvProfVars5[:, 0])
-deltah = np.divide(deltah, AvProfVars5[:, 1])
-tau = 1.0*rinovals5[:,4]/3600
-scaled_time = np.divide(Times, tau)
+#deltah = np.subtract(AvProfVars5[:, 2], AvProfVars5[:, 0])
+#deltah = np.divide(deltah, AvProfVars5[:, 1])
+#tau = 1.0*rinovals5[:,4]/3600
+#scaled_time = np.divide(Times, tau)
 
 #saving the scaled we vs invri plot points
-scaled_dhdt = np.divide(dhdt, rinovals5[11:, 2])
-dhdtinvriplt = np.vstack((rinovals5[11:, 1], scaled_dhdt))
-dhdtinvriplt = np.transpose(np.vstack((dhdtinvriplt,deltah[11:])))
-np.savetxt('/tera/phil/nchaparr/python/Plotting/Mar52014/data/dhdtinvriplt.txt', dhdtinvriplt, delimiter=' ')
+#scaled_dhdt = np.divide(dhdt, rinovals5[11:, 2])
+#dhdtinvriplt = np.vstack((rinovals5[11:, 1], scaled_dhdt))
+#dhdtinvriplt = np.transpose(np.vstack((dhdtinvriplt,deltah[11:])))
+#np.savetxt('/tera/phil/nchaparr/python/Plotting/Mar52014/data/dhdtinvriplt.txt', dhdtinvriplt, delimiter=' ')
 
 #Main Part -- pulling points and plotting them
 label_list = ['100/10', '100/5', '60/5', '60/2.5', '150/5', '60/10', '150/10']
@@ -54,13 +54,14 @@ Run_Date_List = ["Dec142013", "Nov302013", "Dec202013", "Dec252013", "Jan152014_
 
 
 for i in range(len(label_list)):
-    points = For_Plots(Run_Date_List[i])
-    rinovals = points.rinovals()
-    Deltah = points.Deltah_over_h()
-    HistVars = points.HistVars()
-    AvProfVars = points.AvProfVars()
+    if i==6:
+        points = For_Plots(Run_Date_List[i])
+        rinovals = points.rinovals()
+        Deltah = points.Deltah_over_h()
+        HistVars = points.HistVars()
+        AvProfVars = points.AvProfVars()
     #TODO: alternative starting index for Nov302013
-    Ax3.plot(rinovals[11:,8], Deltah[11:], legend_list[i], label = label_list[i])
+        Ax3.plot(Times[11:], AvProfVars[11:, 0], legend_list[i], label = label_list[i])
 
 #Ax3.plot(rinovals0[7:,8], Deltah00[7:], 'ko', label = '100/5')
 #Ax3.plot(rinovals1[11:,8], Deltah01[11:], 'yo', label = '60/5')
