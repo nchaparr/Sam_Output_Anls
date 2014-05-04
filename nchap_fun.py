@@ -513,7 +513,8 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, top_index):
             break
         
     for m in range(len(dthetadz[0:top_index])-1):
-        if (abs(fluxes[m+1]) < 0.5) and (fluxes[m] < 0) and (fluxes[m-1] < 0):
+         print fluxes[m+1]
+         if (abs(fluxes[m+1]) < 0.5) and (fluxes[m] < 0) and (fluxes[m-1] < 0):
             flux_index_t = m+1
             break
     

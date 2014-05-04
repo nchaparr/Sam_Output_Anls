@@ -49,7 +49,10 @@ def Main_Fun(rundate, gamma, flux_s):
          wvelthetapert = np.genfromtxt(flux_file_list[i])
          
          #only need up to 1900meters
-         top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
+         if rundate == "Jan152014_1":
+             top_index = np.where(abs(2000 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
+         else:
+             top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
            
          print height.shape, press.shape, theta.shape, wvelthetapert.shape, gamma, top_index
 
@@ -71,14 +74,17 @@ def Main_Fun(rundate, gamma, flux_s):
 
 
 #to be changed for each run
-rundate = 'Mar52014'
-gamma = .01
-flux_s = 150
+#rundate = 'Mar52014'
+#gamma = .01
+#flux_s = 150
 
 run_list = [["Nov302013", .005, 100], ["Dec142013", .01, 100], ["Dec202013", .005, 60], ["Dec252013", .0025, 60], ["Jan152014_1", .005, 150], ["Mar12014", .01, 60], ["Mar52014", .01, 150]]
-for run in run_list:
-    print run
-    Main_Fun(run[0], run[1], run[2])
+
+#for run in run_list:
+    #print run
+for i in range(len(run_list)):
+    print "have to fix top index for at least Jan152014_1 run"
+    Main_Fun(run_list[i][0], run_list[i][1], run_list[i][2])
 
 
     
