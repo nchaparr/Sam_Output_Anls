@@ -33,8 +33,8 @@ Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
 Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 #Ax.set_ylabel(r"$z$", fontsize=20)
 plt.xlim(300, 312)
-#plt.ylim(100, 1500)
-plt.ylim(0.1, 1.4)
+plt.ylim(100, 1500)
+#plt.ylim(0.1, 1.4)
 
 
 Ax1 = Fig1.add_subplot(132)
@@ -101,8 +101,8 @@ for i in range(len(theta_file_list)):
 
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/sfc_flx
     
-    if np.mod(i+1, 6) == 0:
-    #if i > 23 and i < 33:
+    #if np.mod(i+1, 6) == 0:
+    if i > 23 and i < 33:
         
         fluxes[0] = np.nan
         zeros = np.zeros_like(height)

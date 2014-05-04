@@ -472,79 +472,64 @@ def Flux_Quad(wpert, thetapert):
                                                              
     return [upwarm, downwarm, upcold, downcold]
 
+def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, top_index):
+    """
+    Gets heights based on dthetdz and flux
+    
+    Arguments:
+    wpert -- array of w perturbations
+    thetapert -- array of theta perturbations
 
-class Get_Var_Arrays1:
-     """
-        for pulling velociy perturpations, temperature and pressure
-        from nc files from the ensemble
-       
-     """
+    Returns:
+    [up_warm, down_warm, up_cold, down_cold] -- arrays, np.nans are fillers  
 
-     def __init__(self, path1, path2, dump_time):
-          self.path1 = path1
-          self.path2 = path2
-          
-          self.dump_time = dump_time
-          self.nc_file_list = [path1 + str(i+1) + path2 + dump_time + ".nc" for i in range(10)]
+    """
+    
+    dheight = np.diff(heights)
+    dtheta = np.diff(thetas)
+    dthetadz=np.divide(dtheta, dheight)
+    element0=np.array([0])
+    dthetadz=np.hstack((element0, dthetadz))
+    rhow=calc_rhow(press, heights, thetas[0])
+    fluxes=np.multiply(wvelthetapert, rhow)*1004.0
+    
+    #where gradient is greater than zero    
+    for j in range(len(dthetadz[:top_index])-1):
+        if (dthetadz[j+1] >.0002) and (dthetadz[j] >= 0):
+            dtheta_index_b = j+1
+            break
 
-     def get_wvelperts(self):
-          wvelperts_list = []
-          for i in range(len(self.nc_file_list)): #loop over list of nc files, not efficient to do this for each variable but can't think of better way right now
-               thefile = self.nc_file_list[i]
-               print thefile
-               ncdata = Dataset(thefile,'r')          
-               wvels_list.append(np.squeeze(ncdata.variables['W'][...]))
-               ncdata.close()
-          return wvelperts_list
+    #where gradient resumes as gamma    
+    for k in range(len(dthetadz[:top_index])-1):        
+        if np.abs(dthetadz[k+2]-gamma)<.0002 and np.abs(dthetadz[k+1]-gamma)<.0002 and dthetadz[k-1]>gamma:            
+            dtheta_index_t = k+1                        
+            break
+    
+    #now fluxes    
+    fluxes = np.multiply(wvelthetapert, rhow)*1004.0
+    for l in range(len(dthetadz)-1):
+        if (fluxes[l+1] <= .0) and (fluxes[l] > 0):
+            flux_index_b = l+1
+            break
+        
+    for m in range(len(dthetadz[0:top_index])-1):
+        if (abs(fluxes[m+1]) < 0.5) and (fluxes[m] < 0) and (fluxes[m-1] < 0):
+            flux_index_t = m+1
+            break
+    
+    eltop_dthetadz = heights[dtheta_index_t]
+    elbot_dthetadz = heights[dtheta_index_b]
 
+    eltop_flux = heights[flux_index_t]
+    elbot_flux = heights[flux_index_b]    
 
-     def get_uvelperts(self):
-          wvelperts_list = []
-          for i in range(len(self.nc_file_list)): #loop over list of nc files, not efficient to do this for each variable but can't think of better way right now
-               thefile = self.nc_file_list[i]
-               print thefile
-               ncdata = Dataset(thefile,'r')          
-               wvels_list.append(np.squeeze(ncdata.variables['U'][...]))
-               ncdata.close()
-          return wvelperts_list
+    h = heights[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]
+    h_flux = heights[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]]
 
-     def get_vvelperts(self):
-          wvelperts_list = []
-          for i in range(len(self.nc_file_list)): #loop over list of nc files, not efficient to do this for each variable but can't think of better way right now
-               thefile = self.nc_file_list[i]
-               print thefile
-               ncdata = Dataset(thefile,'r')          
-               wvels_list.append(np.squeeze(ncdata.variables['V'][...]))
-               ncdata.close()
-          return vvelperts_list
-
-
-     def get_thetas(self):
-          thetas_list = []
-          press_list = []
-          for i in range(len(self.nc_file_list)): #loop over list of nc files, not efficient to do this for each variable but can't think of better way right now
-               thefile = self.nc_file_list[i]
-               print thefile
-               ncdata = Dataset(thefile,'r')          
-               temp = np.squeeze(ncdata.variables['TABS'][...])
-               press = np.squeeze(ncdata.variables['p'][...])
-               [znum, ynum, xnum] = temp.shape
-               theta = np.zeros_like(temp) #TODO: make this into a function
-               thetafact = np.array([(1.0*1000/k)**(1.0*287/1004) for k in press])
-               for j in range(znum):
-                    theta[j, :, :] = temp[j, :, :]*thetafact[j]
-               thetas_list.append(theta)
-               press_list.append(press)
-               ncdata.close()
-          return thetas_list, press_list
-
-     def get_height(self):
-          thefile = self.nc_file_list[i]
-          print thefile
-          ncdata = Dataset(thefile,'r')          
-          height = np.squeeze(ncdata.variables['z'][...])
-          ncdata.close()
-          return height
+    deltatheta = thetas[dtheta_index_t] - thetas[dtheta_index_b]
+    mltheta = np.mean(thetas[0:dtheta_index_b])
+    
+    return [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta]
 
     
     

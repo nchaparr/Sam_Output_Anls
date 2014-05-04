@@ -12,6 +12,12 @@ class For_Plots:
           self.Run_Date = Run_Date          
           self.path = "/tera/phil/nchaparr/python/Plotting/" + Run_Date + "/data/"
 
+     def get_file(self, dump_time, filename):
+          the_file = self.path + filename + dump_time
+          return the_file
+
+     def save_file(self, array, filename):
+          np.savetxt(self.path + filename, array, delimiter='')
           
      def dhdtplot(self):
           dhdtplot = np.genfromtxt(self.path + "dhdtinvriplt.txt")
