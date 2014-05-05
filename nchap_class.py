@@ -17,7 +17,7 @@ class For_Plots:
           return the_file
 
      def save_file(self, array, filename):
-          np.savetxt(self.path + filename, array, delimiter='')
+          np.savetxt(self.path + filename, array, delimiter=' ')
           
      def dhdtplot(self):
           dhdtplot = np.genfromtxt(self.path + "dhdtinvriplt.txt")
