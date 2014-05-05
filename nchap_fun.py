@@ -489,20 +489,20 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s, top_ind
     dtheta = np.diff(thetas)
     dthetadz=np.divide(dtheta, dheight)
     element0=np.array([0])
-    dthetadz=np.hstack((element0, dthetadz))
+    dthetadz=np.hstack((element0, dthetadz))*1.0/gamma
     rhow=calc_rhow(press, heights, thetas[0])
     
     fluxes=np.multiply(wvelthetapert, rhow)*1004.0/flux_s
     
     #where gradient is greater than zero    
     for j in range(len(dthetadz[:top_index])-1):
-        if (dthetadz[j+1] >.0002) and (dthetadz[j] >= 0):
+        if (dthetadz[j+1] >.03) and (dthetadz[j] >= 0):
             dtheta_index_b = j+1
             break
 
     #where gradient resumes as gamma    
     for k in range(len(dthetadz[:top_index])-1):        
-        if np.abs(dthetadz[k+2]-gamma)<.0002 and np.abs(dthetadz[k+1]-gamma)<.0002 and dthetadz[k-1]>gamma:            
+        if np.abs(dthetadz[k+2]-1)<.0002 and np.abs(dthetadz[k+1]-1)<.0002 and dthetadz[k-1]>1:            
             dtheta_index_t = k+1                        
             break
     
@@ -514,7 +514,7 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s, top_ind
             break
         
     for m in range(len(dthetadz[0:top_index])-1):
-         print fluxes[m+1]
+         
          if (abs(fluxes[m+1]) < 0.01) and (fluxes[m] < 0) and (fluxes[m-1] < 0):
             flux_index_t = m+1
             break
