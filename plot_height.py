@@ -65,8 +65,8 @@ for i in range(len(label_list)):
         #Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 0], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
         #Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 2], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
        # Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 3], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
-        Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 4], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
-        #Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 5], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
+      #  Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 4], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
+        Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 5], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
 
 #Ax3.plot(np.arange(0, .1, .01)[2:10], .20833*np.arange(0, .1, .01)[2:10], 'k--')
 #Ax3.plot(np.arange(0, .1, .01)[2:10], np.arange(0, .1, .01)[2:10]**(3.0/2), 'k--')
