@@ -503,9 +503,9 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s, top_ind
     #where gradient resumes as gamma
     dtheta_index_t = 999
     for k in range(len(dthetadz[:top_index])-1):
-        print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
-        print ""
-        print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
+        #print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
+        #print ""
+        #print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
         if np.abs(dthetadz[k+2]-1)<.03 and np.abs(dthetadz[k+1]-1)<.03 and dthetadz[k-1]>1:            
             dtheta_index_t = k+1                        
             break
@@ -513,9 +513,9 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s, top_ind
     #Hacky fix for when the upper theta gradient profiles are wonky
     if dtheta_index_t == 999:
          for k in range(len(dthetadz[:top_index])-1):
-              print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
-              print ""
-              print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
+           #   print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
+           #   print ""
+           #   print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
               if np.abs(dthetadz[k+2]-1)<.04 and np.abs(dthetadz[k+1]-1)<.04 and dthetadz[k-1]>1:            
                    dtheta_index_t = k+1                        
                    break
@@ -529,10 +529,12 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s, top_ind
             break
         
     for m in range(len(dthetadz[0:top_index])-1):
-         
-         if (abs(fluxes[m+1]) < 0.01) and (fluxes[m] < 0) and (fluxes[m-1] < 0):
+         print fluxes[m+1], fluxes[m], fluxes[m-1]
+         if (abs(fluxes[m+1]) < 0.01) and (abs(fluxes[m+2]) < 0.01) and (fluxes[m] < 0) and (fluxes[m-1] < 0):
             flux_index_t = m+1
             break
+    print flux_index_t
+
     
     eltop_dthetadz = heights[dtheta_index_t]
     elbot_dthetadz = heights[dtheta_index_b]

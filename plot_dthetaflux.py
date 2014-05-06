@@ -15,9 +15,9 @@ rcParams.update({'font.size': 10})
 
 """
 
-date = "Jan152014_1"
-sfc_flx = 150
-gamma = .005
+date = "Dec252013"
+sfc_flx = 60
+gamma = .0025
 
 Fig1 = plt.figure(1)
 Fig1.clf()
@@ -102,7 +102,7 @@ for i in range(len(theta_file_list)):
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/sfc_flx
     
     #if np.mod(i+1, 6) == 0:
-    if i > 32 and i < 34:
+    if i > 45 and i < 49:
         
         fluxes[0] = np.nan
         zeros = np.zeros_like(height)
