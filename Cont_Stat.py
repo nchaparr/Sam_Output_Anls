@@ -76,7 +76,7 @@ def Get_Var_Arrays(var, fignum):
           thefile = ncfile_list[i]
           ncdata = Dataset(thefile,'r')
           Vars = ncdata.variables[var][...]
-          print Vars.shape
+          #print Vars.shape
           press = ncdata.variables['PRES'][...]
           height = ncdata.variables['z'][...]
           top = np.where(abs(height - 2000) < 50)[0][0]
@@ -98,22 +98,29 @@ def Get_Var_Arrays(var, fignum):
      #TODO: verify this is in time order!
      
      #print 'ENSEMBLE AVERAGED',  ens_vars.shape
-     time = time_list[0]
+     time = (time_list[0]-169)*24
      height = height_list[0] #TODO: time, height don't need to be averaged 
           
      #set up plot
-     theAx = nc.Do_Plot(fignum, var + 'vs height', 'Height (m)', var+'/w*2', 111)
+     #theAx = nc.Do_Plot(fignum, var + 'vs height', 'Height (m)', var+'/w*2', 111)
      #print ens_vars.shape, height.shape
+     have_ens_vars = [] 
+     print len(time)
      for i in range(len(time)):
-          if np.mod(i+1, 6)==0:
-               print i, time[i], 1.0*(i+1)/10, "plotting"
+          if np.mod(i+1, 1)==0:
+               #print i, time[i], 1.0*(i+1)/10, "plotting"
                points = For_Plots("Mar52014")
                rinovals = points.rinovals()
+               print len(rinovals[:,2])
                AvProfVars = points.AvProfVars()
                #invrinos: [rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4]
                wstar= rinovals[1.0*((i+1))*(6.0/6.0)-1, 2]
                h= AvProfVars[1.0*((i+1))*(6.0/6.0)-1, 1]
-               theAx.plot(1.0*ens_vars[i]/wstar**3, 1.0*height/h, label=str(int((time[i]-169)*24)+ 1) + 'hrs')
+               h_index = np.where(height==h)[0]
+               print time[i]
+               have_ens_vars.append(1.0*np.sum(ens_vars[i][0:h_index])/(h*wstar**3))
+               #print have_ens_vars[i]
+               #theAx.plot(1.0*ens_vars[i]/wstar**3, 1.0*height/h, label=str(int((time[i]-169)*24)+ 1) + 'hrs')
      #height, time = np.meshgrid(height, time)
      #maxlev = np.max(ens_vars)
      #minlev = np.min(ens_vars)
@@ -122,15 +129,21 @@ def Get_Var_Arrays(var, fignum):
      #CS = plt.contourf(time, height, ens_vars, levels, cmap=plt.cm.bone)
      #cbar = plt.colorbar(CS)
      #cbar.ax.set_ylabel('colorbar')
-     plt.ylim(0, 4)
-     plt.legend(loc = 'upper right', prop={'size':8})
-     plt.show()
+     print 'plotting'
+     theAx.plot(time, have_ens_vars, label=var)
+     #plt.ylim(0, 4)
+     #plt.legend(loc = 'upper right', prop={'size':8})
+     #plt.show()
 
-var_list = ['TKE']
-#'TKE', 'TKES', 'WVADV', 'WUADV', 'WUPRES', 'WVPRES', 'WUSHEAR', 'WVSHEAR', 'W2ADV', 'W2PRES', 'W2BUOY', 'WVBUOY', 'WUBUOY', 'W2REDIS', 'W2DIFF'
+theAx = nc.Do_Plot(1, 'Layer Averaged, Scaled TKE Terms vs Time', 'TKE Term/w*3', 'Time (hrs)',111)
+var_list = [ 'BUOYA', 'BUOYAS', 'DISSIP', 'DISSIPS']
+#'DISSIPS', 'BUOYAS', TKE', 'TKES','TKE', 'TKES', 'WVADV', 'WUADV', 'WUPRES', 'WVPRES', 'WUSHEAR', 'WVSHEAR', 'W2ADV', 'W2PRES', 'W2BUOY', 'WVBUOY', 'WUBUOY', 'W2REDIS', 'W2DIFF'
 for i in range(len(var_list)):
      Get_Var_Arrays(var_list[i], i)
-
+#plt.ylim()
+#plt.ylim(-.000035, .000035)
+plt.legend(loc='lower right')
+plt.show()    
 
 
 
