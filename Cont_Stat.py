@@ -102,12 +102,12 @@ def Get_Var_Arrays(var, fignum):
      height = height_list[0] #TODO: time, height don't need to be averaged 
           
      #set up plot
-     #theAx = nc.Do_Plot(fignum, var + 'vs height', 'Height (m)', var+'/w*2', 111)
+     theAx = nc.Do_Plot(fignum, 'Scaled ' + var + ' vs Scaled Height', 'Height/h', var+'/w*2', 111)
      #print ens_vars.shape, height.shape
      have_ens_vars = [] 
      print len(time)
      for i in range(len(time)):
-          if np.mod(i+1, 1)==0:
+          if np.mod(i+1, 6)==0:
                #print i, time[i], 1.0*(i+1)/10, "plotting"
                points = For_Plots("Mar52014")
                rinovals = points.rinovals()
@@ -120,7 +120,7 @@ def Get_Var_Arrays(var, fignum):
                print time[i]
                have_ens_vars.append(1.0*np.sum(ens_vars[i][0:h_index])/(h*wstar**3))
                #print have_ens_vars[i]
-               #theAx.plot(1.0*ens_vars[i]/wstar**3, 1.0*height/h, label=str(int((time[i]-169)*24)+ 1) + 'hrs')
+               theAx.plot(1.0*ens_vars[i]/wstar**3, 1.0*height/h, label=str(int(time[i])+1) + 'hrs')
      #height, time = np.meshgrid(height, time)
      #maxlev = np.max(ens_vars)
      #minlev = np.min(ens_vars)
@@ -129,21 +129,21 @@ def Get_Var_Arrays(var, fignum):
      #CS = plt.contourf(time, height, ens_vars, levels, cmap=plt.cm.bone)
      #cbar = plt.colorbar(CS)
      #cbar.ax.set_ylabel('colorbar')
-     print 'plotting'
-     theAx.plot(time, have_ens_vars, label=var)
-     #plt.ylim(0, 4)
-     #plt.legend(loc = 'upper right', prop={'size':8})
-     #plt.show()
+     #print 'plotting'
+     #theAx.plot(time, have_ens_vars, label=var)
+     plt.ylim(0, 2)
+     plt.legend(loc = 'upper right', prop={'size':8})
+     plt.show()
 
-theAx = nc.Do_Plot(1, 'Layer Averaged, Scaled TKE Terms vs Time', 'TKE Term/w*3', 'Time (hrs)',111)
-var_list = [ 'BUOYA', 'BUOYAS', 'DISSIP', 'DISSIPS']
-#'DISSIPS', 'BUOYAS', TKE', 'TKES','TKE', 'TKES', 'WVADV', 'WUADV', 'WUPRES', 'WVPRES', 'WUSHEAR', 'WVSHEAR', 'W2ADV', 'W2PRES', 'W2BUOY', 'WVBUOY', 'WUBUOY', 'W2REDIS', 'W2DIFF'
+#theAx = nc.Do_Plot(1, 'Layer Averaged, Scaled TKE Terms vs Time', 'TKE Term/w*3', 'Time (hrs)',111)
+var_list = [ 'TKE']
+#BUOYA', 'BUOYAS', 'DISSIP', 'DISSIPS','DISSIPS', 'BUOYAS', TKE', 'TKES','TKE', 'TKES', 'WVADV', 'WUADV', 'WUPRES', 'WVPRES', 'WUSHEAR', 'WVSHEAR', 'W2ADV', 'W2PRES', 'W2BUOY', 'WVBUOY', 'WUBUOY', 'W2REDIS', 'W2DIFF'
 for i in range(len(var_list)):
      Get_Var_Arrays(var_list[i], i)
 #plt.ylim()
 #plt.ylim(-.000035, .000035)
-plt.legend(loc='lower right')
-plt.show()    
+#plt.legend(loc='lower right')
+#plt.show()    
 
 
 
