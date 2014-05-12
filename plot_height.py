@@ -63,21 +63,21 @@ for i in range(len(label_list)):
         AvProfVars = points.AvProfVars()
     #TODO: alternative starting index for Nov302013
         if Run_Date_List[i]=="Jan152014_1":
-             Ax3.plot(Times[11:29], rinovals[11:29, 7], legend_list[i], label = label_list[i])
+             Ax3.plot(rinovals[11:29, 1], rinovals[11:29, 9], legend_list[i], label = label_list[i])
         else:
-             print len(Times[11:]), rinovals[11:, 7].shape
-             Ax3.plot(Times[11:], rinovals[11:, 7], legend_list[i], label = label_list[i])
+             #print len(Times[11:]), rinovals[11:, 7].shape
+             Ax3.plot(rinovals[11:, 1], rinovals[11:, 9], legend_list[i], label = label_list[i])
         
 #Ax3.plot(np.arange(0, .1, .01)[2:10], .20833*np.arange(0, .1, .01)[2:10], 'k--')
 #Ax3.plot(np.arange(0, .1, .01)[2:10], np.arange(0, .1, .01)[2:10]**(3.0/2), 'k--')
 #Ax3.plot(Times[11:], Fit, 'b-', label="2nd Order Polyfit")
 #Ax3.text(6, 1500, r'$ \frac{dh}{dt}  =  %.3f \frac{m}{s} $' %(1.0*M/3600),  fontdict=None, withdash=False, fontsize = 15)
 #Ax3.set_ylim(0, 2500)
-Ax3.legend(loc = 'lower right', prop={'size': 10}, numpoints=1)
+Ax3.legend(loc = 'upper right', prop={'size': 10}, numpoints=1)
 #Ax3.set_title(r'$\Delta h (Flux)\ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$Scaled \ Time \ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$\frac{\Delta h}{h} \ vs \ Ri^{-1}$', fontsize=20)
-#Ax3.set_title(r'$Ri^{-1} \ vs \ Time$', fontsize=20)
+Ax3.set_xlabel(r'$Ri^{-1}$', fontsize=20)
 #Ax3.set_title(r'$\Delta \theta \ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$\overline{\theta} \ vs \ Time$', fontsize=20)
 #Ax3.set_xlabel(r"$\frac{Time}{\tau}$", fontsize=20)
@@ -89,7 +89,7 @@ Ax3.set_ylabel(r"$pi3_{Douw}$", fontsize=20)
 #Ax3.set_ylabel(r"$\overline{ \theta} (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h \ (m)$", fontsize=20)
 #Ax3.set_ylabel(r"$z \ (m)$", fontsize=20)
-Ax3.set_xlabel(r"$Time (hrs)$", fontsize=20)
+#Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=20)
 #Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
 #Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
 #plt.ylim(0, 1.4)
