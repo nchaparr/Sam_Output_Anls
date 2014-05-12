@@ -62,8 +62,10 @@ for i in range(len(label_list)):
         HistVars = points.HistVars()
         AvProfVars = points.AvProfVars()
     #TODO: alternative starting index for Nov302013
-        if Run_Date_List[i]==
-        Ax3.plot(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i])
+        if Run_Date_List[i]=="Jan152014_1":
+             Ax3.plot(rinovals[11:29, 9], Deltah[11:29], legend_list[i], label = label_list[i])
+        else:
+             Ax3.plot(rinovals[11:, 9], Deltah[11:], legend_list[i], label = label_list[i])
 
 #Ax3.plot(np.arange(0, .1, .01)[2:10], .20833*np.arange(0, .1, .01)[2:10], 'k--')
 #Ax3.plot(np.arange(0, .1, .01)[2:10], np.arange(0, .1, .01)[2:10]**(3.0/2), 'k--')
