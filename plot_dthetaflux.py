@@ -15,9 +15,9 @@ rcParams.update({'font.size': 10})
 
 """
 
-date = "Dec252013"
-sfc_flx = 60
-gamma = .0025
+date = "Jan152014_1"
+sfc_flx = 150
+gamma = .005
 
 Fig1 = plt.figure(1)
 Fig1.clf()
@@ -33,7 +33,7 @@ Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
 Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 #Ax.set_ylabel(r"$z$", fontsize=20)
 plt.xlim(300, 312)
-plt.ylim(100, 1900)
+plt.ylim(100, 1600)
 #plt.ylim(0.1, 1.4)
 
 
@@ -45,11 +45,11 @@ Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=
 Ax1.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 #start, end = -.025, .025
 start, end = -1, 2.5
-Ax1.set_xticks(np.arange(start, end, 1.0*(end-start)/4))
+Ax1.set_xticks([.02, 1])
 #Ax1.set_ylabel(r"$z$", fontsize=20)
 #plt.xlim(-.025, .025)
 #plt.xlim(-1, 2.5)
-plt.ylim(100, 1900)
+plt.ylim(100, 1600)
 #plt.ylim(0.1, 1.4)
 
 Ax2 = Fig1.add_subplot(133)
@@ -63,7 +63,7 @@ Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{
 
 #Ax2.set_ylabel(r"$z$", fontsize=20)
 #Ax2.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-plt.ylim(100, 1900)
+plt.ylim(100, 1600)
 #plt.xlim(-.06, .14)
 #plt.xlim(-.4, 1.2)
 #plt.ylim(0.1, 1.4)
@@ -102,7 +102,7 @@ for i in range(len(theta_file_list)):
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/sfc_flx
     
     #if np.mod(i+1, 6) == 0:
-    if i > 45 and i < 49:
+    if i > 14 and i < 21:
         
         fluxes[0] = np.nan
         zeros = np.zeros_like(height)
@@ -130,7 +130,8 @@ dthetadz0=np.hstack((element0, dthetadz0))
 #Ax1.plot(dthetadz0, scaled_height[0:top_index], '--', label = 'Initial Sounding')
 Ax1.plot(zeros, height)#zeros line for reference
 #Ax1.plot(gamma, scaled_height)#zeros line for reference
-Ax1.plot(zeros+gamma, height, 'k-')#zeros line for reference
+Ax1.plot(zeros+1, height, 'k-')#zeros line for reference
+Ax1.plot(zeros+.02, height, 'k-')#zeros line for reference
 #Ax2.plot(zeros, height)#zeros line for reference
 Ax2.plot(zeros, height)#zeros line for reference 
 plt.legend(loc = 'Lower right', prop={'size':8})

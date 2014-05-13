@@ -20,7 +20,7 @@ rcParams.update({'font.size': 10})
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
 Times = np.array(Times)
 dump_time_list0, Times0 = Make_Timelists(1, 900, 28800)
-
+Times0=np.array(Times0)
 #plot the heights vs time
 #print Line2D.markers
 Fig2 = plt.figure(2)
@@ -63,11 +63,17 @@ for i in range(len(label_list)):
         AvProfVars = points.AvProfVars()
     #TODO: alternative starting index for Nov302013
         if Run_Date_List[i]=="Jan152014_1":
-             Ax3.plot(rinovals[11:29, 1], rinovals[11:29, 9], legend_list[i], label = label_list[i])
+              #print len(Times[11:]), AvProfVars[11:, 0].shape
+              #Ax3.plot(Times[11:],  np.divide(AvProfVars[11:, 2], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
+             Ax3.plot(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i])
+        elif Run_Date_List[i]=="Nov302013":
+             #
+             #Ax3.plot(Times[11:],  np.divide(AvProfVars[11:, 0], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
+             Ax3.plot(rinovals[7:, 1], Deltah[7:], legend_list[i], label = label_list[i])
+
         else:
-             #print len(Times[11:]), rinovals[11:, 7].shape
-             Ax3.plot(rinovals[11:, 1], rinovals[11:, 9], legend_list[i], label = label_list[i])
-        
+             Ax3.plot(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i])
+
 #Ax3.plot(np.arange(0, .1, .01)[2:10], .20833*np.arange(0, .1, .01)[2:10], 'k--')
 #Ax3.plot(np.arange(0, .1, .01)[2:10], np.arange(0, .1, .01)[2:10]**(3.0/2), 'k--')
 #Ax3.plot(Times[11:], Fit, 'b-', label="2nd Order Polyfit")
@@ -93,6 +99,7 @@ Ax3.set_ylabel(r"$pi3_{Douw}$", fontsize=20)
 #Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
 #Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
 #plt.ylim(0, 1.4)
+#plt.xlim(.02, .09)
 plt.show()
 
 
