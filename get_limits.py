@@ -86,9 +86,9 @@ def Main_Fun(rundate, gamma, flux_s):
 
 run_list = [["Nov302013", .005, 100], ["Dec142013", .01, 100], ["Dec202013", .005, 60], ["Dec252013", .0025, 60], ["Jan152014_1", .005, 150], ["Mar12014", .01, 60], ["Mar52014", .01, 150]]
 
-for run in run_list:
-    print run
-    Main_Fun(run[0], run[1], run[2])
+#for run in run_list:
+run = run_list[0]
+Main_Fun(run[0], run[1], run[2])
 
 
     
