@@ -65,12 +65,17 @@ for i in range(len(label_list)):
         if Run_Date_List[i]=="Jan152014_1":
               #print len(Times[11:]), AvProfVars[11:, 0].shape
               #Ax3.plot(Times[11:],  np.divide(AvProfVars[11:, 2], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
+             rinovals[16:21, 1] = np.nan
+             Deltah[16:21] = np.nan
              Ax3.plot(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i])
         elif Run_Date_List[i]=="Nov302013":
              #
              #Ax3.plot(Times[11:],  np.divide(AvProfVars[11:, 0], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
              Ax3.plot(rinovals[7:, 1], Deltah[7:], legend_list[i], label = label_list[i])
-
+        elif Run_Date_List[i] =="Mar12014":
+             rinovals[12:17, 1] = np.nan
+             Deltah[12:17] = np.nan       
+             Ax3.plot(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i])
         else:
              Ax3.plot(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i])
 
