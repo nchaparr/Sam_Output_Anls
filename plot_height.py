@@ -27,26 +27,10 @@ Fig2 = plt.figure(2)
 Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
 
-#Getting w_{e} from a polyfit to the height vs time plot
-#FitFunc=np.polyfit(Times[11:], AvProfVars5[11:, 1], 2, full=False)
-#Fit = FitFunc[0]*Times[11:]**2 + FitFunc[1]*Times[11:] + FitFunc[2]
-#dhdt =1.0*(2*FitFunc[0]*Times[11:] + FitFunc[1])/3600
-
-#Fit = FitFunc[0]*Times[120:]**3 + FitFunc[1]*Times[120:]**2 + FitFunc[2]*Times[120:] + FitFunc[3]
-#dhdt =1.0*(3*FitFunc[0]*Times[120:]**2 + 2*FitFunc[1]*Times[120:] + FitFunc[2])/3600
-
-#Not sure I need this, doing it already above
-#deltah = np.subtract(AvProfVars5[:, 2], AvProfVars5[:, 0])
-#deltah = np.divide(deltah, AvProfVars5[:, 1])
+#This needs to be included, for scaled time vs height plot
 #tau = 1.0*rinovals5[:,4]/3600
 #scaled_time = np.divide(Times, tau)
 
-#This is an important step -- perhaps should be a function?
-#saving the scaled we vs invri plot points
-#scaled_dhdt = np.divide(dhdt, rinovals5[11:, 2])
-#dhdtinvriplt = np.vstack((rinovals5[11:, 1], scaled_dhdt))
-#dhdtinvriplt = np.transpose(np.vstack((dhdtinvriplt,deltah[11:])))
-#np.savetxt('/tera/phil/nchaparr/python/Plotting/Mar52014/data/dhdtinvriplt.txt', dhdtinvriplt, delimiter=' ')
 
 #Main Part -- pulling points and plotting them
 label_list = ['100/10', '100/5', '60/5', '60/2.5', '150/5', '60/10', '150/10']
@@ -61,7 +45,7 @@ for i in range(len(label_list)):
         Deltah = points.Deltah_over_h()
         HistVars = points.HistVars()
         AvProfVars = points.AvProfVars()
-    #TODO: alternative starting index for Nov302013
+        #dhdtinvriplt=For_Plots.get_dhdt(11, 47)  TODO: test this method for the scaled we vs invri plot
         if Run_Date_List[i]=="Jan152014_1":
               #print len(Times[11:]), AvProfVars[11:, 0].shape
               #Ax3.plot(Times[11:],  np.divide(AvProfVars[11:, 2], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
@@ -103,8 +87,8 @@ Ax3.set_ylabel(r"$\frac{\Delta h_{*}}{h}$", fontsize=20)
 #Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=20)
 #Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
 #Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
-#plt.ylim(0, 1.4)
-#plt.xlim(.02, .09)
+plt.ylim(0.1, 0.7)
+plt.xlim(.02, .1)
 plt.show()
 
 
