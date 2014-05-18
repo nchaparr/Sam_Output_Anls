@@ -48,18 +48,19 @@ class For_Plots:
           Deltah_over_h = np.divide(Deltah, AvProfVars[:,1])
           return Deltah_over_h         
      
-    def get_dhdt(self, Times, start_index, end_index):
-        """
-           Gets heights based on dthetdz and flux
+     def get_dhdt(self, Times, start_index, end_index):
+         """
+            polyfits the h vs time plot to get we for the scaled
+            we vs invri plot.
     
-           Arguments:
-           times -- list of times in hours 
-           heights--array of boundary layer heights 
+            Arguments:
+            times -- list of times in hours 
+            heights--array of boundary layer heights 
 
-           Returns:
-           dhdtinvriplt -- 2d array for the scaledweinvri plot  
+            Returns:
+            dhdtinvriplt -- 2d array for the scaledweinvri plot  
 
-           """
+        """
           AvProfVars = np.genfromtxt(self.path + "AvProfLims")
           rinovals = np.genfromtxt(self.path + "invrinos")
           FitFunc=np.polyfit(Times[start_index:end_index], AvProfVars5[start_index:end_index, 1], 2, full=False)
