@@ -13,46 +13,6 @@ from nchap_class import *
    Editing it for plotting scaled TKE   
 """
 #TODO: may be obsolete
-#TODO: see which functions can be pulled from nchap_fun
-def Ensemble_Averageold(list, dim2):
-     """Gets enseble average of a list of arrays
-
-    Arguments:
-    list -- list of 6, dim2 arrays
-
-    Returns:
-    ens_avs -- 6, dim2 array
-    
-    """
-     ens_avs = np.zeros([24, dim2])
-     for i in range(24): #time
-          for j in range(dim2): #height
-               vals = []          
-               for k in range(len(list)):
-                    #print i, j, k, list[k].shape
-                    val = list[k][i, j]#i, j, kth elemement from var array l                                        
-                    vals.append(val)                
-               avval = 1.0*sum(vals)/len(vals) #average over l arrays                             
-               ens_avs[i, j] = avval
-     return ens_avs
-
-def Ensemble_Average(list):
-    """Gets enseble average of a list of arrays
-
-    Arguments:
-    list -- list of arrays
-
-    Returns:
-    ens_avs -- array
-    
-    """
-    to_av = list[0]
-    for k in range(len(list)-1): 
-        to_av = np.add(to_av, list[k+1])
-    ens_avs = 1.0*to_av/len(list)
-    return ens_avs
-
-
 def Get_Var_Arrays(var, fignum):
      """Pulls stats output from a ensemble of cases, gets ensemble averages and does contour plots
      on height, time grid
@@ -91,8 +51,8 @@ def Get_Var_Arrays(var, fignum):
           press_list.append(press)
           
      #get ensemble averages
-     ens_vars = Ensemble_Average(vars_list)
-     ens_press = Ensemble_Average(press_list)
+     ens_vars = nc.Ensemble1_Average(vars_list)
+     ens_press = nc.Ensemble1_Average(press_list)
      ens_press = np.transpose(ens_press)
      
      #TODO: verify this is in time order!
