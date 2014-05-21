@@ -167,6 +167,24 @@ class Get_Var_Arrays1:
 
           return wvelthetaperts_list
      
+     def get_thetaperts(self):
+          thetas_list, press_list = self.get_thetas()
+          ens_avthetas = nc.Ensemble1_Average(thetas_list)
+          thetaperts_list=[]
+          for i in range(len(thetas_list)):  
+               [znum, ynum, xnum] = thetas_list[i].shape
+               thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
+               thetapert = np.zeros_like(thetapert_rough)
+               for j in range(znum):#something like this is done in statistics.f90, staggered grid!
+                    if j == 0:
+                         thetapert[j,:,:] = thetapert_rough[j,:,:]
+                    else:
+                         thetapert[j,:,:] = 0.5*np.add(thetapert_rough[j,:,:], thetapert_rough[j-1,:,:])
+               
+               thetaperts_list.append(thetapert)
+
+          return thetaperts_list
+     
      def get_sqvel(self, vel_dir):
           if vel_dir == 'w':
                vel_list = self.get_wvelperts()

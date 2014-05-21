@@ -28,9 +28,10 @@ def Main_Fun(date, dump_time, hflux):
 
     Arguments:
     dump_time -- time of output eg '0000000720'
+    date -- eg "Mar52014"
 
     Returns:
-    var_bar -- 64 array of horizontally averaged, ensemble averages or perturbations (covariances)
+     -- 
     
     """
      #create list of filenames for given dump_time     
@@ -55,21 +56,11 @@ def Main_Fun(date, dump_time, hflux):
      ens_press = nc.Ensemble1_Average(press_list)
                
      #now get the perturbations
-     wvelthetaperts_list = []
+     thetaperts_list = Vars.get_thetaperts()
      for i in range(len(wvels_list)):  #TODO: this should be more modular, see nchap_class                  
-          thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
-          thetapert = np.zeros_like(thetapert_rough)
-          [znum, ynum, xnum] = wvels_list[i].shape
-
-
-          for j in range(znum):#something like this is done in statistics.f90, staggered grid!
-               if j == 0:
-                    thetapert[j,:,:] = thetapert_rough[j,:,:]
-               else:
-                    thetapert[j,:,:] = 0.5*np.add(thetapert_rough[j,:,:], thetapert_rough[j-1,:,:])
-
-          wvelpert = wvels_list[i]
           
+          wvelpert = wvels_list[i]
+          thetapert = thetaperts_list[i]
           slice_lev = np.where(np.abs(height - hflux) < 26)[0][0]        
 
           wvelthetapert = np.multiply(wvelpert, thetapert)

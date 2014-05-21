@@ -34,6 +34,7 @@ def Main_Fun(dump_time):
     
     """
      date = "Dec142013" #TODO: this should be an argument passed to Main_Fun
+     
      #pulls data using class Get_Var_Arrays1     
      Vars = Get_Var_Arrays1("/tera2/nchaparr/"+date+"/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time)
      thetas_list, press_list = Vars.get_thetas() 
@@ -74,13 +75,14 @@ def Main_Fun(dump_time):
      rtwvelpertsq_bar = nc.Horizontal_Average(rtens_avwvelpertsq)
      
      #save text files, TODO: make more purdy
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads' + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar])), delimiter=' ')
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/wvelthetapert'+dump_time, wvelthetapert_bar, delimiter=' ')
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/theta_bar'+dump_time, theta_bar, delimiter=' ')
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/heights'+dump_time, height, delimiter=' ')
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/press'+dump_time, ens_press, delimiter=' ')
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/"+date+"/data/tracers'+dump_time, tracer_bar, delimiter=' ')
-     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/rootmeanvsq'+dump_time, rtwvelpertsq_bar, delimiter=' ')
+      #datapath = For_Plots(date)
+     #datapath.save_file(np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar])), "flux_quads" + dump_time)
+     #datapath.save_file(wvelthetapert_bar, "wvelthetapert"+dump_time)
+     #datapath.save_file(theta_bar, "theta_bar"+dump_time)
+     #datapath.save_file(height, "heights"+dump_time)
+     #datapath.save_file(ens_press, "press"+dump_time)
+     #datapath.save_file(tracer_bar, "tracers"+dump_time)
+     #datapath.save_file(rtwvelpertsq_bar, "rootmeanvsq"+dump_time)
      
      return rtwvelpertsq_bar, height
 
