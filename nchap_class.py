@@ -49,7 +49,7 @@ class For_Plots:
           return Deltah_over_h         
      
      def get_dhdt(self, Times, start_index, end_index):
-         """
+          """
             polyfits the h vs time plot to get we for the scaled
             we vs invri plot.
     
@@ -60,7 +60,7 @@ class For_Plots:
             Returns:
             dhdtinvriplt -- 2d array for the scaledweinvri plot  
 
-        """
+          """
           AvProfVars = np.genfromtxt(self.path + "AvProfLims")
           rinovals = np.genfromtxt(self.path + "invrinos")
           FitFunc=np.polyfit(Times[start_index:end_index], AvProfVars5[start_index:end_index, 1], 2, full=False)
@@ -85,7 +85,7 @@ class Get_Var_Arrays1:
           self.path2 = path2          
           self.dump_time = dump_time
           self.nc_file_list = [path1 + str(i+1) + path2 + dump_time + ".nc" for i in range(10)]
-     
+               
      
      def get_wvelperts(self):
           wvelperts_list = []

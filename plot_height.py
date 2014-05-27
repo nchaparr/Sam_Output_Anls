@@ -45,39 +45,39 @@ for i in range(len(label_list)):
         Deltah = points.Deltah_over_h()
         HistVars = points.HistVars()
         AvProfVars = points.AvProfVars()
-        #dhdtinvriplt=For_Plots.get_dhdt(11, 47)  TODO: test this method for the scaled we vs invri plot
+        #dhdtinvriplt=For_Plots.get_dhdt(Times, 11, 47)  TODO: test this method for the scaled we vs invri plot
         if Run_Date_List[i]=="Jan152014_1":
               #print len(Times[11:]), AvProfVars[11:, 0].shape
               #Ax3.plot(Times[11:],  np.divide(AvProfVars[11:, 2], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
              rinovals[16:21, 1] = np.nan
              Deltah[16:21] = np.nan
-             Ax3.plot(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i])
+             Ax3.plot(Times[11:29], -AvProfVars[11:29, 7], legend_list[i], label = label_list[i])
         elif Run_Date_List[i]=="Nov302013":
              #
              #Ax3.plot(Times[11:],  np.divide(AvProfVars[11:, 0], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
-             Ax3.plot(rinovals[7:, 1], Deltah[7:], legend_list[i], label = label_list[i])
+             Ax3.plot(Times0[7:], -AvProfVars[7:, 7], legend_list[i], label = label_list[i])
         elif Run_Date_List[i] =="Mar12014":
              rinovals[12:17, 1] = np.nan
              Deltah[12:17] = np.nan       
-             Ax3.plot(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i])
+             Ax3.plot(Times[11:], -AvProfVars[11:, 7], legend_list[i], label = label_list[i])
         else:
-             Ax3.plot(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i])
+             Ax3.plot(Times[11:], -AvProfVars[11:, 7], legend_list[i], label = label_list[i])
 
 #Ax3.plot(np.arange(0, .1, .01)[2:10], .20833*np.arange(0, .1, .01)[2:10], 'k--')
 #Ax3.plot(np.arange(0, .1, .01)[2:10], np.arange(0, .1, .01)[2:10]**(3.0/2), 'k--')
 #Ax3.plot(Times[11:], Fit, 'b-', label="2nd Order Polyfit")
 #Ax3.text(6, 1500, r'$ \frac{dh}{dt}  =  %.3f \frac{m}{s} $' %(1.0*M/3600),  fontdict=None, withdash=False, fontsize = 15)
 #Ax3.set_ylim(0, 2500)
-Ax3.legend(loc = 'upper right', prop={'size': 10}, numpoints=1)
+Ax3.legend(loc = 'upper left', prop={'size': 10}, numpoints=1)
 #Ax3.set_title(r'$\Delta h (Flux)\ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$Scaled \ Time \ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$\frac{\Delta h}{h} \ vs \ Ri^{-1}$', fontsize=20)
-Ax3.set_xlabel(r'$Ri^{-1}$', fontsize=20)
+Ax3.set_xlabel(r'$Time \ (hrs)$', fontsize=20)
 #Ax3.set_title(r'$\Delta \theta \ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$\overline{\theta} \ vs \ Time$', fontsize=20)
 #Ax3.set_xlabel(r"$\frac{Time}{\tau}$", fontsize=20)
 #Ax3.set_ylabel(r"$pi3_{Douw}$", fontsize=20)
-Ax3.set_ylabel(r"$\frac{\Delta h_{*}}{h}$", fontsize=20)
+Ax3.set_ylabel(r"$\Delta \theta \ (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\frac{w_{e}}{w^{*}}$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h (m)$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta \theta (K)$", fontsize=20)
@@ -87,8 +87,8 @@ Ax3.set_ylabel(r"$\frac{\Delta h_{*}}{h}$", fontsize=20)
 #Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=20)
 #Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
 #Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
-plt.ylim(0.1, 0.7)
-plt.xlim(.02, .1)
+plt.ylim(0, 0.8)
+#plt.xlim(.02, .1)
 plt.show()
 
 

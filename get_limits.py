@@ -36,6 +36,8 @@ def Main_Fun(rundate, gamma, flux_s):
      files = For_Plots(rundate)
 
      #Create lists of variable lists
+     #TODO: need to test Deltatheta
+     first_theta_file = files.get_file(dump_time_list[0], "theta_bar")
      theta_file_list = [files.get_file(dump_time, "theta_bar") for dump_time in dump_time_list]
      press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]
      flux_file_list = [files.get_file(dump_time, "wvelthetapert") for dump_time in dump_time_list]
@@ -46,6 +48,7 @@ def Main_Fun(rundate, gamma, flux_s):
      #loop over text files files
      for i in range(len(theta_file_list)):
          print i, theta_file_list[i]
+         theta0=np.genfromtxt(first_theta_file)
          theta = np.genfromtxt(theta_file_list[i])
          print theta.shape
          height = np.genfromtxt(height_file)
@@ -63,7 +66,7 @@ def Main_Fun(rundate, gamma, flux_s):
          print height.shape, press.shape, theta.shape, wvelthetapert.shape, gamma, top_index
 
          #function for calcuating heights
-         [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
+         [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, Deltatheta, mltheta]= nc.Get_CBLHeights(height, press, theta, theta0, wvelthetapert, gamma, flux_s, top_index)
 
          print elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta
          
@@ -71,7 +74,7 @@ def Main_Fun(rundate, gamma, flux_s):
          
          [rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
 
-         AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta])
+         AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, Deltatheta, mltheta])
          tau = 1.0*h/wstar
          invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4])
 
@@ -86,9 +89,9 @@ def Main_Fun(rundate, gamma, flux_s):
 
 run_list = [["Nov302013", .005, 100], ["Dec142013", .01, 100], ["Dec202013", .005, 60], ["Dec252013", .0025, 60], ["Jan152014_1", .005, 150], ["Mar12014", .01, 60], ["Mar52014", .01, 150]]
 
-#for run in run_list:
-run = run_list[0]
-Main_Fun(run[0], run[1], run[2])
+for run in run_list:
+#run = run_list[0]
+    Main_Fun(run[0], run[1], run[2])
 
 
     

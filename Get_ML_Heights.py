@@ -79,7 +79,7 @@ def get_ticks(mean, stddev, max, min):
      return label_list, tick_list
 
 
-#TODO: needs to change not that maximum gradient isn't to be used
+
 def Main_Fun(dump_time_index, case, date):
      """Loops over ensemble cases.  Pulls temperature, pressure, height from nc output files using nchap_class
     gets height of mixed layer at each horizontal point using fast_fit and saves as a txt file.   

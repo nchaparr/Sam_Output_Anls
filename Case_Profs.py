@@ -13,6 +13,7 @@ import nchap_fun as nc
 
 ncFiles=glob.glob("/tera2/nchaparr/Nov302013/runs/sam_case1/OUT_3D/keep/NCHAPP1*.nc") #3 D snaphsot files that have been converted to nc files
 print ncFiles
+
 """
    Plots from some 3D snapshots,
    initial sounding from setdata.f90

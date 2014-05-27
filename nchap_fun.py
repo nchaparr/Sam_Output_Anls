@@ -472,16 +472,16 @@ def Flux_Quad(wpert, thetapert):
                                                              
     return [upwarm, downwarm, upcold, downcold]
 
-def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s, top_index):
+def Get_CBLHeights(heights, press, thetas, theta0s, wvelthetapert, gamma, flux_s, top_index):
     """
     Gets heights based on dthetdz and flux
     
     Arguments:
-    wpert -- array of w perturbations
-    thetapert -- array of theta perturbations
+     -- 
+     --
 
     Returns:
-    [up_warm, down_warm, up_cold, down_cold] -- arrays, np.nans are fillers  
+     --   
 
     """
     
@@ -544,11 +544,13 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s, top_ind
 
     h = heights[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]
     h_flux = heights[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]]
-
+    
+    Deltatheta = thetas[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]] - theta0s[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]
+    
     deltatheta = thetas[dtheta_index_t] - thetas[dtheta_index_b]
     mltheta = np.mean(thetas[0:dtheta_index_b])
     
-    return [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta]
+    return [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, Deltatheta, mltheta]
 
     
     
