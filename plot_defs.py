@@ -127,8 +127,8 @@ for i in range(len(theta_file_list)):
         fluxes[0] = np.nan
         zeros = np.zeros_like(height)
         wvelthetapert = fluxes
-        Ax.plot(theta[z_f0_index:], height[z_f0_index:], 'k-', label = r"$\overline{\theta}$") # 
-        Ax.plot([theta[z_f0_index], theta[z_f0_index]], [0, z_f0], 'k-')
+         
+        Ax.plot([theta[z_f0_index], theta[z_f0_index]], [0, h], 'k-')
         Ax.plot([theta[z_f0_index]-20, theta[z_f0_index]+20], [z_f0, z_f0], 'k--')
         Ax.plot([theta[z_f0_index]-20, theta[z_f0_index]+20], [z_f1, z_f1], 'k--')
         #Ax.plot([theta[z_f0_index]-20, theta[z_f0_index]+20], [z_f, z_f], 'k-')
@@ -175,7 +175,7 @@ dthetadz0=np.hstack((element0, dthetadz0))
 
 Ax.plot(theta_0 -.2, height[0:top_index], 'k:', label = r"$\overline{\theta}_{0}$", markersize=500) #, 
 #Ax.plot([theta_0[], theta[]], [height[], height[]], '--')
-
+Ax.plot(theta_0[h_index:top_index]-.2, height[h_index:top_index], 'k-', label = r"$\overline{\theta}$") #
 #theAx.text(300, 1500, '',  fontdict=None, withdash=False)
 #theAx.text(300, 1400, '',  fontdict=None, withdash=False)
 Ax.set_xticks([theta[z_f0_index]-.88])
