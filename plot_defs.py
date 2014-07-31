@@ -25,7 +25,7 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
 
-Ax = Fig1.add_subplot(131)
+Ax = Fig1.add_subplot(121)
 #Ax.set_title( r'$\theta$', fontsize=20)
 #Ax.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
@@ -37,22 +37,22 @@ plt.ylim(100, 1500)
 #plt.ylim(0.1, 1.4)
 
 
-Ax1 = Fig1.add_subplot(132)
+#Ax1 = Fig1.add_subplot(132)
 #Ax1.set_title( r'$Scaled \ \frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax1.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
-Ax1.set_xlabel(r"$\frac{\partial \theta}{\partial z}$ / $\gamma$", fontsize=20)
+#Ax1.set_xlabel(r"$\frac{\partial \theta}{\partial z}$ / $\gamma$", fontsize=20)
 #Ax1.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 #start, end = -.025, .025
 #start, end = -1, 2.5
-Ax1.set_xticks([-1, 0, 0, 1, 2.5])
+#Ax1.set_xticks([-1, 0, 0, 1, 2.5])
 #Ax1.set_ylabel(r"$z$", fontsize=20)
 #plt.xlim(-.025, .025)
-plt.xlim(-1, 2.5)
-plt.ylim(100, 1500)
+#plt.xlim(-1, 2.5)
+#plt.ylim(100, 1500)
 #plt.ylim(0.1, 1.4)
 
-Ax2 = Fig1.add_subplot(133)
+Ax2 = Fig1.add_subplot(122)
 #Ax2.set_title(r"$\overline{w^{'} \theta^{'}}$", fontsize=20)
 #Ax2.set_title(r"$Scaled \ \overline{w^{'} \theta^{'}}$", fontsize=20)
 Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}} $ / $\overline{w^{'}\theta^{'}}_{s}$", fontsize=20)
@@ -61,7 +61,8 @@ Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}} $ / $\overline{w^{'}\theta^{'}}_{s}
 #plt.xlim(-.08, .14)
 #start, end = -.6, 1.2
 #Ax2.set_xticks([-.08, 0, .07, .14])
-
+Ax2.set_yticks([])
+Ax2.set_yticklabels([])
 #Ax2.set_ylabel(r"$z$", fontsize=20)
 #Ax2.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 plt.ylim(100, 1500)
@@ -126,15 +127,20 @@ for i in range(len(theta_file_list)):
         wvelthetapert = fluxes
         Ax.plot(theta, height, 'k-', label = r"$\overline{\theta}$") # 
         #Ax.plot([theta[], theta[]], [height[], height[]], '')
+        Ax.plot([theta[z_f0_index]-20, theta[z_f0_index]+20], [z_f0, z_f0], 'k--')
+        Ax.plot([theta[z_f0_index]-20, theta[z_f0_index]+20], [z_f1, z_f1], 'k--')
+        Ax.plot([theta[z_f0_index]-20, theta[z_f0_index]+20], [z_f, z_f], 'k-')
 
-        Ax1.plot(1.0*dthetadz, height, 'k-') #, label = str(Times[i])+'hrs'
-        Ax1.plot([dthetadz[h0_index]-.7, dthetadz[h0_index]+2], [h0, h0], 'k--')
-        Ax1.plot([dthetadz[h0_index]-.7, dthetadz[h0_index]+2], [h, h], 'k-')
-        Ax1.plot([dthetadz[h0_index]-.7, dthetadz[h0_index]+2], [h1, h1], 'k--')
 
-        Ax1.text(dthetadz[h0_index]-.7, h1, r"$h_{1}$", size=20)
-        Ax1.text(dthetadz[h0_index]-.7, h, r"$h$", size=20)
-        Ax1.text(dthetadz[h0_index]-.7, h0, r"$h_{0}$", size=20)
+        
+        #Ax1.plot(1.0*dthetadz, height, 'k-') #, label = str(Times[i])+'hrs'
+        #Ax1.plot([dthetadz[h0_index]-.7, dthetadz[h0_index]+2], [h0, h0], 'k--')
+        #Ax1.plot([dthetadz[h0_index]-.7, dthetadz[h0_index]+2], [h, h], 'k-')
+        #Ax1.plot([dthetadz[h0_index]-.7, dthetadz[h0_index]+2], [h1, h1], 'k--')
+
+        #Ax1.text(dthetadz[h0_index]-.7, h1, r"$h_{1}$", size=20)
+        #Ax1.text(dthetadz[h0_index]-.7, h, r"$h$", size=20)
+        #Ax1.text(dthetadz[h0_index]-.7, h0, r"$h_{0}$", size=20)
                 
         
         Ax2.plot(wvelthetapert, height, 'k-') #, label = str(Times[i])+'hrs'    
@@ -167,9 +173,9 @@ Ax.plot(theta_0 -.2, height[0:top_index], 'k--', label = r"$\overline{\theta}_{0
 #theAx.text(300, 1500, '',  fontdict=None, withdash=False)
 #theAx.text(300, 1400, '',  fontdict=None, withdash=False)
 
-Ax1.plot(zeros, height, 'k-')#zeros line for reference
+#Ax1.plot(zeros, height, 'k-')#zeros line for reference
 #Ax1.plot(gamma, height)#zeros line for reference
-Ax1.plot(zeros+1, height, 'k-')#zeros line for reference
+#Ax1.plot(zeros+1, height, 'k-')#zeros line for reference
 #Ax2.plot(zeros, height)#zeros line for reference
 Ax2.plot(zeros, height, 'k-')#zeros line for reference 
 #Ax2.plot(theta_0, scaled_xheight[0:top_index], '--', label = 'Initial Sounding')#"
