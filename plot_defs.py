@@ -63,8 +63,8 @@ Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
 Ax2.set_yticks([])
 Ax2.set_yticklabels([], fontsize=20)
 
-Ax2.set_xticks([1])
-Ax2.set_xticklabels([r"$\overline{w^{'}\theta^{'}}_{s}$"], fontsize=18)
+Ax2.set_xticks([-.2, 0, 1])
+Ax2.set_xticklabels([r"$-0.2 \overline{w^{'}\theta^{'}}_{s}$", 0, r"$\overline{w^{'}\theta^{'}}_{s}$"], fontsize=18)
 #Ax2.set_ylabel(r"$z$", fontsize=20)
 #Ax2.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 plt.ylim(0, 1500)
@@ -129,8 +129,9 @@ for i in range(len(theta_file_list)):
         wvelthetapert = fluxes
          
         Ax.plot([theta[z_f0_index], theta[z_f0_index]], [0, h], 'k-')
-        Ax.plot([theta[z_f0_index]-20, theta[z_f0_index]+20], [z_f0, z_f0], 'k--')
-        Ax.plot([theta[z_f0_index]-20, theta[z_f0_index]+20], [z_f1, z_f1], 'k--')
+        Ax.plot([theta[z_f0_index], theta[z_f0_index]+1.5], [h, h], 'k--')
+        #Ax.plot([theta[z_f0_index]-20, theta[z_f0_index]+20], [z_f0, z_f0], 'k--')
+        #Ax.plot([theta[z_f0_index]-20, theta[z_f0_index]+20], [z_f1, z_f1], 'k--')
         #Ax.plot([theta[z_f0_index]-20, theta[z_f0_index]+20], [z_f, z_f], 'k-')
         
         Ax.set_yticks([h])
@@ -144,19 +145,23 @@ for i in range(len(theta_file_list)):
         #Ax1.text(dthetadz[h0_index]-.7, h1, r"$h_{1}$", size=20)
         #Ax1.text(dthetadz[h0_index]-.7, h, r"$h$", size=20)
         #Ax1.text(dthetadz[h0_index]-.7, h0, r"$h_{0}$", size=20)
+
+        Ax.annotate('', xy=(307.4, h+10), xycoords = 'data', xytext=(309.6, h+10), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
+        Ax.text(308, h+20, r"$\delta \theta$", size=15)
                 
-        Ax2.plot([1, 0], [0, z_f0], 'k-')
+        Ax2.plot([1, -.2], [0, h], 'k-')
+        Ax2.plot([-.2,0], [h, h], 'k--')
         #Ax2.plot(wvelthetapert[:z_f0_index], height[:z_f0_index], 'b-')
-        Ax2.plot(wvelthetapert[z_f0_index:], height[z_f0_index:], 'k-') #, label = str(Times[i])+'hrs'    
-        Ax2.plot([wvelthetapert[z_f0_index]-3, wvelthetapert[z_f0_index]+2], [z_f0, z_f0], 'k--')
-        Ax2.plot([wvelthetapert[z_f0_index]-3, wvelthetapert[z_f0_index]+2], [z_f1, z_f1], 'k--')
+        #Ax2.plot(wvelthetapert[z_f0_index:], height[z_f0_index:], 'k-') #, label = str(Times[i])+'hrs'    
+        #Ax2.plot([wvelthetapert[z_f0_index]-3, wvelthetapert[z_f0_index]+2], [z_f0, z_f0], 'k--')
+        #Ax2.plot([wvelthetapert[z_f0_index]-3, wvelthetapert[z_f0_index]+2], [z_f1, z_f1], 'k--')
         #Ax2.plot([wvelthetapert[z_f0_index]-.2, wvelthetapert[z_f0_index]+.8], [z_f, z_f], 'k-')
 
         Ax.text(308, 1300, r"$\frac{\partial \overline{\theta}_{0}}{\partial z} = \gamma$", size=15)
         
-        Ax.text(315, 1200, "FA", size=15)
-        Ax.text(315, 900, "EL", size=15)
-        Ax.text(315, 500, "ML", size=15)
+        #Ax.text(315, 1200, "FA", size=15)
+        #Ax.text(315, 900, "EL", size=15)
+        #Ax.text(315, 500, "ML", size=15)
        
         
 array = np.genfromtxt('/newtera/tera/phil/nchaparr/python/Pert_Files/snd')
