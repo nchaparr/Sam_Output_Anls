@@ -70,11 +70,11 @@ plt.ylim(100, 1500)
 #plt.ylim(0.1, 1.4)
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
  
-theta_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/theta_bar"+ dump_time for dump_time in dump_time_list]
-press_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/press"+ dump_time for dump_time in dump_time_list]
-flux_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
-height_file = "/tera/phil/nchaparr/python/Plotting/"+date+"/data/heights0000000600"
-AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
+theta_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/theta_bar"+ dump_time for dump_time in dump_time_list]
+press_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/press"+ dump_time for dump_time in dump_time_list]
+flux_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
+height_file = "/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/heights0000000600"
+AvProfVars = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
 
 #loop over text files files
 for i in range(len(theta_file_list)):
@@ -147,7 +147,7 @@ for i in range(len(theta_file_list)):
         Ax2.text(dthetadz[z_f0_index]+.70, z_f, r"$z_{f}$", size=20)
        
         
-array = np.genfromtxt('/tera/phil/nchaparr/python/Pert_Files/snd')
+array = np.genfromtxt('/newtera/tera/phil/nchaparr/python/Pert_Files/snd')
     
 height_0 = array[:, 0]
 theta_0 = array[:, 1]

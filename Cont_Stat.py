@@ -24,7 +24,7 @@ def Get_Var_Arrays(var, fignum):
     
     """
      #create list of filenames
-     ncfile_list = ["/tera2/nchaparr/Mar52014/runs/sam_case"+ str(i+1) + "/OUT_STAT/NCHAPP1_testing_doscamiopdata.nc" for i in range(10)]
+     ncfile_list = ["/newtera/tera/phil/nchaparr/sam_grex_ensemble/sam_case"+ str(i+2) + "/OUT_STAT/NCHAPP1_testing_doscamiopdata.nc" for i in range(1)]
 
      #create lists for variable arrays from each case
      vars_list = []
@@ -34,6 +34,7 @@ def Get_Var_Arrays(var, fignum):
      
      for i in range(len(ncfile_list)): #loop over list of nc files
           thefile = ncfile_list[i]
+          print thefile   
           ncdata = Dataset(thefile,'r')
           Vars = ncdata.variables[var][...]
           #print Vars.shape
@@ -69,18 +70,18 @@ def Get_Var_Arrays(var, fignum):
      for i in range(len(time)):
           if np.mod(i+1, 6)==0:
                #print i, time[i], 1.0*(i+1)/10, "plotting"
-               points = For_Plots("Mar52014")
-               rinovals = points.rinovals()
-               print len(rinovals[:,2])
-               AvProfVars = points.AvProfVars()
+               #points = For_Plots("Mar52014")
+               #rinovals = points.rinovals()
+               #print len(rinovals[:,2])
+               #AvProfVars = points.AvProfVars()
                #invrinos: [rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4]
-               wstar= rinovals[1.0*((i+1))*(6.0/6.0)-1, 2]
-               h= AvProfVars[1.0*((i+1))*(6.0/6.0)-1, 1]
-               h_index = np.where(height==h)[0]
+               #wstar= rinovals[1.0*((i+1))*(6.0/6.0)-1, 2]
+               #h= AvProfVars[1.0*((i+1))*(6.0/6.0)-1, 1]
+               #h_index = np.where(height==h)[0]
                print time[i]
-               have_ens_vars.append(1.0*np.sum(ens_vars[i][0:h_index])/(h*wstar**3))
+               have_ens_vars.append(1.0*np.sum(ens_vars[i]))
                #print have_ens_vars[i]
-               theAx.plot(1.0*ens_vars[i]/wstar**3, 1.0*height/h, label=str(int(time[i])+1) + 'hrs')
+               theAx.plot(1.0*ens_vars[i], height, label=str(int(time[i])+1) + 'hrs')
      #height, time = np.meshgrid(height, time)
      #maxlev = np.max(ens_vars)
      #minlev = np.min(ens_vars)
@@ -91,12 +92,12 @@ def Get_Var_Arrays(var, fignum):
      #cbar.ax.set_ylabel('colorbar')
      #print 'plotting'
      #theAx.plot(time, have_ens_vars, label=var)
-     plt.ylim(0, 2)
+     plt.ylim(0, 2000)
      plt.legend(loc = 'upper right', prop={'size':8})
      plt.show()
 
 #theAx = nc.Do_Plot(1, 'Layer Averaged, Scaled TKE Terms vs Time', 'TKE Term/w*3', 'Time (hrs)',111)
-var_list = [ 'TKE']
+var_list = [ 'TKE', 'THETAV']
 #BUOYA', 'BUOYAS', 'DISSIP', 'DISSIPS','DISSIPS', 'BUOYAS', TKE', 'TKES','TKE', 'TKES', 'WVADV', 'WUADV', 'WUPRES', 'WVPRES', 'WUSHEAR', 'WVSHEAR', 'W2ADV', 'W2PRES', 'W2BUOY', 'WVBUOY', 'WUBUOY', 'W2REDIS', 'W2DIFF'
 for i in range(len(var_list)):
      Get_Var_Arrays(var_list[i], i)
