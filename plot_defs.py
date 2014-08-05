@@ -29,9 +29,13 @@ Ax = Fig1.add_subplot(131)
 #Ax.set_title( r'$\theta$', fontsize=20)
 #Ax.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
-Ax.set_xlabel(r"$\overline{\theta} \ (K)$", fontsize=20)
+Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
+Ax.set_xticks([])
+Ax.set_xticklabels([])
+Ax.set_yticks([])
+Ax.set_yticklabels([])
 #Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-Ax.set_ylabel(r"$z \ (m)$", fontsize=20)
+Ax.set_ylabel(r"$z$", fontsize=20)
 plt.xlim(300, 320)
 plt.ylim(100, 1500)
 #plt.ylim(0.1, 1.4)
@@ -41,11 +45,14 @@ Ax1 = Fig1.add_subplot(132)
 #Ax1.set_title( r'$Scaled \ \frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax1.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
-Ax1.set_xlabel(r"$\frac{\partial \theta}{\partial z}$ / $\gamma$", fontsize=20)
+Ax1.set_xlabel(r"$\frac{\partial \theta}{\partial z}$", fontsize=20)
 #Ax1.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 #start, end = -.025, .025
 #start, end = -1, 2.5
-Ax1.set_xticks([-1, 0, 0, 1, 2.5])
+Ax1.set_xticks([0, 1])
+Ax1.set_xticklabels([0, r"$\gamma$"], fontsize=15)
+Ax1.set_yticks([])
+Ax1.set_yticklabels([])
 #Ax1.set_ylabel(r"$z$", fontsize=20)
 #plt.xlim(-.025, .025)
 plt.xlim(-1, 2.5)
@@ -55,10 +62,14 @@ plt.ylim(100, 1500)
 Ax2 = Fig1.add_subplot(133)
 #Ax2.set_title(r"$\overline{w^{'} \theta^{'}}$", fontsize=20)
 #Ax2.set_title(r"$Scaled \ \overline{w^{'} \theta^{'}}$", fontsize=20)
-Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}} $ / $\overline{w^{'}\theta^{'}}_{s}$", fontsize=20)
+Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
 #Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
+Ax2.set_xticks([-.2, 0, 1])
+Ax2.set_xticklabels([-.2, 0, 1])
+Ax2.set_yticks([])
+Ax2.set_yticklabels([])
 #start, end = -.08, .14
-#plt.xlim(-.08, .14)
+plt.xlim(-.2, 1)
 #start, end = -.6, 1.2
 #Ax2.set_xticks([-.08, 0, .07, .14])
 
@@ -70,11 +81,11 @@ plt.ylim(100, 1500)
 #plt.ylim(0.1, 1.4)
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
  
-theta_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/theta_bar"+ dump_time for dump_time in dump_time_list]
-press_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/press"+ dump_time for dump_time in dump_time_list]
-flux_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
-height_file = "/tera/phil/nchaparr/python/Plotting/"+date+"/data/heights0000000600"
-AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
+theta_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/theta_bar"+ dump_time for dump_time in dump_time_list]
+press_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/press"+ dump_time for dump_time in dump_time_list]
+flux_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
+height_file = "/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/heights0000000600"
+AvProfVars = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
 
 #loop over text files files
 for i in range(len(theta_file_list)):
@@ -138,16 +149,16 @@ for i in range(len(theta_file_list)):
                 
         
         Ax2.plot(wvelthetapert, height, 'k-') #, label = str(Times[i])+'hrs'    
-        Ax2.plot([wvelthetapert[z_f0_index]-.2, wvelthetapert[z_f0_index]+.8], [z_f0, z_f0], 'k--')
-        Ax2.plot([wvelthetapert[z_f0_index]-.2, wvelthetapert[z_f0_index]+.8], [z_f1, z_f1], 'k--')
-        Ax2.plot([wvelthetapert[z_f0_index]-.2, wvelthetapert[z_f0_index]+.8], [z_f, z_f], 'k-')
+        Ax2.plot([wvelthetapert[z_f0_index]-.1, wvelthetapert[z_f0_index]+.8], [z_f0, z_f0], 'k--')
+        Ax2.plot([wvelthetapert[z_f0_index]-.1, wvelthetapert[z_f0_index]+.8], [z_f1, z_f1], 'k--')
+        Ax2.plot([wvelthetapert[z_f0_index]-.1, wvelthetapert[z_f0_index]+.8], [z_f, z_f], 'k-')
 
         Ax2.text(dthetadz[z_f0_index]+.70, z_f0, r"$z_{f0}$", size=20)
         Ax2.text(dthetadz[z_f0_index]+.70, z_f1, r"$z_{f1}$", size=20)
         Ax2.text(dthetadz[z_f0_index]+.70, z_f, r"$z_{f}$", size=20)
        
         
-array = np.genfromtxt('/tera/phil/nchaparr/python/Pert_Files/snd')
+array = np.genfromtxt('/newtera/tera/phil/nchaparr/python/Pert_Files/snd')
     
 height_0 = array[:, 0]
 theta_0 = array[:, 1]
