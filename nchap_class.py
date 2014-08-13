@@ -68,7 +68,7 @@ class Get_Var_Arrays1:
                thefile = self.nc_file_list[i]
                print thefile
                ncdata = Dataset(thefile,'r')          
-               uvelperts_list.append(np.squeeze(ncdata.variables['W'][...]))
+               wvelperts_list.append(np.squeeze(ncdata.variables['W'][...]))
                ncdata.close()
           return wvelperts_list
      
@@ -141,6 +141,27 @@ class Get_Var_Arrays1:
                wvelthetaperts_list.append(wvelthetapert)
 
           return wvelthetaperts_list
+
+     def get_thetaperts(self):
+          #wvels_list = self.get_wvelperts()
+          thetas_list, press_list = self.get_thetas()
+          #print 'checking thetas_list', len(thetas_list), thetas_list[0].shape
+          ens_avthetas = nc.Ensemble1_Average(thetas_list)
+          thetaperts_list = []
+          for i in range(len(thetas_list)):  
+               [znum, ynum, xnum] = thetas_list[i].shape
+               thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
+               thetapert = np.zeros_like(thetapert_rough)
+               for j in range(znum):#something like this is done in statistics.f90, staggered grid!
+                    if j == 0:
+                         thetapert[j,:,:] = thetapert_rough[j,:,:]
+                    else:
+                         thetapert[j,:,:] = 0.5*np.add(thetapert_rough[j,:,:], thetapert_rough[j-1,:,:])
+               #wvelpert = wvels_list[i]     
+               #wvelthetapert = np.multiply(wvelpert, thetapert)
+               thetaperts_list.append(thetapert)
+
+          return thetaperts_list
      
      def get_sqvel(self, vel_dir):
           if vel_dir == 'w':

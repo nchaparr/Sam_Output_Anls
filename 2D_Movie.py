@@ -1,0 +1,52 @@
+from netCDF4 import Dataset
+import glob,os.path
+import numpy as np
+from scipy.interpolate import UnivariateSpline
+from matplotlib import cm
+import matplotlib.pyplot as plt
+#import site
+#site.addsitedir('/tera/phil/nchaparr/SAM2/sam_main/python')
+#from Percentiles import *
+from matplotlib.patches import Patch
+import sys
+sys.path.insert(0, '/tera/phil/nchaparr/python')
+#import nchap_fun as nc
+import matplotlib.animation as animation
+from Ens_Profs import Main_Fun
+from Make_Timelist import *
+from nchap_class import *
+
+"""
+    
+"""
+
+#!/usr/bin/env python
+"""
+An animated image
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
+fig = plt.figure()
+
+def f(x, y):
+    return np.sin(x) + np.cos(y)
+
+x = np.linspace(0, 2 * np.pi, 120)
+y = np.linspace(0, 2 * np.pi, 100).reshape(-1, 1)
+
+im = plt.imshow(f(x, y), cmap=plt.get_cmap('jet'))
+
+def updatefig(*args):
+    global x,y
+    x += np.pi / 15.
+    y += np.pi / 20.
+    im.set_array(f(x,y))
+    return im,
+
+ani = animation.FuncAnimation(fig, updatefig, interval=50, blit=True)
+plt.show()
+
+    
+    
