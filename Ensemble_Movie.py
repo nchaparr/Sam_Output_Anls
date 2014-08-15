@@ -78,22 +78,32 @@ def Get_CBLHeights_thetas(heights, press, thetas, gamma, top_index):
 
 def get_dthetadh(theta, height):
     dthetadh = np.zeros([znum-1, ynum, xnum])
-    for i in range(znum-1):
-        dtheta = theta[i+1, :, :] - theta[i, :, :]
-        dh = height[i+1] - height[i]
+    for k in range(znum-1):        
+        dtheta = theta[k+1, :, :] - theta[k, :, :]
+        dh = height[k+1] - height[k]
             #print dh, i
-        dthetadh[i, :, :] = 1.0*dtheta/dh
+        dthetadh[k, :, :] = 1.0*dtheta/dh
         return dthetadh
 
 def get_ML_Heights(thetaslice, height):
-        ML_Heights = np.empty([120])
-        for i in range(120): #change to 128          
-             #for j in range(192):#change to 192
-             #top = np.where(np.abs(height-2300)<100)[0][0]
-            RSS, J, K = fsft.get_fit(thetaslice[:, i], height, 240)
-            ML_Heights[i] = height[J]
-            #print RSS, J, K, height[J]
-            return ML_Heights
+        ML_Heights = np.zeros([120])
+        for l in range(120):                
+            RSS, J, K = fsft.get_fit(thetaslice[:, l], height, 240)
+            ML_Heights[l] = height[J]
+            #print 'ML_Heights loop', l #, height[J]
+            b_1 = (np.sum(np.multiply(height[:J], thetaslice[:J, l])) - 1.0/J*np.sum(height[:J])*np.sum(thetaslice[:J, l]))/(np.sum(height[:J]**2) - 1.0/J*np.sum(height[:J])**2)
+            
+            a_1 = np.sum(np.multiply(height[:J], thetaslice[:J, l]))/np.sum(height[:J]) - b_1*np.sum(height[:J]**2)/np.sum(height[:J])                          
+                                   
+            b_2 = (np.sum(thetaslice[J:K, l]) - (K-J)*(a_1+b_1*height[J]))/(np.sum(height[J:K]) - (K-J)*height[J])                                    
+            a_2 = np.sum(np.multiply(height[J:K], thetaslice[J:K, l]))/np.sum(height[J:K]) - b_2*np.sum(height[J:K]**2)/np.sum(height[J:K])
+            b_3 = (np.sum(thetaslice[K:290, l]) - (290-K)*(a_2+b_2*height[K]))/(np.sum(height[K:290]) - (290-K)*height[K])               
+            #print b_3-b_2, height[K], height[J]
+            if b_3-b_2>.002:     
+                    #print i, j, J, height[J], height[K], b_3, b_2, b_3-b_2
+                ML_Heights[l] = height[K]
+               
+        return ML_Heights
     
 #set up plot
 
@@ -106,16 +116,18 @@ ims = []
 ims1 = []
 theFig = plt.figure(1)
 #theFig1.clf()
-#theAx = theFig.add_subplot(111)
+theAx = theFig.add_subplot(111)
 #theAx1 = theFig.add_subplot(111)
-#theAx.set_title('')
-#theAx.set_xlabel('')
-#theAx.set_ylabel('')
-plt.ylim(0, 1200)
+theAx.set_title(r'xz-Slice of $\theta$', fontsize=20)
+theAx.set_ylabel(r'z (m)')
+theAx.set_xlabel(r'x (m)')
+theAx.set_ylim(0, 1200)
+
 plt.xlim(0, 3000)
 #for dump_time in dump_time_list:
-for i in range(5):
-    dump_time=dump_time_list[i]
+for i in range(300):
+    #print 'main loop', i    
+    dump_time=dump_time_list[i+10]
     date = "Aug122014" #TODO: this should be an argument passed to Main_Fun
      #pulls data using class Get_Var_Arrays1     
     Vars_File = "/newtera/tera/phil/nchaparr/tera2_cp/nchaparr/"+date+"/runs/sam_case1/OUT_3D/NCHAPP1_testing_doscamiopdata_24_"+ dump_time+".nc"
@@ -161,27 +173,29 @@ for i in range(5):
     #print abs_min
     
     thetaslice = theta[0:312, 114, 40:160]
-    t0 = datetime.time(1, 2, 3)
-    print t0.second
-    t0_sec = t0.second
+    #print thetaslice.shape
+    #t0 = datetime.time(1, 2, 3)
+    #print t0.second
+    #t0_sec = t0.second
     
-    ML_Heights = get_ML_Heights(thetaslice, height)
+    #ML_Heights = get_ML_Heights(thetaslice, height)
     
-    tnow=datetime.time(1, 2, 3)
-    tnow_sec = tnow.second
-    print tnow_sec - t0_sec 
+    #tnow=datetime.time(1, 2, 3)
+    #tnow_sec = tnow.second
+    #print tnow_sec - t0_sec 
     
-    thetaslice = np.ma.masked_where(thetaslice>mltheta+2, thetaslice)
+    thetaslice = np.ma.masked_where(thetaslice>mltheta+1.2, thetaslice)
 
-    print thetaslice.shape
+    #print thetaslice.shape
     #thetaslice = np.ma.masked_inside(thetaslice, mltheta-5, mltheta+5)
-    #im = plt.pcolor(X, Y, thetaslice-mltheta, cmap=cm.bone) #, vmax=.01, vmin=.002
+    im = plt.pcolor(X, Y, thetaslice-mltheta, cmap=cm.bone) #, vmax=.01, vmin=.002
     #im = plt.imshow(thetaslice)
-    #ims.append([im])
+    ims.append([im])
     #ims.append(plt.pcolor(X, Y, tslice, norm=plt.Normalize(0, 30)),))
     #ims.append((plt.pcolor(X, Y, tslice, norm=plt.Normalize(0, 30)),))
     #ims.append(plt.pcolor(X, Y, thetaslice, norm=plt.Normalize(0, 30)))
-    ims.append(plt.plot(x, ML_Heights, 'k-'))
+    #print x.shape, ML_Heights.shape
+    #ims.append(theAx.plot(x, ML_Heights, 'k-'))
     #ims.append(plt.plot(theta[:210, yindex, xindex], height[:210], 'k-'))    
     #plt.savefig('/tera/phil/nchaparr/python/Plotting/July92013/pngs/for_point_movie/Point_Tracer_'+ str(i)+'.png', bbox_inches=0)
 
