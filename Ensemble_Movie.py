@@ -125,7 +125,7 @@ theAx.set_ylim(0, 1200)
 
 plt.xlim(0, 3000)
 #for dump_time in dump_time_list:
-for i in range(300):
+for i in range(30):
     #print 'main loop', i    
     dump_time=dump_time_list[i+10]
     date = "Aug122014" #TODO: this should be an argument passed to Main_Fun
@@ -203,7 +203,7 @@ im_ani = animation.ArtistAnimation(theFig, ims, interval=300, repeat_delay=1000,
 
 #im_ani = animation.ArtistAnimation(theFig, ims, interval=1000, repeat_delay=30000, blit=True)
 mywriter = animation.FFMpegWriter()
-im_ani.save('im.mp4', writer=mywriter)
+im_ani.save('theta.avi', writer=mywriter)
 
 plt.show()
 
