@@ -137,6 +137,8 @@ if go_ahead == 1:
              date = date_list[i]
              dump_time_list, Times = Make_Timelists(1, 900, 28800)
              hvals = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
+             scales = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/invrinos")
+             thetastar, wstar = scales[19, 9], scales[19, 2]
              lev_index = np.int(raw_input('which height level, 0, 1 or 2 (h0, h or h1)?:'))             
          #set up plots
          
@@ -153,7 +155,7 @@ if go_ahead == 1:
              cmap = cm.hot
         #Estimate the 2D histogram
              nbins = 200
-             H, xedges, yedges = np.histogram2d(wvelperts, thetaperts, bins=nbins)
+             H, xedges, yedges = np.histogram2d(1.0*wvelperts/wstar, 1.0*thetaperts/thetastar, bins=nbins)
          #H needs to be rotated and flipped
              H = np.rot90(H)
              H = np.flipud(H)
@@ -181,10 +183,10 @@ if go_ahead == 1:
             #theFig1.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/fluxquads.png")
             #theFig2.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/fluxquadhist"+str(lev_index)+".png")
             #theFig3.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/theta_cont"+str(lev_index)+".png")
-     #theFig2.subplots_adjust(right=0.8)
-     #cbar_ax = theFig2.add_axes([0.85, 0.15, 0.05, 0.7])
-     #cbar_ax.set_ylabel(r'$Counts$')
-     #theFig2.colorbar(im, cax=cbar_ax)
+     theFig2.subplots_adjust(right=0.8)
+     cbar_ax = theFig2.add_axes([0.85, 0.15, 0.025, 0.7])
+     cbar_ax.set_ylabel(r'$Counts$')
+     theFig2.colorbar(im, cax=cbar_ax)
      plt.show()
 
 else:

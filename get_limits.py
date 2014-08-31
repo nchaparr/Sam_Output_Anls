@@ -39,9 +39,9 @@ def Main_Fun(rundate, gamma, flux_s):
      invrinos = []
      #loop over text files files
      for i in range(len(theta_file_list)):
-         print i, theta_file_list[i]
+         #print i, theta_file_list[i]
          theta = np.genfromtxt(theta_file_list[i])
-         print theta.shape
+         #print theta.shape
          height = np.genfromtxt(height_file)
     
          press = np.genfromtxt(press_file_list[i])
@@ -54,12 +54,12 @@ def Main_Fun(rundate, gamma, flux_s):
          else:
              top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
            
-         print height.shape, press.shape, theta.shape, wvelthetapert.shape, gamma, top_index
+         #print height.shape, press.shape, theta.shape, wvelthetapert.shape, gamma, top_index
 
          #function for calcuating heights
          [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
 
-         print elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta
+         #print elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta
          
          delta_h=eltop_dthetadz - elbot_dthetadz
          
@@ -67,7 +67,8 @@ def Main_Fun(rundate, gamma, flux_s):
 
          AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta])
          tau = 1.0*h/wstar
-         invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4])
+         thetastar = 1.0*flux_s/(rhow[0]*1004*wstar)
+         invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4, thetastar])
 
      files.save_file(np.array(AvProfLims), "AvProfLims")
      files.save_file(np.array(invrinos), "invrinos")

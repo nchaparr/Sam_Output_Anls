@@ -10,7 +10,7 @@ class For_Plots:
      """
      def __init__(self, Run_Date):
           self.Run_Date = Run_Date          
-          self.path = "/tera/phil/nchaparr/python/Plotting/" + Run_Date + "/data/"
+          self.path = "/newtera/tera/phil/nchaparr/python/Plotting/" + Run_Date + "/data/"
 
      def get_file(self, dump_time, filename):
           the_file = self.path + filename + dump_time
