@@ -143,7 +143,7 @@ if go_ahead == 1:
          #set up plots
          
          #theAx2 = theAxes2.flat[i]
-             theAx2.set_title(date, fontsize= 16) 
+             #theAx2.set_title(date, fontsize= 16) 
              #theAx2.set_title(r"$2d \ Histogram \ of \ Flux \ Quadrants$", fontsize= 16)
          #for i in range(48):
          #    if i == 19:
@@ -174,9 +174,11 @@ if go_ahead == 1:
              theAx2.yaxis.set_ticks_position('left')
              theAx2.text(4.5, .2, r"$ w^{\prime} $ ",  fontdict=None, withdash=False, fontsize = 16)
              theAx2.text(-.5, 1.25, r"$ \theta^{\prime} $ ",  fontdict=None, withdash=False, fontsize = 16)
-               
-             theAx2.set_ylim(-1.5, 1.5)
-             theAx2.set_xlim(-3, 5)
+             theAx2.set_ylim(-25, 25)
+             theAx2.set_xlim(-2, 3)
+           
+             #theAx2.set_ylim(-1.5, 1.5)
+             #theAx2.set_xlim(-3, 5)
          i = i +1                    
             #theFig3.canvas.draw()
             #theFig1.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/fluxquadprofs.png")
