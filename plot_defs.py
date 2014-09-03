@@ -26,13 +26,13 @@ plt.rc('font', family='serif')
 
 
 Ax = Fig1.add_subplot(121)
-#Ax.set_title( r'$\theta$', fontsize=20)
+Ax.set_title( r'$(a)$', fontsize=20)
 #Ax.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
 Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
 #Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 Ax.set_ylabel(r"$z$", fontsize=20)
-plt.xlim(299, 320)
+plt.xlim(305, 315)
 plt.ylim(0, 1500)
 #plt.ylim(0.1, 1.4)
 
@@ -53,7 +53,7 @@ plt.ylim(0, 1500)
 #plt.ylim(0.1, 1.4)
 
 Ax2 = Fig1.add_subplot(122)
-#Ax2.set_title(r"$\overline{w^{'} \theta^{'}}$", fontsize=20)
+Ax2.set_title(r"$(b)$", fontsize=20)
 #Ax2.set_title(r"$Scaled \ \overline{w^{'} \theta^{'}}$", fontsize=20)
 Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
 #Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
@@ -146,8 +146,8 @@ for i in range(len(theta_file_list)):
         #Ax1.text(dthetadz[h0_index]-.7, h, r"$h$", size=20)
         #Ax1.text(dthetadz[h0_index]-.7, h0, r"$h_{0}$", size=20)
 
-        Ax.annotate('', xy=(307.4, h+10), xycoords = 'data', xytext=(309.6, h+10), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
-        Ax.text(308, h+20, r"$\delta \theta$", size=15)
+        Ax.annotate('', xy=(307.8, h+10), xycoords = 'data', xytext=(309.6, h+10), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
+        Ax.text(308.3, h+20, r"$\delta \theta$", size=15)
                 
         Ax2.plot([1, -.2], [0, h], 'k-')
         Ax2.plot([-.2,0], [h, h], 'k--')
@@ -157,7 +157,7 @@ for i in range(len(theta_file_list)):
         #Ax2.plot([wvelthetapert[z_f0_index]-3, wvelthetapert[z_f0_index]+2], [z_f1, z_f1], 'k--')
         #Ax2.plot([wvelthetapert[z_f0_index]-.2, wvelthetapert[z_f0_index]+.8], [z_f, z_f], 'k-')
 
-        Ax.text(308, 1300, r"$\frac{\partial \overline{\theta}_{0}}{\partial z} = \gamma$", size=15)
+        Ax.text(310, 1300, r"$\frac{\partial \overline{\theta}_{0}}{\partial z} = \gamma$", size=15)
         
         #Ax.text(315, 1200, "FA", size=15)
         #Ax.text(315, 900, "EL", size=15)
