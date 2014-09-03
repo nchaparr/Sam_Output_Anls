@@ -58,18 +58,18 @@ Ax2.set_title(r"$(b)$", fontsize=20)
 Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
 #Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
 #start, end = -.08, .14
-#plt.xlim(-.08, .14)
+#Ax2.set_xlim(-1, 1)
 #start, end = -.6, 1.2
 Ax2.set_yticks([])
 Ax2.set_yticklabels([], fontsize=20)
 
-Ax2.set_xticks([-.2, 0, 1])
-Ax2.set_xticklabels([r"$-0.2 \overline{w^{'}\theta^{'}}_{s}$", 0, r"$\overline{w^{'}\theta^{'}}_{s}$"], fontsize=18)
+Ax2.set_xticks([-.23, 0, 1])
+Ax2.set_xticklabels([r"$-.2(\overline{w^{'}\theta^{'}})_{s}$", 0, r"$(\overline{w^{'}\theta^{'}})_{s}$"], fontsize=18)
 #Ax2.set_ylabel(r"$z$", fontsize=20)
 #Ax2.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 plt.ylim(0, 1500)
 #plt.xlim(-.06, .14)
-plt.xlim(-.2, 1)
+plt.xlim(-.23, 1)
 #plt.ylim(0.1, 1.4)
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
  
@@ -104,7 +104,6 @@ for i in range(len(theta_file_list)):
     scaled_height = [1.0*h/AvProfVars[i,1] for h in height]
 
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/sfc_flx
-
     
     #if np.mod(i+1, 6) == 0:
     if i == 37:
@@ -149,8 +148,8 @@ for i in range(len(theta_file_list)):
         Ax.annotate('', xy=(307.8, h+10), xycoords = 'data', xytext=(309.6, h+10), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
         Ax.text(308.3, h+20, r"$\delta \theta$", size=15)
                 
-        Ax2.plot([1, -.2], [0, h], 'k-')
-        Ax2.plot([-.2,0], [h, h], 'k--')
+        Ax2.plot([1, -.23], [0, h], 'k-')
+        Ax2.plot([-.23, 0], [h, h], 'k--')
         #Ax2.plot(wvelthetapert[:z_f0_index], height[:z_f0_index], 'b-')
         #Ax2.plot(wvelthetapert[z_f0_index:], height[z_f0_index:], 'k-') #, label = str(Times[i])+'hrs'    
         #Ax2.plot([wvelthetapert[z_f0_index]-3, wvelthetapert[z_f0_index]+2], [z_f0, z_f0], 'k--')
