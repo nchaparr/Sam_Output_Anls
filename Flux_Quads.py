@@ -138,7 +138,7 @@ if go_ahead == 1:
              dump_time_list, Times = Make_Timelists(1, 900, 28800)
              hvals = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
              scales = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/invrinos")
-             thetastar, wstar = scales[19, 9], scales[19, 2]
+             thetastar, wstar = scales[29, 9], scales[29, 2]
              lev_index = np.int(raw_input('which height level, 0, 1 or 2 (h0, h or h1)?:'))             
          #set up plots
          
@@ -147,7 +147,8 @@ if go_ahead == 1:
              #theAx2.set_title(r"$2d \ Histogram \ of \ Flux \ Quadrants$", fontsize= 16)
          #for i in range(48):
          #    if i == 19:
-             height, wvelperts, thetaperts, wvelperts_slice, thetaperts_slice, upwarm, downwarm, upcold, downcold, avflux = Main_Fun(date, dump_time_list[19], hvals[19, lev_index])
+             height, wvelperts, thetaperts, wvelperts_slice, thetaperts_slice, upwarm, downwarm, upcold, downcold, avflux = Main_Fun(date, dump_time_list[19], hvals[29, lev_index])
+             print "Heights", hvals[29, 0], hvals[29, 1], hvals[29, 2], dump_time_list[19], Times[19]
                
          #av_quad_profs = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time_list[i])
 
@@ -155,7 +156,7 @@ if go_ahead == 1:
              cmap = cm.hot
         #Estimate the 2D histogram
              nbins = 200
-             H, xedges, yedges = np.histogram2d(1.0*wvelperts, 1.0*thetaperts, bins=nbins) #/thetastar, /wstar
+             H, xedges, yedges = np.histogram2d(1.0*wvelperts/wstar, 1.0*thetaperts/thetastar, bins=nbins) #, 
          #H needs to be rotated and flipped
              H = np.rot90(H)
              H = np.flipud(H)
@@ -172,13 +173,13 @@ if go_ahead == 1:
              theAx2.spines['top'].set_color('none')
              theAx2.xaxis.set_ticks_position('bottom')
              theAx2.yaxis.set_ticks_position('left')
-             theAx2.text(4.5, .2, r"$ w^{\prime} $ ",  fontdict=None, withdash=False, fontsize = 16)
-             theAx2.text(.5, 1.25, r"$ \theta^{\prime} $ ",  fontdict=None, withdash=False, fontsize = 16)
-             #theAx2.set_ylim(-25, 25)
-             #theAx2.set_xlim(-2, 3)
+             theAx2.text(2.5, 7, r"$ w^{\prime} $ ",  fontdict=None, withdash=False, fontsize = 16)
+             theAx2.text(.5, 20, r"$ \theta^{\prime} $ ",  fontdict=None, withdash=False, fontsize = 16)
+             theAx2.set_ylim(-25, 25)
+             theAx2.set_xlim(-2, 3)
            
-             theAx2.set_ylim(-1.5, 1.5)
-             theAx2.set_xlim(-3, 5)
+             #theAx2.set_ylim(-1.5, 1.5)
+             #theAx2.set_xlim(-3, 5)
          i = i +1                    
             #theFig3.canvas.draw()
             #theFig1.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/fluxquadprofs.png")
