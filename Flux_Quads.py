@@ -156,7 +156,7 @@ if go_ahead == 1:
              cmap = cm.hot
         #Estimate the 2D histogram
              nbins = 200
-             H, xedges, yedges = np.histogram2d(1.0*wvelperts/wstar, 1.0*thetaperts/thetastar, bins=nbins) #, 
+             H, xedges, yedges = np.histogram2d(1.0*wvelperts, 1.0*thetaperts, bins=nbins) #/wstar,/thetastar  
          #H needs to be rotated and flipped
              H = np.rot90(H)
              H = np.flipud(H)
@@ -173,13 +173,13 @@ if go_ahead == 1:
              theAx2.spines['top'].set_color('none')
              theAx2.xaxis.set_ticks_position('bottom')
              theAx2.yaxis.set_ticks_position('left')
-             theAx2.text(2.5, 7, r"$ w^{\prime} $ ",  fontdict=None, withdash=False, fontsize = 16)
-             theAx2.text(.5, 20, r"$ \theta^{\prime} $ ",  fontdict=None, withdash=False, fontsize = 16)
-             theAx2.set_ylim(-25, 25)
-             theAx2.set_xlim(-2, 3)
+             theAx2.text(4, .5, r"$ w^{\prime} $ ",  fontdict=None, withdash=False, fontsize = 16)
+             theAx2.text(.5, 1, r"$ \theta^{\prime} $ ",  fontdict=None, withdash=False, fontsize = 16)
+             #theAx2.set_ylim(-25, 25)
+             #theAx2.set_xlim(-2, 3)
            
-             #theAx2.set_ylim(-1.5, 1.5)
-             #theAx2.set_xlim(-3, 5)
+             theAx2.set_ylim(-2, 1.5)
+             theAx2.set_xlim(-3, 5)
          i = i +1                    
             #theFig3.canvas.draw()
             #theFig1.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/fluxquadprofs.png")
