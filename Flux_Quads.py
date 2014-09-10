@@ -43,7 +43,7 @@ def Main_Fun(date, dump_time, hflux):
      downcold_list = []
      wvelperts_list = []
      thetaperts_list = []
-
+     wvelthetaperts_list = []
      #get velocity perts and thetas
      Vars =  Get_Var_Arrays1("/newtera/tera/phil/nchaparr/tera2_cp/nchaparr/"+date+"/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time)         
      thetas_list, press_list = Vars.get_thetas()     
@@ -55,7 +55,8 @@ def Main_Fun(date, dump_time, hflux):
      ens_press = nc.Ensemble1_Average(press_list)
                
      #now get the perturbations
-     wvelthetaperts_list = []
+     #wvelthetaperts_list = []
+     theta_pert_sq_list = []
      for i in range(len(wvels_list)):  #TODO: this should be more modular, see nchap_class                  
          thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
          thetapert = np.zeros_like(thetapert_rough)
@@ -68,8 +69,8 @@ def Main_Fun(date, dump_time, hflux):
          wvelpert = wvels_list[i]
 
          slice_lev = np.where(np.abs(height - hflux) < 26)[0][0]        
-
          wvelthetapert = np.multiply(wvelpert, thetapert)
+         thetapertsq = np.multiply(thetapert, thetapert)
          wvelperts_list.append(wvelpert[slice_lev, :, :])       
          thetaperts_list.append(thetapert[slice_lev, :, :])          
 
@@ -80,24 +81,28 @@ def Main_Fun(date, dump_time, hflux):
          upcold_list.append(upcold)
          downcold_list.append(downcold)
          wvelthetaperts_list.append(wvelthetapert)     
-          
+         theta_pert_sq_list.append(thetapertsq) 
+
      #and ensemble average them     
      ens_upwarm = nc.Ensemble1_Average(upwarm_list)
      ens_downwarm = nc.Ensemble1_Average(downwarm_list)
      ens_upcold = nc.Ensemble1_Average(upcold_list)
-     ens_downcold = nc.Ensemble1_Average(downcold_list)         
+     ens_downcold = nc.Ensemble1_Average(downcold_list)
      ens_avwvelthetaperts = nc.Ensemble1_Average(wvelthetaperts_list)
+     ens_avthetapertsq = nc.Ensemble1_Average(theta_pert_sq_list)
 
      #horizontally average them
      upwarm_bar = nc.Horizontal_Average(ens_upwarm)     
      downwarm_bar = nc.Horizontal_Average(ens_downwarm)
      upcold_bar = nc.Horizontal_Average(ens_upcold)
      downcold_bar = nc.Horizontal_Average(ens_downcold)
-     wvelthetapert_bar = nc.Horizontal_Average(ens_avwvelthetaperts)
+     wvelthetaperts_bar = nc.Horizontal_Average(ens_avwvelthetaperts)
+     thetapertsq_bar = nc.Horizontal_Average(ens_avthetapertsq)
           
      #save text files
      print "SAVING", "/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time 
-     np.savetxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
+     #np.savetxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
+     np.savetxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/thetapert_sq" + dump_time, thetapertsq_bar, delimiter=' ')
      
      #flatten the arrays, TODO: make a function or class method
      wvelperts = np.array(wvelperts_list)
@@ -110,10 +115,10 @@ def Main_Fun(date, dump_time, hflux):
      wvelperts_slice = wvelperts[0]
      thetaperts_slice = thetaperts[0]    
 
-     #wvelperts = np.reshape(wvelperts[0], ynum*xnum)
-     #thetaperts = np.reshape(thetaperts[0], ynum*xnum)
-     #wvelpertslice = wvelperts[0]
-     #thetapertslice = thetaperts[0]
+     wvelperts = np.reshape(wvelperts[0], ynum*xnum)
+     thetaperts = np.reshape(thetaperts[0], ynum*xnum)
+     wvelpertslice = wvelperts[0]
+     thetapertslice = thetaperts[0]
      
      wvelperts = np.reshape(wvelperts, enum*ynum*xnum)
      thetaperts = np.reshape(thetaperts, enum*ynum*xnum)
