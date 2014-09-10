@@ -30,11 +30,12 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
 
      press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]
     
-     flux_quads_file_list = [files.get_file(dump_time, "flux_quads") for dump_time in dump_time_list]
+     flux_quads_file_list = [files.get_file(dump_time, "flux_quads_wvel") for dump_time in dump_time_list]
      
      height_file = files.get_file("0000000600", "heights")
 
      AvProfVars = files.AvProfVars()
+     rinovals = files.rinovals()
      downwarm_h = []
      #loop over text files files
      for i in range(len(flux_quads_file_list)):
@@ -47,12 +48,18 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
          press = np.genfromtxt(press_file_list[i])
          rhow = nc.calc_rhow(press, height, theta[0])
          h = AvProfVars[j, 1]
+         h0=AvProfVars[j, 0]
+         h1 = AvProfVars[j, 2]
+         deltah = h1-h0
+         deltatheta = gamma*deltah
+         thetastar = rinovals[j, 9]
+         wstar = rinovals[j, 2]
          h_lev = np.where(height == h)
          flux_quads = np.genfromtxt(flux_quads_file_list[i])
          flux_s1 = 1.0*flux_s/(rhow[0]*1004)         
          downwarm = flux_quads[h_lev, 1][0][0]
          print flux_s1, flux_s
-         downwarm_h.append(1.0*downwarm)
+         downwarm_h.append(1.0*downwarm/wstar)
 
      downwarm_h = np.array(downwarm_h)    
      
@@ -64,7 +71,8 @@ Fig2 = plt.figure(2)
 Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
 Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=20)
-Ax3.set_ylabel(r"$\overline{w^{\prime -}\theta^{\prime +}}_{h} \ \frac{m}{s}K$", fontsize=20)
+Ax3.set_ylabel(r"$\frac{\overline{w^{\prime -}}_{h}}{w^{*}} \ (where \ \theta^{\prime}>0)$", fontsize=20)
+Ax3.set_ylim(-.11, 0)
 for run in run_list:
     
     Main_Fun(run[0], run[1], run[2], run[3], run[4])

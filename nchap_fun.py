@@ -472,6 +472,49 @@ def Flux_Quad(wpert, thetapert):
                                                              
     return [upwarm, downwarm, upcold, downcold]
 
+def Flux_Quad_Thetas(wpert, thetapert):
+    """
+    Separates fluxes into quadrants
+    
+    Arguments:
+    wpert -- array of w perturbations
+    thetapert -- array of theta perturbations
+
+    Returns:
+    [up_warm, down_warm, up_cold, down_cold] -- arrays, np.nans are fillers  
+
+    """
+    
+    [rows, columnsx, columnsy] = wpert.shape
+    [up, down, warm, cold] = [np.zeros_like(wpert) for i in range(4)]
+    up[wpert>0], down[wpert<0], warm[thetapert>0], cold[thetapert<0] = wpert[wpert>0], wpert[wpert<0], thetapert[thetapert>0], thetapert[thetapert<0]
+    up[up>0], down[down<0] = 1, 1    
+    upwarm, downwarm, upcold, downcold = np.multiply(up, warm), np.multiply(down, warm), np.multiply(up, cold), np.multiply(down, cold)
+                                                             
+    return [upwarm, downwarm, upcold, downcold]
+
+def Flux_Quad_Wvels(wpert, thetapert):
+    """
+    Separates fluxes into quadrants
+    
+    Arguments:
+    wpert -- array of w perturbations
+    thetapert -- array of theta perturbations
+
+    Returns:
+    [up_warm, down_warm, up_cold, down_cold] -- arrays, np.nans are fillers  
+
+    """
+    
+    [rows, columnsx, columnsy] = wpert.shape
+    [up, down, warm, cold] = [np.zeros_like(wpert) for i in range(4)]
+    up[wpert>0], down[wpert<0], warm[thetapert>0], cold[thetapert<0] = wpert[wpert>0], wpert[wpert<0], thetapert[thetapert>0], thetapert[thetapert<0]
+    warm[warm>0], cold[cold<0] = 1, 1    
+    upwarm, downwarm, upcold, downcold = np.multiply(up, warm), np.multiply(down, warm), np.multiply(up, cold), np.multiply(down, cold)
+                                                             
+    return [upwarm, downwarm, upcold, downcold]
+
+
 def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s, top_index):
     """
     Gets heights based on dthetdz and flux

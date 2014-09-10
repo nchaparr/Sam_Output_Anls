@@ -31,9 +31,7 @@ def Main_Fun(rundate, gamma, flux_s):
 
      #Create lists of variable lists
      theta_file_list = [files.get_file(dump_time, "theta_bar") for dump_time in dump_time_list]
-     press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]
-     flux_file_list = [files.get_file(dump_time, "wvelthetapert") for dump_time in dump_time_list]
-
+     press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]     
      flux_quads_file_list = [files.get_file(dump_time, "flux_quads") for dump_time in dump_time_list]
      
      height_file = files.get_file("0000000600", "heights")
@@ -45,8 +43,7 @@ def Main_Fun(rundate, gamma, flux_s):
          #print i, theta_file_list[i]
          theta = np.genfromtxt(theta_file_list[i])
          #print theta.shape
-         height = np.genfromtxt(height_file)
-    
+         height = np.genfromtxt(height_file)    
          press = np.genfromtxt(press_file_list[i])
          rhow = nc.calc_rhow(press, height, theta[0])
          wvelthetapert = np.genfromtxt(flux_file_list[i])
