@@ -20,7 +20,7 @@ rcParams.update({'font.size': 10})
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
 Times = np.array(Times)
 dump_time_list0, Times0 = Make_Timelists(1, 900, 28800)
-
+Times0 = np.array(Times0)
 #plot the heights vs time
 #print Line2D.markers
 Fig2 = plt.figure(2)
@@ -61,13 +61,23 @@ for i in range(len(label_list)):
         Deltah = points.Deltah_over_h()
         HistVars = points.HistVars()
         AvProfVars = points.AvProfVars()
+        if Run_Date_List[i] == "Nov302013":
+             Deltah[13] = np.nan
+             Deltah[15:17] = np.nan
+             Deltah[24:26] = np.nan
+             Ax3.plot(rinovals[7:, 1], Deltah[7:], legend_list[i], label = label_list[i])
+        elif Run_Date_List[i] == "Jan152014_1":
     #TODO: alternative starting index for Nov302013
-        #Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 0], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
-        #Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 2], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
-       # Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 3], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
-      #  Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 4], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
-        Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 5], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
-
+             Deltah[16:21] = np.nan
+             #print Deltah
+             Ax3.plot(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i])
+        elif Run_Date_List[i] == "Mar12014":
+    #TODO: alternative starting index for Nov302013
+             Deltah[11:17] = np.nan
+             #print Deltah
+             Ax3.plot(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i])
+        else:     
+             Ax3.plot(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i])
 #Ax3.plot(np.arange(0, .1, .01)[2:10], .20833*np.arange(0, .1, .01)[2:10], 'k--')
 #Ax3.plot(np.arange(0, .1, .01)[2:10], np.arange(0, .1, .01)[2:10]**(3.0/2), 'k--')
 #Ax3.plot(Times[11:], Fit, 'b-', label="2nd Order Polyfit")
@@ -81,18 +91,19 @@ Ax3.legend(loc = 'lower right', prop={'size': 10}, numpoints=1)
 #Ax3.set_title(r'$\Delta \theta \ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$\overline{\theta} \ vs \ Time$', fontsize=20)
 #Ax3.set_xlabel(r"$\frac{Time}{\tau}$", fontsize=20)
-Ax3.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-#Ax3.set_ylabel(r"$\frac{\Delta h}{h}$", fontsize=20)
+#Ax3.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
+Ax3.set_ylabel(r"$\frac{\Delta h}{h}$", fontsize=20)
 #Ax3.set_ylabel(r"$\frac{w_{e}}{w^{*}}$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h (m)$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta \theta (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\overline{ \theta} (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h \ (m)$", fontsize=20)
 #Ax3.set_ylabel(r"$z \ (m)$", fontsize=20)
-Ax3.set_xlabel(r"$Time (hrs)$", fontsize=20)
+Ax3.set_xlabel(r"$Ri_{\delta}^{-1}$", fontsize=20)
 #Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
 #Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
-plt.ylim(0, 1.4)
+plt.ylim(0.1, .7)
+plt.xlim(.02, .1)
 plt.show()
 
 
