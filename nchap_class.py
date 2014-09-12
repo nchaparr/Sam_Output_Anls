@@ -52,6 +52,13 @@ class For_Plots:
           Deltah_over_h = np.divide(Deltah, AvProfVars[:,1])
           return Deltah_over_h         
 
+     def Deltahf_over_zf(self):
+          AvProfVars = np.genfromtxt(self.path + "AvProfLims")
+          Deltah = np.subtract(AvProfVars[:,5], AvProfVars[:,3])
+          Deltah_over_h = np.divide(Deltah, AvProfVars[:,2])
+          return Deltah_over_h         
+
+
      def Get_and_save_dhdt(self, Times, Heights, Wstars, Invrinos):
          import numpy as np
          FitFunc=np.polyfit(Times, Heights, 2, full=False)

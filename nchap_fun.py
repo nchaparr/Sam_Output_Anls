@@ -515,7 +515,7 @@ def Flux_Quad_Wvels(wpert, thetapert):
     return [upwarm, downwarm, upcold, downcold]
 
 
-def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s, top_index):
+def Get_CBLHeights(heights, press, thetas, theta0, wvelthetapert, gamma, flux_s, top_index):
     """
     Gets heights based on dthetdz and flux
     
@@ -572,11 +572,11 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s, top_ind
             break
         
     for m in range(len(dthetadz[0:top_index])-1):
-         print fluxes[m+1], fluxes[m], fluxes[m-1]
+         #print fluxes[m+1], fluxes[m], fluxes[m-1]
          if (abs(fluxes[m+1]) < 0.01) and (abs(fluxes[m+2]) < 0.01) and (fluxes[m] < 0) and (fluxes[m-1] < 0):
             flux_index_t = m+1
             break
-    print flux_index_t
+    #print flux_index_t
 
     
     eltop_dthetadz = heights[dtheta_index_t]
@@ -587,11 +587,15 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s, top_ind
 
     h = heights[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]
     h_flux = heights[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]]
+    
+    deltatheta_f = theta0[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]] - thetas[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]]
+    deltatheta = theta0[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]] - thetas[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]
+    Deltatheta_f = thetas[flux_index_t] - thetas[flux_index_b]
+    Deltatheta = thetas[dtheta_index_t] - thetas[dtheta_index_b]
 
-    deltatheta = thetas[dtheta_index_t] - thetas[dtheta_index_b]
     mltheta = np.mean(thetas[0:dtheta_index_b])
     
-    return [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta]
+    return [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, Deltatheta, Deltatheta_f, deltatheta, deltatheta_f, mltheta]
 
     
     
