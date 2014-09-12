@@ -35,6 +35,10 @@ class For_Plots:
           rinovals = np.genfromtxt(self.path + "invrinos")
           return rinovals
 
+     def scaled_we_plot(self):
+          scaled_we_plot = np.genfromtxt(self.path + "dhdtinvriplt.txt")
+          return scaled_we_plot
+ 
 
      def Deltah(self):
           AvProfVars = np.genfromtxt(self.path + "AvProfLims")
@@ -47,7 +51,16 @@ class For_Plots:
           Deltah = np.subtract(AvProfVars[:,2], AvProfVars[:,0])
           Deltah_over_h = np.divide(Deltah, AvProfVars[:,1])
           return Deltah_over_h         
-     
+
+     def Get_and_save_dhdt(self, Times, Heights, Wstars, Invrinos):
+         import numpy as np
+         FitFunc=np.polyfit(Times, Heights, 2, full=False)
+         Fit = FitFunc[0]*Times**2 + FitFunc[1]*Times + FitFunc[2]
+         dhdt =1.0*(2*FitFunc[0]*Times + FitFunc[1])/3600
+         scaled_dhdt = np.divide(dhdt, Wstars)
+         dhdtinvriplt = np.vstack((Invrinos, scaled_dhdt))
+         np.savetxt(self.path+"dhdtinvriplt.txt", dhdtinvriplt, delimiter=' ')
+
 
 class Get_Var_Arrays1:
      """
