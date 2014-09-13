@@ -73,7 +73,7 @@ for i in range(len(label_list)):
     #TODO: alternative starting index for Nov302013
              #Deltah[16:21] = np.nan
              #print Deltah
-             points.Get_and_save_dhdt(Times[11:], AvProfVars[11:, 4], rinovals[11:, 2], rinovals[11:, 1])
+             points.Get_and_save_dhdt(Times[11:29], AvProfVars[11:29, 4], rinovals[11:29, 2], rinovals[11:29, 1])
              scaled_we_plot = points.scaled_we_plot()
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i])            
              #Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i])
@@ -92,10 +92,10 @@ for i in range(len(label_list)):
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i])             
              #Ax3.loglog(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i])
 
-xes = np.arange(0.033, .07, .0001)
-x1es = np.arange(.043, .09, .0001)
-ys = 2*xes**(1.5)
-ys1= .23*x1es**(1)
+xes = np.arange(0.03, .06, .0001)
+x1es = np.arange(.033, .08, .0001)
+ys = 2.5*xes**(1.5)
+ys1= .34*x1es**(1)
 Ax3.loglog(xes, ys, 'k--')
 Ax3.loglog(x1es, ys1, 'k--')
 plt.ylim(0 ,.04)
@@ -103,9 +103,9 @@ plt.xlim(0, .1)
 
 #Ax3.plot(np.arange(0, .1, .01)[2:10], np.arange(0, .1, .01)[2:10]**(3.0/2), 'k--')
 #Ax3.plot(Times[11:], Fit, 'b-', label="2nd Order Polyfit")
-Ax3.text(.046, .025, r'$a = -\frac{3}{2}$',  fontdict=None, withdash=False, fontsize = 15)
+Ax3.text(.04, .025, r'$a = -\frac{3}{2}$',  fontdict=None, withdash=False, fontsize = 15)
 
-Ax3.text(.06, .013, r'$a = -1$',  fontdict=None, withdash=False, fontsize = 15)
+Ax3.text(.04, .013, r'$a = -1$',  fontdict=None, withdash=False, fontsize = 15)
 
 #Ax3.set_ylim(0, 2500)
 Ax3.legend(loc = 'upper left', prop={'size': 10}, numpoints=1)
