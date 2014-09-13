@@ -67,7 +67,7 @@ class For_Plots:
          scaled_dhdt = np.divide(dhdt, Wstars)
          dhdtinvriplt = np.vstack((Invrinos, scaled_dhdt))
          np.savetxt(self.path+"dhdtinvriplt.txt", dhdtinvriplt, delimiter=' ')
-
+       
 
 class Get_Var_Arrays1:
      """
