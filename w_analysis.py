@@ -33,14 +33,14 @@ Fig1.clf()
 Ax1 = Fig1.add_subplot(121)
 Ax1.set_title('')
 Ax1.set_ylabel(r'$\frac{z}{h}$', fontsize=20)
-Ax1.set_xlabel(r'$\sqrt[]{w^{,2}} \ (m/s)$', fontsize=20)
-plt.ylim(0, 1.4)
+Ax1.set_xlabel(r'$\sqrt[]{^{u\prime 2}} \ (m/s)$', fontsize=20)
+plt.ylim(.1, 1.4)
 
 Ax2 = Fig1.add_subplot(122)
-Ax2.set_xlabel(r'$\frac{\sqrt[]{w^{,2}}}{w^{*}}$', fontsize=20)
+Ax2.set_xlabel(r'$\frac{\sqrt[]{u^{\prime 2}}}{w^{*}}$', fontsize=20)
 
 #plt.xlim(0, 5)
-plt.ylim(0, 1.4)
+plt.ylim(.1, 1.4)
 
 #plt.xlim(0, 5)
 
@@ -53,7 +53,9 @@ theta_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/theta_bar"
 flux_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
 height_file = "/tera/phil/nchaparr/python/Plotting/"+date+"/data/heights0000000600"
 press_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/press"+ dump_time for dump_time in dump_time_list]
-rmwsq_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/rootmeanwsq"+ dump_time for dump_time in dump_time_list]
+rmwsq_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/rootmeanusq"+ dump_time for dump_time in dump_time_list]
+
+
 
 BLheights = []
 BLheights0=[]
@@ -87,7 +89,7 @@ for i in range(len(theta_file_list)):
     dthetadz=np.hstack((element0, dthetadz))
         
     #only need up to 2500meters
-    top_index = np.where(abs(2000 - height) < 50.)[0][0]
+    top_index = np.where(abs(1500 - height) < 50.)[0][0]
 
     #TODO: see test_lambda
     max_dtheta = np.max(dthetadz[0:top_index]) 
@@ -138,7 +140,7 @@ for i in range(len(theta_file_list)):
     wtheta_s = 150/(1004*rhow[0])
     #print 'rhow', rhow[0], 1.0*60*scsp.erf(Times[i]/(2.5*np.sqrt(2)))
     print BLheights[i], theta_ml[i], wtheta_s, theta_jump[i]
-    rino, invrino, wstar, S =  nc.calc_rino(BLheights[i], theta_ml[i], wtheta_s, theta_jump[i], gamma)
+    [rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(BLheights[i], theta_ml[i], wtheta_s, theta_jump[i], gamma, height[dtheta_index_t]-height[dtheta_index_b])
     invrinos.append(invrino)
     wstars.append(wstar)
     wthetas_s.append(wtheta_s)

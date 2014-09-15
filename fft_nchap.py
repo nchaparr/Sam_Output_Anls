@@ -9,9 +9,9 @@ import site
 from datetime import datetime
 
 
-site.addsitedir('/tera/phil/nchaparr/python')
+#site.addsitedir('/tera/phil/nchaparr/python')
 #from nchap_fun import *
-site.addsitedir('/tera/phil/nchaparr/python/Plotting/Dec142013/python')
+#site.addsitedir('/tera/phil/nchaparr/python/Plotting/Dec142013/python')
 from Make_Timelist import *
 #import sys
 #sys.path.insert(0, '/tera/phil/nchaparr/python')
@@ -29,15 +29,15 @@ import nchap_fun as nc
 date="Dec252013"
 #get the square slice from the nc file
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
-ncfile_list = ["/tera2/nchaparr/"+date+"/runs/sam_case" + str(i+1) + "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_" + dump_time_list[11] + ".nc" for i in range(10)]
+ncfile_list = ["/newtera/tera/phil/nchaparr/tera2_cp/nchaparr/"+date+"/runs/sam_case" + str(i+1) + "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_" + dump_time_list[11] + ".nc" for i in range(10)]
 thefile = ncfile_list[0]
 #thefile = "a17.nc"
 ncdata = Dataset(thefile,'r')
 #tau = ncdata.variables['tau'][...]
 #print tau.shape
 #[ynum, xnum] = tau.shape
-AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
-RinoVals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/invrinos")
+AvProfVars = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
+RinoVals = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/invrinos")
 
 h0 = AvProfVars[11, 0]
 h = AvProfVars[11, 1]
@@ -47,18 +47,18 @@ height = np.squeeze(ncdata.variables['z'][...])
 
 lev0 = np.where(abs(h0 - height) < 6.)[0][0]
 #print lev0
-wvel0 = np.squeeze(ncdata.variables['W'][...])[lev0,:,:]
+wvel0 = np.squeeze(ncdata.variables['V'][...])[lev0,:,:]
 [ynum, xnum] = wvel0.shape
 wvel_slice0 = wvel0[:, :ynum]
 
 lev1 = np.where(abs(h - height) < 6.)[0][0]
 #print lev1
-wvel1 = np.squeeze(ncdata.variables['W'][...])[lev1,:,:]
+wvel1 = np.squeeze(ncdata.variables['V'][...])[lev1,:,:]
 wvel_slice1 = wvel1[:, :ynum]
 
 lev2 = np.where(abs(h1 - height) < 6.)[0][0]
 #print lev2
-wvel2 = np.squeeze(ncdata.variables['W'][...])[lev2,:,:]
+wvel2 = np.squeeze(ncdata.variables['V'][...])[lev2,:,:]
 wvel_slice2 = wvel2[:, :ynum]
 
 mid_point = int(np.floor(1.0*ynum/2))
@@ -103,7 +103,7 @@ def anav(wvel_slice):
      nyquist = delta_k*0.5
      num_delta_ks = len(x_spec)
      #print .025*num_delta_ks
-     x_spec = x_spec*(delta_k/float(num_delta_ks))# k = w/(25m)
+     #x_spec = x_spec*(delta_k/float(num_delta_ks))# k = w/(25m)
      
      e_spec = e_spec[0:mid_point]
 
@@ -121,12 +121,12 @@ Ax = Fig.add_subplot(111)
 Ax.loglog(x_spec0, e_spec0, 'ko', label = r'$h_{0}$') 
 Ax.loglog(x_spec1, e_spec1, 'kv', label = r'$h$')
 Ax.loglog(x_spec2, e_spec2, 'k*', label = r'$h_{1}$')
-Ax.loglog(x_spec0[10:], slope0[10:]*5000,'r--', label='slope = -5/3')
-Ax.loglog(x_spec0[10:], slope0[10:]*300,'r--')
+Ax.loglog(x_spec0[10:], slope0[10:]*8000,'r--', label='slope = -5/3')
+Ax.loglog(x_spec0[10:], slope0[10:]*10,'r--')
 Ax.legend(loc = 'upper left', prop={'size': 10}, numpoints=1)
 #plt.xlim(.0, 10)
 #Ax.set_ylim(10**-6, 10**2)
-Ax.set_xlabel(r"$k / (1.6km)$", fontsize=20)
+Ax.set_xlabel(r"$k$", fontsize=20)
 Ax.set_ylabel(r"$E(k)$", fontsize=20)
 plt.show()
 
