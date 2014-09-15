@@ -128,8 +128,8 @@ def Main_Fun(dump_time_index, case, date):
                b_2 = (np.sum(theta[J:K, i, j]) - (K-J)*(a_1+b_1*height[J]))/(np.sum(height[J:K]) - (K-J)*height[J])                                    
                a_2 = np.sum(np.multiply(height[J:K], theta[J:K, i, j]))/np.sum(height[J:K]) - b_2*np.sum(height[J:K]**2)/np.sum(height[J:K])
                b_3 = (np.sum(theta[K:290, i, j]) - (290-K)*(a_2+b_2*height[K]))/(np.sum(height[K:290]) - (290-K)*height[K])               
-               if b_3-b_2>.002:     
-                    #print i, j, J, height[J], height[K], b_3, b_2, b_3-b_2
+               if b_3-b_2>.002:
+                   #print i, j, J, height[J], height[K], b_3, b_2, b_3-b_2
                     ML_Heights[i, j] = height[K]
                     
      print '/tera/phil/nchaparr/python/Plotting/'+date+'/data/mixed_layer_height_'+ str(case) + '_' + dump_time_list[dump_time_index]           

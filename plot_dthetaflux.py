@@ -15,9 +15,9 @@ rcParams.update({'font.size': 10})
 
 """
 
-date = "Dec252013"
-sfc_flx = 60
-gamma = .0025
+date = "Nov302013"
+sfc_flx = 100
+gamma = .005
 
 Fig1 = plt.figure(1)
 Fig1.clf()
@@ -30,44 +30,47 @@ Ax = Fig1.add_subplot(131)
 #Ax.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
 Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
-Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
+#Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 #Ax.set_ylabel(r"$z$", fontsize=20)
-plt.xlim(300, 312)
-plt.ylim(100, 1900)
+
+plt.xlim(302, 308)
+Ax.set_xticks([302, 306, 308])
+plt.ylim(100, 1500)
 #plt.ylim(0.1, 1.4)
 
 
 Ax1 = Fig1.add_subplot(132)
 #Ax1.set_title( r'$Scaled \ \frac{\partial \theta}{\partial z}$', fontsize=20)
-#Ax1.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
-Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
+Ax1.set_xlabel( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
+#Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
 #Ax1.set_xlabel(r"$\frac{\partial \theta}{\partial z}$", fontsize=20)
-Ax1.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
+Ax1.set_ylabel(r"$z$", fontsize=20)
+#Ax1.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 #start, end = -.025, .025
 start, end = -1, 2.5
-Ax1.set_xticks(np.arange(start, end, 1.0*(end-start)/4))
+Ax1.set_xticks([0, .005])
 #Ax1.set_ylabel(r"$z$", fontsize=20)
 #plt.xlim(-.025, .025)
 #plt.xlim(-1, 2.5)
-plt.ylim(100, 1900)
+plt.ylim(100, 1500)
 #plt.ylim(0.1, 1.4)
 
 Ax2 = Fig1.add_subplot(133)
 #Ax2.set_title(r"$\overline{w^{'} \theta^{'}}$", fontsize=20)
 #Ax2.set_title(r"$Scaled \ \overline{w^{'} \theta^{'}}$", fontsize=20)
-#Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
-Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
+Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
+#Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
 #start, end = -.06, .14
 #start, end = -.4, 1.2
-#Ax2.set_xticks(np.arange(start, end, 1.0*(end-start)/5))
+#Ax2.set_xticks([0])
 
 #Ax2.set_ylabel(r"$z$", fontsize=20)
 #Ax2.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-plt.ylim(100, 1900)
+plt.ylim(100, 1500)
 #plt.xlim(-.06, .14)
 #plt.xlim(-.4, 1.2)
 #plt.ylim(0.1, 1.4)
-dump_time_list, Times = Make_Timelists(1, 600, 28800)
+dump_time_list, Times = Make_Timelists(1, 900, 28800)
  
 theta_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/theta_bar"+ dump_time for dump_time in dump_time_list]
 press_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/press"+ dump_time for dump_time in dump_time_list]
@@ -101,15 +104,15 @@ for i in range(len(theta_file_list)):
 
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/sfc_flx
     
-    #if np.mod(i+1, 6) == 0:
-    if i > 45 and i < 49:
+    if np.mod(i+1, 4) == 0 and i > 4:
+    #if i > 45 and i < 49:
         
         fluxes[0] = np.nan
         zeros = np.zeros_like(height)
 
         Ax.plot(theta, height, '-') #, label = str(Times[i])+'hrs'
         
-        Ax1.plot(1.0*dthetadz/gamma, height, '-', label = str(Times[i])+'hrs')
+        Ax1.plot(1.0*dthetadz, height, '-', label = str(Times[i])+'hrs')
         
         Ax2.plot(fluxes, height, '-', label = str(Times[i])+'hrs')    
     
