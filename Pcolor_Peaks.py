@@ -14,6 +14,7 @@ from matplotlib.patches import Patch
 import sys
 #sys.path.insert(0, '/tera/phil/nchaparr/python')
 import nchap_fun as nc
+from nchap_class import *
 from Make_Timelist import *
 import warnings
 warnings.simplefilter('ignore', np.RankWarning)
@@ -136,17 +137,15 @@ def get_fit(theta, height):
 
 
      return fitvals, RSS, j, k                                                
-                                                                                
-                                                                              
-
+             
 #Lists of times relating to output (nc) files
 dump_time_list, time_hrs = Make_Timelists(1, 600, 28800)
-dump_time = dump_time_list[11]
+dump_time = dump_time_list[29]
 print dump_time
-
+date = "Dec252013"
 for k in range(1):
      #getting variables from nc files
-     [wvels, theta, tracer, height] = nc.Get_Var_Arrays("/tera2/nchaparr/Mar52014/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time, k+1)
+     [wvels, theta, tracer, height] = nc.Get_Var_Arrays("/newtera/tera/phil/nchaparr/tera2_cp/nchaparr/"+date+"/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time, k+1)
 
      #getting points of maximum theta gradient, getting rid of this soon
      #[dvardz, grad_peaks] = nc.Domain_Grad(theta, height) 
@@ -156,7 +155,10 @@ for k in range(1):
      for i in range(1):
           #top_index = [tops_indices[0][i], tops_indices[1][i]]
           #[i, j] = top_index
-          [i, j] = [50, 50]
+          mlheights = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/mixed_layer_height_"+ str(k+1) + "_" + dump_time)
+          indices = np.where(mlheights>1200)
+          print indices, indices[0][0], indices[1][0]
+          i, j = indices[0][0], indices[1][0]
           thetavals = theta[:, i, j]
 
           startTime = datetime.now()
@@ -188,12 +190,12 @@ for k in range(1):
           theFig.clf()
           theAx = theFig.add_subplot(121)
           theAx.set_title('Fit')
-          theAx.set_xlabel(r'$\overline{\theta} (K)$')
+          theAx.set_xlabel(r'$\theta (K)$')
           theAx.set_ylabel('z (m)')
 
           theAx1 = theFig.add_subplot(122)
           theAx1.set_title('Profile and Fit')
-          theAx1.set_xlabel(r'$\overline{\theta} (K) $')
+          theAx1.set_xlabel(r'$\theta} (K) $')
           theAx1.set_ylabel('z (m)')
 
           theAx1.plot(thetavals, height[:], 'wo')
@@ -202,10 +204,10 @@ for k in range(1):
           theAx.plot(fitvals[K:top], height[K:top], 'g-')
           theAx1.plot(fitvals[:top], height[:top], 'r-')
 
-theAx1.set_xlim(300, 320)
+theAx1.set_xlim(300, 305)
 theAx1.set_ylim(0, 2000)
 theAx.set_ylim(0, 2000)
-theAx.set_xlim(300, 320)
+theAx.set_xlim(300, 305)
 plt.show()
 
 
