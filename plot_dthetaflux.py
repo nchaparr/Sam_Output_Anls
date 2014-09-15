@@ -25,40 +25,40 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
 
-Ax = Fig1.add_subplot(131)
+Ax = Fig1.add_subplot(121)
 #Ax.set_title( r'$\theta$', fontsize=20)
 #Ax.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
-Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
-#Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
+Ax.set_xlabel(r"$\overline{w^{\prime}\theta^{\prime}}$", fontsize=20)
+Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 #Ax.set_ylabel(r"$z$", fontsize=20)
 
-plt.xlim(302, 308)
-Ax.set_xticks([302, 306, 308])
-plt.ylim(100, 1500)
-#plt.ylim(0.1, 1.4)
+#plt.xlim(302, 308)
+Ax.set_xticks([-.01, 0, .2])
+#plt.ylim(100, 1500)
+plt.ylim(0.1, 1.4)
 
 
-Ax1 = Fig1.add_subplot(132)
+Ax1 = Fig1.add_subplot(122)
 #Ax1.set_title( r'$Scaled \ \frac{\partial \theta}{\partial z}$', fontsize=20)
-Ax1.set_xlabel( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
+Ax1.set_xlabel( r'$\frac{\overline{w^{\prime}\theta^{\prime}}}{\overline{w^{\prime}\theta^{\prime}}_{s}}$', fontsize=20)
 #Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
 #Ax1.set_xlabel(r"$\frac{\partial \theta}{\partial z}$", fontsize=20)
-Ax1.set_ylabel(r"$z$", fontsize=20)
+#Ax1.set_ylabel(r"$z$", fontsize=20)
 #Ax1.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 #start, end = -.025, .025
 start, end = -1, 2.5
-Ax1.set_xticks([0, .005])
+#Ax1.set_xticks([0, .005])
 #Ax1.set_ylabel(r"$z$", fontsize=20)
 #plt.xlim(-.025, .025)
 #plt.xlim(-1, 2.5)
-plt.ylim(100, 1500)
-#plt.ylim(0.1, 1.4)
+#plt.ylim(100, 1500)
+plt.ylim(0.1, 1.4)
 
-Ax2 = Fig1.add_subplot(133)
+#Ax2 = Fig1.add_subplot(133)
 #Ax2.set_title(r"$\overline{w^{'} \theta^{'}}$", fontsize=20)
 #Ax2.set_title(r"$Scaled \ \overline{w^{'} \theta^{'}}$", fontsize=20)
-Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
+#Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
 #Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
 #start, end = -.06, .14
 #start, end = -.4, 1.2
@@ -66,7 +66,7 @@ Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
 
 #Ax2.set_ylabel(r"$z$", fontsize=20)
 #Ax2.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-plt.ylim(100, 1500)
+#plt.ylim(100, 1500)
 #plt.xlim(-.06, .14)
 #plt.xlim(-.4, 1.2)
 #plt.ylim(0.1, 1.4)
@@ -76,7 +76,7 @@ theta_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/theta_bar"
 press_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/press"+ dump_time for dump_time in dump_time_list]
 flux_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
 height_file = "/tera/phil/nchaparr/python/Plotting/"+date+"/data/heights0000000600"
-#AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
+AvProfVars = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
 
 #loop over text files files
 for i in range(len(theta_file_list)):
@@ -100,7 +100,7 @@ for i in range(len(theta_file_list)):
 
     #where gradient is max, and flux is min
     #print AvProfVars[:,1].shape, height.shape
-    #scaled_height = [1.0*h/AvProfVars[i,1] for h in height]
+    scaled_height = [1.0*h/AvProfVars[i,1] for h in height]
 
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/sfc_flx
     
@@ -110,11 +110,11 @@ for i in range(len(theta_file_list)):
         fluxes[0] = np.nan
         zeros = np.zeros_like(height)
 
-        Ax.plot(theta, height, '-') #, label = str(Times[i])+'hrs'
+        Ax.plot(wvelthetapert, scaled_height, '-') #, label = str(Times[i])+'hrs'
         
-        Ax1.plot(1.0*dthetadz, height, '-', label = str(Times[i])+'hrs')
+        Ax1.plot(fluxes, scaled_height, '-', label = str(Times[i])+'hrs')
         
-        Ax2.plot(fluxes, height, '-', label = str(Times[i])+'hrs')    
+        #Ax2.plot(fluxes, height, '-', label = str(Times[i])+'hrs')    
     
 array = np.genfromtxt('/tera/phil/nchaparr/python/Pert_Files/snd')
     
@@ -131,11 +131,11 @@ element0 = np.array([.005])
 dthetadz0=np.hstack((element0, dthetadz0))
 
 #Ax1.plot(dthetadz0, scaled_height[0:top_index], '--', label = 'Initial Sounding')
-Ax1.plot(zeros, height)#zeros line for reference
+Ax1.plot(zeros, scaled_height)#zeros line for reference
 #Ax1.plot(gamma, scaled_height)#zeros line for reference
-Ax1.plot(zeros+gamma, height, 'k-')#zeros line for reference
-#Ax2.plot(zeros, height)#zeros line for reference
-Ax2.plot(zeros, height)#zeros line for reference 
+#Ax1.plot(zeros+gamma, height, 'k-')#zeros line for reference
+Ax.plot(zeros, scaled_height)#zeros line for reference
+#Ax2.plot(zeros, height)#zeros line for reference 
 plt.legend(loc = 'Lower right', prop={'size':8})
 #Ax2.plot(theta_0, scaled_xheight[0:top_index], '--', label = 'Initial Sounding')#"
 #plt.xlim(300, 310)
