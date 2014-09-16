@@ -9,7 +9,7 @@ from matplotlib import ticker
 import site
 site.addsitedir('/tera2/nchaparr/Dec252013/python')
 import sys
-#sys.path.insert(0, '/tera/phil/nchaparr/python')
+#sys.path.insert(0, '/newtera/teraphil/nchaparr/python')
 import nchap_fun as nc
 from Make_Timelist import *
 import fastfit as fsft
@@ -94,7 +94,7 @@ def Main_Fun(dump_time_index, case, date):
     """
      dump_time_list, time_hrs = Make_Timelists(1, 3600, 28800)
     
-     ncfile = "/tera2/nchaparr/"+ date +"/runs/sam_case" + str(case) + "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_" + dump_time_list[dump_time_index] + ".nc"
+     ncfile = "/newtera/tera/phil/nchaparr/tera2_cp/nchaparr/"+ date +"/runs/sam_case" + str(case) + "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_" + dump_time_list[dump_time_index] + ".nc"
                
      thefile = ncfile
      print thefile
@@ -128,21 +128,21 @@ def Main_Fun(dump_time_index, case, date):
                b_2 = (np.sum(theta[J:K, i, j]) - (K-J)*(a_1+b_1*height[J]))/(np.sum(height[J:K]) - (K-J)*height[J])                                    
                a_2 = np.sum(np.multiply(height[J:K], theta[J:K, i, j]))/np.sum(height[J:K]) - b_2*np.sum(height[J:K]**2)/np.sum(height[J:K])
                b_3 = (np.sum(theta[K:290, i, j]) - (290-K)*(a_2+b_2*height[K]))/(np.sum(height[K:290]) - (290-K)*height[K])               
-               if b_3-b_2>.002:
+               if b_3-b_2>.0017:
                    #print i, j, J, height[J], height[K], b_3, b_2, b_3-b_2
                     ML_Heights[i, j] = height[K]
                     
-     print '/tera/phil/nchaparr/python/Plotting/'+date+'/data/mixed_layer_height_'+ str(case) + '_' + dump_time_list[dump_time_index]           
-     np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/mixed_layer_height_'+ str(case) + '_' + dump_time_list[dump_time_index], ML_Heights, delimiter=' ')
+     print '/newtera/tera/phil/nchaparr/python/Plotting/'+date+'/data/mixed_layer_height_'+ str(case) + '_' + dump_time_list[dump_time_index]           
+     np.savetxt('/newtera/tera/phil/nchaparr/python/Plotting/'+date+'/data/mixed_layer_height_'+ str(case) + '_' + dump_time_list[dump_time_index], ML_Heights, delimiter=' ')
      
      return ML_Heights
 
 def Call_Main_Fun(date):
      dump_time_no = 8
-     case_no = 1
+     case_no = 10
      date = 'Dec252013'
      for i in range(dump_time_no):
-          if i == 1:
+          if i == 4:
                for j in range(case_no):
                     ML_Heights = Main_Fun(i, j+1, date)
                     theFig = plt.figure(i)
@@ -172,21 +172,21 @@ def Call_Main_Fun(date):
                     #bar.update_ticks()
                     plt.show()
                     #print time_hrs[i]
-                    theFig.savefig('/tera/phil/nchaparr/python/Plotting/'+date+'/pngs/h_cont_'+str(time_hrs[i])+'_hrs.png')
+                    #theFig.savefig('/newtera/tera/phil/nchaparr/python/Plotting/'+date+'/pngs/h_cont_'+str(time_hrs[i])+'_hrs.png')
      
 
 dump_time_list, time_hrs = Make_Timelists(1, 3600, 28800)
 print time_hrs
-#date = "Mar12014"
+date = "Dec252013"
 
 if __name__ == "__main__":
 
-     import argparse
-     parser = argparse.ArgumentParser()
-     parser.add_argument("--run_name", type=str, help='name of run')
-     args = parser.parse_args()
-     date = args.run_name
-     print date
+     #import argparse
+     #parser = argparse.ArgumentParser()
+     #parser.add_argument("--run_name", type=str, help='name of run')
+     #args = parser.parse_args()
+     #date = args.run_name
+     #print date
      Call_Main_Fun(date)
      
      #set up plot
