@@ -156,9 +156,9 @@ for k in range(1):
           #top_index = [tops_indices[0][i], tops_indices[1][i]]
           #[i, j] = top_index
           mlheights = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/mixed_layer_height_"+ str(k+1) + "_" + dump_time)
-          indices = np.where(mlheights>1200)
+          indices = np.where(mlheights<700)
           print indices, indices[0][0], indices[1][0]
-          i, j = indices[0][0], indices[1][0]
+          i, j = indices[0][20], indices[1][20]
           thetavals = theta[:, i, j]
 
           startTime = datetime.now()
