@@ -107,7 +107,7 @@ for i in range(len(label_list)):
 
 #Ax3.text(.33, .013, r'$a = -1$',  fontdict=None, withdash=False, fontsize = 15)
 
-Ax3.set_ylim(0, 1)
+Ax3.set_ylim(0, .1)
 Ax3.legend(loc = 'upper right', prop={'size': 10}, numpoints=1)
 #Ax3.set_title(r'$\Delta h (Flux)\ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$Scaled \ Time \ vs \ Time$', fontsize=20)
@@ -124,7 +124,7 @@ Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=20)
 #Ax3.set_ylabel(r"$\overline{ \theta} (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h \ (m)$", fontsize=20)
 #Ax3.set_ylabel(r"$z \ (m)$", fontsize=20)
-Ax3.set_ylabel(r"$Ri_{\delta}^{-1}$", fontsize=20)
+Ax3.set_ylabel(r"$Ri_{\Delta}^{-1}$", fontsize=20)
 #Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
 #Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
 plt.show()
