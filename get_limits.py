@@ -32,19 +32,22 @@ def Main_Fun(rundate, gamma, flux_s):
          Times = np.array(Times)    
      #class for pulling data files
      files = For_Plots(rundate)
-
+     dump_time_list = dump_time_list[12:]
+     Times = Times[12:]
      #Create lists of variable lists
      theta_file_list = [files.get_file(dump_time, "theta_bar") for dump_time in dump_time_list]
      press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]     
      flux_file_list = [files.get_file(dump_time, "wvelthetapert") for dump_time in dump_time_list]
      #flux_quads_file_list = [files.get_file(dump_time, "flux_quads") for dump_time in dump_time_list]
-     height_file = files.get_file("0000000600", "heights")
+     height_file = files.get_file("0000018000", "heights")
 
      AvProfLims = []
      invrinos = []
      #loop over text files files
-     for i in range(len(theta_file_list)):
+     for i in range(len(theta_file_list) - 12):
          #print i, theta_file_list[i]
+         i = i + 12
+         print i
          theta = np.genfromtxt(theta_file_list[i])
          theta0 = np.genfromtxt(theta_file_list[0])
          #print theta.shape
@@ -87,11 +90,12 @@ def Main_Fun(rundate, gamma, flux_s):
 #gamma = .01
 #flux_s = 150
 
-run_list = [["Nov302013", .005, 100], ["Dec142013", .01, 100], ["Dec202013", .005, 60], ["Dec252013", .0025, 60], ["Jan152014_1", .005, 150], ["Mar12014", .01, 60], ["Mar52014", .01, 150]]
+run_list = [["Nov302013", .005, 100], ["Dec142013", .01, 100], ["Dec202013", .005, 60], ["Dec252013", .0025, 60], ["Jan152014_1", .005, 150], ["Mar12014", .01, 60], ["Mar52014", .01, 150], ["Aug122014", .01, 150]]
 
-for run in run_list:
+#for run in run_list:
+run = run_list[7]
     #print run
-    Main_Fun(run[0], run[1], run[2])
+Main_Fun(run[0], run[1], run[2])
 
 
     

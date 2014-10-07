@@ -64,7 +64,7 @@ def Get_Var_Arrays(var, fignum):
     
     """
      #create list of filenames
-     ncfile_list = ["/tera2/nchaparr/Mar52014/runs/sam_case"+ str(i+1) + "/OUT_STAT/NCHAPP1_testing_doscamiopdata.nc" for i in range(10)]
+     ncfile_list = ["/newtera/tera/phil/nchaparr/tera2_cp/nchaparr/Mar52014/runs/sam_case"+ str(i+1) + "/OUT_STAT/NCHAPP1_testing_doscamiopdata.nc" for i in range(10)]
 
      #create lists for variable arrays from each case
      vars_list = []
