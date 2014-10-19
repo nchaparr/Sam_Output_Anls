@@ -36,19 +36,23 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
 
      AvProfVars = files.AvProfVars()
      rinovals = files.rinovals()
+     print AvProfVars.shape, rinovals.shape
      downwarm_h = []
      #loop over text files files
      for i in range(len(flux_quads_file_list)):
          #print i, theta_file_list[i]
-         j = (i+1)*3 - 1
-         #print i, j
+         if rundate=="Nov302013":
+             j = (i+1)*2 - 1
+         else:
+             j = (i+1)*3 - 1
+         print i, j
          height = np.genfromtxt(height_file)
          theta = np.genfromtxt(theta_file_list[i])
          #print theta.shape
          press = np.genfromtxt(press_file_list[i])
          rhow = nc.calc_rhow(press, height, theta[0])
          h = AvProfVars[j, 1]
-         h0=AvProfVars[j, 0]
+         h0=AvProfVars[j, 1]
          h1 = AvProfVars[j, 2]
          deltah = h1-h0
          deltatheta = gamma*deltah
@@ -62,7 +66,8 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
          downwarm_h.append(1.0*downwarm/deltatheta)
 
      downwarm_h = np.array(downwarm_h)    
-     
+     if rundate=="Jan152014_1":
+         Times, downwarm_h = Times[0:11], downwarm_h[0:11] 
      Ax3.plot(Times, downwarm_h, the_legend, label = the_label)
 
 run_list = [["Dec142013", .01, 100, '100/10', 'kv'], ["Nov302013", .005, 100, '100/5','ko'], ["Dec202013", .005, 60,'60/5','yo'], ["Dec252013", .0025, 60,'60/2.5','y*'], ["Jan152014_1", .005, 150, '150/5','ro'], ["Mar12014", .01, 60,'60/10','yv'], ["Mar52014", .01, 150,'150/10','rv']]
@@ -71,10 +76,10 @@ Fig2 = plt.figure(2)
 Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
 Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=20)
-Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h}}{\gamma \Delta h} \ (where \ w^{\prime}<0)$", fontsize=20)
-Ax3.set_ylim(0, .05)
+Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h}}{\gamma ( h_{1}-h)} \ (where \ w^{\prime}<0)$", fontsize=20)
+Ax3.set_ylim(0, .2)
 for run in run_list:
-    
+    print run[0]
     Main_Fun(run[0], run[1], run[2], run[3], run[4])
 
 Ax3.legend(loc = 'upper left', prop={'size':14})    
