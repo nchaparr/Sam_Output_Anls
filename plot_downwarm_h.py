@@ -52,7 +52,7 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
          press = np.genfromtxt(press_file_list[i])
          rhow = nc.calc_rhow(press, height, theta[0])
          h = AvProfVars[j, 1]
-         h0=AvProfVars[j, 1]
+         h0=AvProfVars[j, 0]
          h1 = AvProfVars[j, 2]
          deltah = h1-h0
          deltatheta = gamma*deltah
@@ -77,7 +77,8 @@ Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
 Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=20)
 Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h}}{\gamma ( h_{1}-h)} \ (where \ w^{\prime}<0)$", fontsize=20)
-Ax3.set_ylim(0, .2)
+Ax3.set_ylim(0, .1)
+Ax3.set_xlim(2, 9)
 for run in run_list:
     print run[0]
     Main_Fun(run[0], run[1], run[2], run[3], run[4])

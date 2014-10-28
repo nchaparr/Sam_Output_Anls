@@ -135,14 +135,20 @@ for i in range(len(theta_file_list)):
         fluxes[0] = np.nan
         zeros = np.zeros_like(height)
         wvelthetapert = fluxes
-        Ax.plot(theta, height, 'k-', label = r"$\overline{\theta}$") # 
+        Ax.plot(theta, height, 'k-', label = r"$\overline{\theta}$") #
+        Ax.annotate('', xy=(theta[h0_index]-1.1, h0), xycoords = 'data', xytext=(theta[h1_index], h0), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
+        Ax.text(308.3, h0+10, r"$\Delta h \gamma$", size=15)
+
+        Ax.annotate('', xy=(theta[h1_index], h0), xycoords = 'data', xytext=(theta[h1_index], h1), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
+        Ax.text(theta[h1_index]-.2, h0+200, r"$\Delta h$", size=15)
+        
         #Ax.plot([theta[], theta[]], [height[], height[]], '')
 
         #Ax1.plot(1.0*dthetadz, height, 'k-') #, label = str(Times[i])+'hrs'
         #Ax1.plot([dthetadz[h0_index]-.7, dthetadz[h0_index]+2], [h0, h0], 'k--')
         #Ax1.plot([dthetadz[h0_index]-.7, dthetadz[h0_index]+2], [h, h], 'k-')
-        Ax.plot([theta[h0_index]-1.1, theta[h1_index]], [h0, h0], 'k:', linewidth=3)
-        Ax.plot([theta[h1_index], theta[h1_index]], [h0, h1], 'k:', linewidth=3)
+        #Ax.plot([theta[h0_index]-1.1, theta[h1_index]], [h0, h0], 'k:', linewidth=3)
+        #Ax.plot([theta[h1_index], theta[h1_index]], [h0, h1], 'k:', linewidth=3)
 
         #Ax1.text(dthetadz[h0_index]-.7, h1, r"$h_{1}$", size=20)
         #Ax1.text(dthetadz[h0_index]-.7, h, r"$h$", size=20)
