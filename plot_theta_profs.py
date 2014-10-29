@@ -20,7 +20,6 @@ Fig1.clf()
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
-
 Ax = Fig1.add_subplot(111)
 Ax.set_xlabel( r'$\theta$ \ (K)', fontsize=20)
 #Ax1.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
