@@ -28,50 +28,60 @@ warnings.simplefilter('ignore', np.RankWarning)
 
 
 dump_time_list, time_hrs = Make_Timelists(1, 3600, 28800)
+date_list = ["Mar52014", "Dec142013", "Mar12014"]
+width_list = [10, 5, 1]
+color_list = ['.75', '.25', 'k']
+theFig = plt.figure()
+theFig.clf()
 
-date = "Mar52014"
-
+theAx = theFig.add_subplot(111)
+theAx.set_title(r"$\gamma = 10 \ (Kkm^{-1})$", fontsize=20)
+theAx.set_ylabel(r'$count$', fontsize=20)
+theAx.set_xlabel(r'$h^{l}_{0}$', fontsize=20)
+theAx.set_xlim(400, 1400) #TODO:need to test axis limits first
+theAx.set_ylim(1, 25000)
+theAx.text(810, 14000, r"$\overline{w^{'}\theta^{'}}_{s} = 150 \ Wm^{-2}$", fontsize=20)
+theAx.text(660, 18000, r"$\overline{w^{'}\theta^{'}}_{s} = 100 \ Wm^{-2}$", fontsize=20)
+theAx.text(500, 23000, r"$\overline{w^{'}\theta^{'}}_{s} = 60 \ Wm^{-2}$", fontsize=20)
+theAx.tick_params(axis='both', which='major', labelsize=14)
 #rinovals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/invrinos")
-
-ml_height_hist_vars=[]
-points = For_Plots(date)
-rinovals = points.rinovals()
-AvProfVars = points.AvProfVars()
+for j in range(len(date_list)):
+    date=date_list[j]
+    Width=width_list[j]
+    Color = color_list[j]
+    ml_height_hist_vars=[]
+    points = For_Plots(date)
+    rinovals = points.rinovals()
+    AvProfVars = points.AvProfVars()
          
-for i in range(len(dump_time_list)):
-     dump_time=dump_time_list[i]
-     if i == 4:
-          ML_Heights=[]
-          case_range = 10
-          for case in range(case_range):
-               height = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/heights0000028800")
-               ML_Heights.append(np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/mixed_layer_height_"+ str(case+1) + "_" + dump_time))
+    for i in range(len(dump_time_list)):
+        dump_time=dump_time_list[i]
+        if i == 4:
+            ML_Heights=[]
+            case_range = 10
+            for case in range(case_range):
+                height = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/heights0000028800")
+                ML_Heights.append(np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/mixed_layer_height_"+ str(case+1) + "_" + dump_time))
 
-          ML_Heights=np.array(ML_Heights)
-          [zvals, yvals, xvals] = ML_Heights.shape
-          ML_Heights = np.reshape(ML_Heights, (zvals*yvals*xvals,))
-          v_max, v_min, mean, var = np.amax(ML_Heights), np.amin(ML_Heights), np.mean(ML_Heights), np.var(ML_Heights)
+            ML_Heights=np.array(ML_Heights)
+            [zvals, yvals, xvals] = ML_Heights.shape
+            ML_Heights = np.reshape(ML_Heights, (zvals*yvals*xvals,))
+            v_max, v_min, mean, var = np.amax(ML_Heights), np.amin(ML_Heights), np.mean(ML_Heights), np.var(ML_Heights)
           #print 'max min std', v_max, v_min, mean, var
-          rinovals_index = (i+1)*6-1
+            rinovals_index = (i+1)*6-1
           #print rinovals_index
           #ml_height_hist_vars.append([rinovals[rinovals_index,1], rinovals[rinovals_index,3], v_max, v_min, mean, var])
           #n, bins, patches = theAx.hist(tracer_peaks, bins=20)
-          ML_Heights = np.reshape(ML_Heights, (zvals*yvals, xvals))
-          height_bin_vols = nc.Bin_Peaks(ML_Heights, height)
+            ML_Heights = np.reshape(ML_Heights, (zvals*yvals, xvals))
+            height_bin_vols = nc.Bin_Peaks(ML_Heights, height)
 
           #set up plot
-          h = AvProfVars[rinovals_index, 1]
-          theFig = plt.figure()
-          theFig.clf()
-          theAx = theFig.add_subplot(111)
+            h = AvProfVars[rinovals_index, 1]
           #theAx.set_title('Histogram of local Mixed Layer Heights from 1 Case at 5 hrs')
-          theAx.set_ylabel(r'$count$', fontsize=15)
-          theAx.set_xlabel(r'$h^{l}_{0}$', fontsize=15)
-          theAx.bar(1.0*height, 1.0*height_bin_vols, width = .001)     
-          theAx.set_xlim(400, 1400) #TODO:need to test axis limits first
-          theAx.set_ylim(1, 25000)
-          plt.show()
-          theFig.savefig("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/ML_Height_hist.png")
+            theAx.bar(1.0*height, 1.0*height_bin_vols, width = Width, color=Color)     
+          
+theFig.show()          
+#theFig.savefig("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/ML_Height_hist.png")
 
 #np.savetxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/ml_height_hist_vars", np.array(ml_height_hist_vars), delimiter=' ')
 
