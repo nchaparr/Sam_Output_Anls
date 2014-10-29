@@ -15,7 +15,7 @@ rcParams.update({'font.size': 10})
 
 """
 
-date = "Aug122014"
+date = "Mar12014"
 sfc_flx = 150
 gamma = .01
 
@@ -30,8 +30,8 @@ Ax = Fig1.add_subplot(131)
 #Ax.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
 Ax.set_xlabel(r"$\overline{w^{\prime}\theta^{\prime}}$", fontsize=20)
-Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-#Ax.set_ylabel(r"$z$", fontsize=20)
+#Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
+Ax.set_ylabel(r"$z$", fontsize=20)
 
 plt.xlim(302, 310)
 #Ax.set_xticks([-.01, 0, .2])
