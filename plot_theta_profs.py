@@ -22,16 +22,16 @@ plt.rc('font', family='serif')
 
 
 Ax = Fig1.add_subplot(111)
-#Ax.set_title( r'$\theta$', fontsize=20)
+Ax.set_xlabel( r'$\theta$ \ (K)', fontsize=20)
 #Ax1.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
-Ax.set_xlabel(r"$\frac{\overline{w^{\prime}\theta^{\prime}}}{\overline{w^{\prime}\theta^{\prime}}_{s}}$", fontsize=20)
+#Ax.set_xlabel(r"$\frac{\overline{w^{\prime}\theta^{\prime}}}{\overline{w^{\prime}\theta^{\prime}}_{s}}$", fontsize=20)
 #Ax.set_xlabel(r"$\overline{w^{,}\theta^{,}}$", fontsize=20)
-Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-#Ax.set_ylabel(r"$z (m)$", fontsize=20)
-#plt.xlim(300, 310)
-#plt.ylim(50, 1500)
-plt.ylim(0.2, 1.4)
+#Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
+Ax.set_ylabel(r"$z \ (m)$", fontsize=20)
+plt.xlim(300, 310)
+plt.ylim(50, 1500)
+#plt.ylim(0.2, 1.4)
 
 
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
@@ -92,9 +92,9 @@ for i in range(len(theta_file_list)):
     
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/flux_list[i]
     
-    Ax.plot(fluxes, scaled_height, marker_list[i], markersize=10, label = legend_list[i]) 
+    Ax.plot(theta, height, marker_list[i], markersize=10, label = legend_list[i]) 
 zeros = np.zeros_like(height)
-Ax.plot(zeros, scaled_height, 'k-')
+#Ax.plot(zeros, scaled_height, 'k-')
 #Ax.plot(zeros+1, scaled_height, 'k-')
 #Ax.plot(zeros+.005, scaled_height, 'k-')
 #Ax.plot(zeros+.0025, scaled_height, 'k-')
