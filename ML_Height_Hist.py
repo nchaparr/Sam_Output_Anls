@@ -28,21 +28,21 @@ warnings.simplefilter('ignore', np.RankWarning)
 
 
 dump_time_list, time_hrs = Make_Timelists(1, 3600, 28800)
-date_list = ["Mar52014", "Dec142013", "Mar12014"]
+date_list = ["Jan152014_1", "Nov302013", "Dec202013"]
 width_list = [10, 5, 1]
 color_list = ['.75', '.25', 'k']
 theFig = plt.figure()
 theFig.clf()
 
 theAx = theFig.add_subplot(111)
-theAx.set_title(r"$\gamma = 10 \ (Kkm^{-1})$", fontsize=20)
+theAx.set_title(r"$\gamma = 5 \ (Kkm^{-1})$", fontsize=20)
 theAx.set_ylabel(r'$count$', fontsize=20)
 theAx.set_xlabel(r'$h^{l}_{0}$', fontsize=20)
 theAx.set_xlim(400, 1400) #TODO:need to test axis limits first
 theAx.set_ylim(1, 25000)
-theAx.text(810, 14000, r"$\overline{w^{'}\theta^{'}}_{s} = 150 \ Wm^{-2}$", fontsize=20)
-theAx.text(660, 18000, r"$\overline{w^{'}\theta^{'}}_{s} = 100 \ Wm^{-2}$", fontsize=20)
-theAx.text(500, 23000, r"$\overline{w^{'}\theta^{'}}_{s} = 60 \ Wm^{-2}$", fontsize=20)
+theAx.text(1060, 10000, r"$\overline{w^{'}\theta^{'}}_{s} = 150 \ Wm^{-2}$", fontsize=20)
+theAx.text(900, 12000, r"$\overline{w^{'}\theta^{'}}_{s} = 100 \ Wm^{-2}$", fontsize=20)
+theAx.text(700, 15000, r"$\overline{w^{'}\theta^{'}}_{s} = 60 \ Wm^{-2}$", fontsize=20)
 theAx.tick_params(axis='both', which='major', labelsize=14)
 #rinovals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/invrinos")
 for j in range(len(date_list)):
