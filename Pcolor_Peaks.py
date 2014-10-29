@@ -142,7 +142,7 @@ def get_fit(theta, height):
 dump_time_list, time_hrs = Make_Timelists(1, 600, 28800)
 dump_time = dump_time_list[29]
 print dump_time
-date = "Dec252013"
+date = "Mar52014"
 for k in range(1):
      #getting variables from nc files
      [wvels, theta, tracer, height] = nc.Get_Var_Arrays("/newtera/tera/phil/nchaparr/tera2_cp/nchaparr/"+date+"/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time, k+1)
@@ -156,7 +156,7 @@ for k in range(1):
           #top_index = [tops_indices[0][i], tops_indices[1][i]]
           #[i, j] = top_index
           mlheights = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/mixed_layer_height_"+ str(k+1) + "_" + dump_time)
-          indices = np.where(mlheights<700)
+          indices = np.where(mlheights>800)
           print indices, indices[0][0], indices[1][0]
           i, j = indices[0][20], indices[1][20]
           thetavals = theta[:, i, j]
@@ -189,25 +189,27 @@ for k in range(1):
           theFig = plt.figure(i)
           theFig.clf()
           theAx = theFig.add_subplot(121)
-          theAx.set_title('Fit')
-          theAx.set_xlabel(r'$\theta (K)$')
-          theAx.set_ylabel('z (m)')
+          theAx.set_title('Fit', fontsize = 20)
+          theAx.set_xlabel(r'$\theta \ (K)$', fontsize = 20)
+          theAx.set_ylabel('z \ (m)', fontsize = 20)
 
           theAx1 = theFig.add_subplot(122)
-          theAx1.set_title('Profile and Fit')
-          theAx1.set_xlabel(r'$\theta} (K) $')
-          theAx1.set_ylabel('z (m)')
+          theAx1.set_title('Profile and Fit', fontsize = 20)
+          theAx1.set_xlabel(r'$\theta \ (K) $', fontsize = 20)
+          #theAx1.set_ylabel('z \ (m)', fontsize = 20)
 
           theAx1.plot(thetavals, height[:], 'wo')
           theAx.plot(fitvals[:J], height[:J], 'r-')
-          theAx.plot(fitvals[J:K], height[J:K], 'b-')
+          theAx.plot(fitvals[J:K+1], height[J:K+1], 'b-')
           theAx.plot(fitvals[K:top], height[K:top], 'g-')
           theAx1.plot(fitvals[:top], height[:top], 'r-')
 
-theAx1.set_xlim(300, 305)
+theAx1.set_xlim(300, 320)
 theAx1.set_ylim(0, 2000)
 theAx.set_ylim(0, 2000)
-theAx.set_xlim(300, 305)
+theAx.set_xlim(300, 320)
+theAx1.tick_params(axis='both', which='major', labelsize=14)
+theAx.tick_params(axis='both', which='major', labelsize=14)
 plt.show()
 
 
