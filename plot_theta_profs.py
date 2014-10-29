@@ -43,9 +43,9 @@ gamma_list=[.005, .01, .005, .0025, .005, .01, .01]
 #choose a dumptime
 #dump_time, Time = dump_time_list[time_index], Times[time_index]
 #print Time
-dump_time = "0000007200"
-dump_time_index=29
-dump_time_index0=19
+dump_time = "0000010800"
+dump_time_index=35
+dump_time_index0=23
 theta_file_list = ["/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/theta_bar"+ dump_time for run_name in run_name_list]
 press_file_list = ["/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/press"+ dump_time for run_name in run_name_list]
 flux_file_list = ["/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/wvelthetapert"+ dump_time for run_name in run_name_list]
@@ -91,15 +91,16 @@ for i in range(len(theta_file_list)):
     print h1, h_index, height[h_index]
     
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/flux_list[i]
-
-    Ax.plot(fluxes, scaled_height, marker_list[i], markersize=8, label = legend_list[i]) 
+    
+    Ax.plot(fluxes, scaled_height, marker_list[i], markersize=10, label = legend_list[i]) 
 zeros = np.zeros_like(height)
 Ax.plot(zeros, scaled_height, 'k-')
 #Ax.plot(zeros+1, scaled_height, 'k-')
 #Ax.plot(zeros+.005, scaled_height, 'k-')
 #Ax.plot(zeros+.0025, scaled_height, 'k-')
-Ax.legend(numpoints=1, loc = 'lower right', prop={'size':8})
+Ax.legend(numpoints=1, loc = 'lower right', prop={'size':14})
 #Ax.set_xticks([.03, 1])
+plt.tight_layout()
 plt.show()
 #Fig1.savefig('/tera/phil/nchaparr/python/Plotting/Dec252013/pngs/theta_profs2hrs.png')
 #Fig1.savefig('/tera/phil/nchaparr/python/Plotting/Dec252013/pngs/flux_profs2hrs.png')
