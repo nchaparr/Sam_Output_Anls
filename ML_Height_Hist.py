@@ -28,24 +28,24 @@ warnings.simplefilter('ignore', np.RankWarning)
 
 
 dump_time_list, time_hrs = Make_Timelists(1, 3600, 28800)
-date_list = ["Mar52014","Dec142013", "Mar12014"] # 
-width_list = [.005, .005, .005]
-alpha_list = [1, .5, .25]
-label_list=[r"$\overline{w^{'}\theta^{'}}_{s} = 150 \ Wm^{-2}$", r"$\overline{w^{'}\theta^{'}}_{s} = 100 \ Wm^{-2}$", r"$\overline{w^{'}\theta^{'}}_{s} = 60 \ Wm^{-2}$"]
-color_list = ['k', '.5', '0']
+date_list = ["Dec252013"] # 
+width_list = [.005] #.005, .005,
+alpha_list = [.25] #1, .5, 
+label_list=[r"$\overline{w^{'}\theta^{'}}_{s} = 60 \ Wm^{-2}$"] #r"$\overline{w^{'}\theta^{'}}_{s} = 150 \ Wm^{-2}$", r"$\overline{w^{'}\theta^{'}}_{s} = 100 \ Wm^{-2}$",
+color_list = ['0'] #'k', '.5', 
 theFig = plt.figure()
 theFig.clf()
 
 theAx = theFig.add_subplot(111)
-theAx.set_title(r"$\gamma = 10 \ (Kkm^{-1})$", fontsize=20)
-theAx.set_ylabel(r'$P( \frac{h^{l}_{0}}{h} )$', fontsize=20)
-theAx.set_xlabel(r'$\frac{h^{l}_{0}}{h}$', fontsize=20)
-theAx.set_xlim(0.4, 1.2) #TODO:need to test axis limits first
+theAx.set_title(r"$\gamma = 2.5 \ (Kkm^{-1})$", fontsize=30)
+theAx.set_ylabel(r'$P( \frac{h^{l}_{0}}{h} )$', fontsize=30)
+theAx.set_xlabel(r'$\frac{h^{l}_{0}}{h}$', fontsize=30)
+theAx.set_xlim(0.4, 1.2) #TODO:need to test axis limts first
 theAx.set_ylim(0, .1)
 #theAx.text(1060, 10000, r"$\overline{w^{'}\theta^{'}}_{s} = 150 \ Wm^{-2}$", fontsize=20)
 #theAx.text(900, 12000, r"$\overline{w^{'}\theta^{'}}_{s} = 100 \ Wm^{-2}$", fontsize=20)
 #theAx.text(0.9, .04, r"$\overline{w^{'}\theta^{'}}_{s} = 60 \ Wm^{-2}$", fontsize=20)
-theAx.tick_params(axis='both', which='major', labelsize=14)
+theAx.tick_params(axis='both', which='major', labelsize=20)
 #rinovals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/invrinos")
 for j in range(len(date_list)):
     date=date_list[j]
@@ -86,7 +86,7 @@ for j in range(len(date_list)):
             h = AvProfVars[rinovals_index, 1]
           #theAx.set_title('Histogram of local Mixed Layer Heights from 1 Case at 5 hrs')
             theAx.bar(1.0*height/h, 1.0*height_bin_vols/(zvals*yvals*xvals), width = Width, alpha = Alpha, color=Color, label=Label)     
-theAx.legend(loc = 'upper left', prop={'size':14})
+theAx.legend(loc = 'upper left', prop={'size':20})
 theFig.tight_layout()          
 theFig.show()          
 #theFig.savefig("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/ML_Height_hist.png")
