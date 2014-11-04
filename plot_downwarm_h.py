@@ -68,22 +68,34 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
      downwarm_h = np.array(downwarm_h)    
      if rundate=="Jan152014_1":
          Times, downwarm_h = Times[0:11], downwarm_h[0:11] 
-     Ax3.plot(Times, downwarm_h, the_legend, label = the_label)
+     Ax3.plot(Times, 1.0*downwarm_h/deltatheta, the_legend, label = the_label, markersize=12)
 
 run_list = [["Dec142013", .01, 100, '100/10', 'kv'], ["Nov302013", .005, 100, '100/5','ko'], ["Dec202013", .005, 60,'60/5','yo'], ["Dec252013", .0025, 60,'60/2.5','y*'], ["Jan152014_1", .005, 150, '150/5','ro'], ["Mar12014", .01, 60,'60/10','yv'], ["Mar52014", .01, 150,'150/10','rv']]
 
 Fig2 = plt.figure(2)
 Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
-Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=20)
-Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h}}{\gamma ( h_{1}-h)} \ (where \ w^{\prime}<0)$", fontsize=20)
-Ax3.set_ylim(0, .1)
-Ax3.set_xlim(2, 9)
+Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=30)
+Ax3.tick_params(axis="both", labelsize=20)
+#Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h}}{\gamma ( h_{1}-h)} \ (where \ w^{\prime}<0)$", fontsize=30)
+#Ax3.set_ylabel(r"$\frac{ \overline{w^{\prime-}\theta^{\prime+}}_{h}}{\overline{w^{\prime}\theta^{\prime}}_{s}}$", fontsize=30)
+Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h} (where \ w^{\prime}<0) }{\delta h \gamma}$", fontsize=30)
+#Ax3.set_ylabel(r"$\frac{\overline{w^{\prime-}}(where \ \theta^{\prime}>0) }{w^{*}}$ ", fontsize=30)
+
+#Ax3.set_ylabel(r"$\overline{\theta^{\prime+}}(where \ w^{\prime}<0) }$ ", fontsize=30)
+
+#Ax3.set_ylabel( r"$\overline{w^{\prime -}}_{h}} \ (where \ \theta^{\prime}>0)", fontsize=30)
+
+#Ax3.set_ylabel(r"$\overline{w^{\prime-}\theta^{\prime+}}_{h} \ (ms^{-1}K)$", fontsize=30)
+
+#Ax3.set_ylim(0, 2.4)
+Ax3.set_xlim(2, 8.2)
 for run in run_list:
     print run[0]
     Main_Fun(run[0], run[1], run[2], run[3], run[4])
 
-Ax3.legend(loc = 'upper left', prop={'size':14})    
+Ax3.legend(loc = 'upper left', prop={'size':20}, numpoints = 1)
+plt.tight_layout()
 plt.show()
 
     
