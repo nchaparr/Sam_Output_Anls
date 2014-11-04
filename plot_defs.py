@@ -29,13 +29,11 @@ Ax = Fig1.add_subplot(111)
 #Ax.set_title( r'$\theta$', fontsize=20)
 #Ax.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
-Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
+Ax.set_xlabel(r"$\overline{\theta}$", fontsize=30)
 Ax.set_xticks([])
 Ax.set_xticklabels([])
-Ax.set_yticks([])
-Ax.set_yticklabels([])
 #Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-Ax.set_ylabel(r"$z$", fontsize=20)
+Ax.set_ylabel(r"$z$", fontsize=30)
 plt.xlim(306.5, 310.5)
 plt.ylim(500, 1200)
 #plt.ylim(0.1, 1.4)
@@ -113,6 +111,20 @@ for i in range(len(theta_file_list)):
 
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/sfc_flx
 
+    array = np.genfromtxt('/newtera/tera/phil/nchaparr/python/Pert_Files/snd')
+    
+    height_0 = array[:, 0]
+    theta_0 = array[:, 1]
+    f=interp1d(height_0, theta_0)
+
+#Now plot inital sounding
+    top_index = np.where(height <= 2500)[0][-1]
+    theta_0 = f(height[0:top_index])
+    dtheta0 = np.diff(theta_0)
+    dthetadz0 = np.divide(dtheta0, dheight[0:top_index-1])
+    element0 = np.array([.005])
+    dthetadz0=np.hstack((element0, dthetadz0))
+
     
     #if np.mod(i+1, 6) == 0:
     if i == 37:
@@ -136,12 +148,14 @@ for i in range(len(theta_file_list)):
         zeros = np.zeros_like(height)
         wvelthetapert = fluxes
         Ax.plot(theta, height, 'k-', label = r"$\overline{\theta}$") #
-        Ax.annotate('', xy=(theta[h0_index]-1.1, h0), xycoords = 'data', xytext=(theta[h1_index], h0), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
-        Ax.text(308.3, h0+10, r"$\Delta h \gamma$", size=15)
+        Ax.annotate('', xy=(theta_0[h_index]-.1, h), xycoords = 'data', xytext=(theta[h1_index], h), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
+        Ax.text(309.8, h-50, r"$\delta h \gamma$", size=30)
 
-        Ax.annotate('', xy=(theta[h1_index], h0), xycoords = 'data', xytext=(theta[h1_index], h1), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
-        Ax.text(theta[h1_index]-.2, h0+200, r"$\Delta h$", size=15)
-        
+        Ax.annotate('', xy=(theta[h1_index], h), xycoords = 'data', xytext=(theta[h1_index], h1), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
+        Ax.text(theta[h1_index]-.3, h+30, r"$\delta h$", size=30)
+        Ax.set_yticks([h0, h, h1])
+        Ax.set_yticklabels(["h0", "h", "h1"])
+        Ax.tick_params(axis="both", labelsize=30)
         #Ax.plot([theta[], theta[]], [height[], height[]], '')
 
         #Ax1.plot(1.0*dthetadz, height, 'k-') #, label = str(Times[i])+'hrs'
@@ -165,19 +179,6 @@ for i in range(len(theta_file_list)):
         #Ax2.text(dthetadz[z_f0_index]+.70, z_f, r"$z_{f}$", size=20)
        
         
-array = np.genfromtxt('/newtera/tera/phil/nchaparr/python/Pert_Files/snd')
-    
-height_0 = array[:, 0]
-theta_0 = array[:, 1]
-f=interp1d(height_0, theta_0)
-
-#Now plot inital sounding
-top_index = np.where(height <= 2500)[0][-1]
-theta_0 = f(height[0:top_index])
-dtheta0 = np.diff(theta_0)
-dthetadz0 = np.divide(dtheta0, dheight[0:top_index-1])
-element0 = np.array([.005])
-dthetadz0=np.hstack((element0, dthetadz0))
 
 Ax.plot(theta_0 -.2, height[0:top_index], 'k--', label = r"$\overline{\theta}_{0}$") #, 
 #Ax.plot([theta_0[], theta[]], [height[], height[]], '--')
@@ -192,7 +193,7 @@ Ax.plot(theta_0 -.2, height[0:top_index], 'k--', label = r"$\overline{\theta}_{0
 #Ax2.plot(zeros, height, 'k-')#zeros line for reference 
 #Ax2.plot(theta_0, scaled_xheight[0:top_index], '--', label = 'Initial Sounding')#"
 #plt.xlim(300, 310)
-Ax.legend(loc = 'upper left', prop={'size':14})
+Ax.legend(loc = 'upper left', prop={'size':20})
 print "about to show"
 Fig1.tight_layout()
 Fig1.show()
