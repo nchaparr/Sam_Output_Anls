@@ -32,8 +32,8 @@ def Main_Fun(rundate, gamma, flux_s):
          Times = np.array(Times)    
      #class for pulling data files
      files = For_Plots(rundate)
-     dump_time_list = dump_time_list[12:]
-     Times = Times[12:]
+     #dump_time_list = dump_time_list[12:]
+     #Times = Times[12:]
      #Create lists of variable lists
      theta_file_list = [files.get_file(dump_time, "theta_bar") for dump_time in dump_time_list]
      press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]     
@@ -44,9 +44,9 @@ def Main_Fun(rundate, gamma, flux_s):
      AvProfLims = []
      invrinos = []
      #loop over text files files
-     for i in range(len(theta_file_list) - 12):
+     for i in range(len(theta_file_list)):
          #print i, theta_file_list[i]
-         i = i + 12
+         i = i
          print i
          theta = np.genfromtxt(theta_file_list[i])
          theta0 = np.genfromtxt(theta_file_list[0])
