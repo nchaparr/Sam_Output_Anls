@@ -47,7 +47,7 @@ def Main_Fun(rundate, gamma, flux_s):
      for i in range(len(theta_file_list)):
          #print i, theta_file_list[i]
          i = i
-         print i
+         #print i
          theta = np.genfromtxt(theta_file_list[i])
          theta0 = np.genfromtxt(theta_file_list[0])
          #print theta.shape
@@ -66,7 +66,7 @@ def Main_Fun(rundate, gamma, flux_s):
 
          #function for calcuating heights
          [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, Deltatheta, Deltatheta_f, deltatheta, deltatheta_f, mltheta]= nc.Get_CBLHeights(height, press, theta, theta0, wvelthetapert, gamma, flux_s, top_index)
-         print Deltatheta, Deltatheta_f, deltatheta, deltatheta_f
+         #print Deltatheta, Deltatheta_f, deltatheta, deltatheta_f
          h_lev = np.where(height==h)[0]
          #upwarm = flux_quads[h_lev]
          
@@ -74,7 +74,7 @@ def Main_Fun(rundate, gamma, flux_s):
          
          delta_h=eltop_dthetadz - elbot_dthetadz
          
-         [rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), Deltatheta, gamma, delta_h)
+         [rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
 
          AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta])
          tau = 1.0*h/wstar
