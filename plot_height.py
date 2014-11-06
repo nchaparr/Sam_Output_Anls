@@ -67,30 +67,30 @@ for i in range(len(label_list)):
              #Deltah[24:26] = np.nan
              points.Get_and_save_dhdt(Times0[7:], AvProfVars[7:, 4], rinovals[7:, 2], rinovals[7:, 1])
              scaled_we_plot = points.scaled_we_plot()
-             #Ax3.plot(Times0[7:], rinovals[7:, 1], legend_list[i], label = label_list[i], markersize=12)
-             Ax3.loglog(rinovals[7:, 1], Deltah[7:], legend_list[i], label = label_list[i], markersize=12)
+             Ax3.plot(Times0[7:], rinovals[7:, 1], legend_list[i], label = label_list[i], markersize=12)
+             #Ax3.loglog(rinovals[7:, 1], Deltah[7:], legend_list[i], label = label_list[i], markersize=12)
         elif Run_Date_List[i] == "Jan152014_1":
     #TODO: alternative starting index for Nov302013
              #Deltah[16:21] = np.nan
              #print Deltah
              points.Get_and_save_dhdt(Times[11:29], AvProfVars[11:29, 4], rinovals[11:29, 2], rinovals[11:29, 1])
              scaled_we_plot = points.scaled_we_plot()
-             #Ax3.plot(Times[11:29], rinovals[11:29, 1], legend_list[i], label = label_list[i], markersize=12)            
-             Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i], markersize=12)
+             Ax3.plot(Times[11:29], rinovals[11:29, 1], legend_list[i], label = label_list[i], markersize=12)            
+             #Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i], markersize=12)
         elif Run_Date_List[i] == "Mar12014":
     #TODO: alternative starting index for Nov302013
              #Deltah[11:17] = np.nan
              #print Deltah
              points.Get_and_save_dhdt(Times[11:], AvProfVars[11:, 4], rinovals[11:, 2], rinovals[11:, 1])
              scaled_we_plot = points.scaled_we_plot()
-             #Ax3.plot(Times[11:], rinovals[11:, 1], legend_list[i], label = label_list[i], markersize=12)            
+             Ax3.plot(Times[11:], rinovals[11:, 1], legend_list[i], label = label_list[i], markersize=12)            
                           
-             Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i], markersize=12)
+             #Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i], markersize=12)
         else:
              points.Get_and_save_dhdt(Times[11:], AvProfVars[11:, 4], rinovals[11:, 2], rinovals[11:, 1])
              scaled_we_plot = points.scaled_we_plot()
-             #Ax3.plot(Times[11:], rinovals[11:, 1], legend_list[i], label = label_list[i], markersize=12)             
-             Ax3.loglog(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i], markersize=12)
+             Ax3.plot(Times[11:], rinovals[11:, 1], legend_list[i], label = label_list[i], markersize=12)             
+             #Ax3.loglog(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i], markersize=12)
 
 #xes = np.arange(0.15, .26, .0001)
 #x1es = np.arange(.2, .4, .0001)
