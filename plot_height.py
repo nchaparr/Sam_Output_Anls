@@ -57,8 +57,10 @@ Deltah02 = np.subtract(AvProfVars2[:,2], AvProfVars2[:,0])
 Deltah02 = np.divide(Deltah02, AvProfVars2[:,1])
 Deltah03 = np.subtract(AvProfVars3[:,2], AvProfVars3[:,0])
 Deltah03 = np.divide(Deltah03, AvProfVars3[:,1])
+Deltah03[15:21] = np.nan
 Deltah04 = np.subtract(AvProfVars4[:,2], AvProfVars4[:,0])
 Deltah04 = np.divide(Deltah04, AvProfVars4[:,1])
+Deltah04[10:17] = np.nan
 Deltah05 = np.subtract(AvProfVars5[:,2], AvProfVars5[:,0])
 Deltah05 = np.divide(Deltah05, AvProfVars5[:,1])
 
