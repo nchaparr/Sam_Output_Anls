@@ -62,7 +62,8 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
          wstar = rinovals[j, 2]
          h_lev = np.where(height == h)
          flux_quads = np.genfromtxt(flux_quads_file_list[i])
-         flux_s1 = 1.0*flux_s/(rhow[0]*1004)         
+         flux_s1 = 1.0*flux_s/(rhow[0]*1004)
+         #flux_quads: 
          downwarm = flux_quads[h_lev, 1][0][0]
          print flux_s1, flux_s
          downwarm_h.append(1.0*downwarm/thetastar)
@@ -82,7 +83,7 @@ Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h}}{\gamma ( h_{1}-h)} \ (where \ w^{\prime}<0)$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{ \overline{w^{\prime-}\theta^{\prime+}}_{h}}{\overline{w^{\prime}\theta^{\prime}}_{s}}$", fontsize=30)
 Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h} (where \ w^{\prime}<0) }{\theta^{*}}$", fontsize=30)
-#Ax3.set_ylabel(r"$\frac{\overline{w^{\prime-}}(where \ \theta^{\prime}>0) }{w^{*}}$ ", fontsize=30)
+#Ax3.set_ylabel(r"$\frac{\overline{w^{\prime-}_{h}}(where \ \theta^{\prime}>0) }{w^{*}}$ ", fontsize=30)
 
 #Ax3.set_ylabel(r"$\overline{\theta^{\prime+}}(where \ w^{\prime}<0) \ K$ ", fontsize=30)
 
@@ -90,7 +91,8 @@ Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h} (where \ w^{\prime}<0) 
 
 #Ax3.set_ylabel(r"$\overline{w^{\prime-}\theta^{\prime+}}_{h} \ (ms^{-1}K)$", fontsize=30)
 
-Ax3.set_ylim(0, 2.2)
+#Ax3.set_ylim(-.12, 0)
+Ax3.set_ylim(0, 2.4)
 Ax3.set_xlim(2, 8.2)
 for run in run_list:
     print run[0]

@@ -195,6 +195,7 @@ Ax.plot(theta_0 -.2, height[0:top_index], 'k--', label = r"$\overline{\theta}_{0
 #Ax2.plot(theta_0, scaled_xheight[0:top_index], '--', label = 'Initial Sounding')#"
 #plt.xlim(300, 310)
 Ax.legend(loc = 'upper left', prop={'size':30})
+Ax.xaxis.labelpad=20
 print "about to show"
 Fig1.tight_layout()
 Fig1.show()
