@@ -25,14 +25,15 @@ Ax = Fig1.add_subplot(111)
 #Ax.set_title( r'$\theta$', fontsize=20)
 #Ax1.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
-Ax.set_xlabel(r"$\frac{ \partial \overline{\theta} }{\partial z} / \gamma$", fontsize=25)
-#Ax.set_xlabel(r"$\frac{\partial \overline{\theta}}{\partial z} \ Km^{-1}$", fontsize=25)
+#Ax.set_xlabel(r"$\frac{ \partial \overline{\theta} }{\partial z} / \gamma$", fontsize=25)
+Ax.set_xlabel(r"$\frac{\partial \overline{\theta}}{\partial z} \ Km^{-1}$", fontsize=25)
 #Ax.set_xlabel(r"$\overline{w^{,}\theta^{,}}$", fontsize=20)
 #Ax1.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=30)
-#plt.xlim(-0.001, .02)
+#plt.xlim(0, 1)
+plt.xlim(0, .01)
 #plt.ylim(50, 950)
-plt.ylim(0.2, 1.4)
+plt.ylim(0.6, .9)
 
 
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
@@ -72,7 +73,7 @@ for i in range(len(theta_file_list)):
     dtheta = np.diff(theta)      
     dthetadz = np.divide(dtheta, dheight)        
     element0 = np.array([0])
-    dthetadz=np.hstack((element0, 1.0*dthetadz/gamma)) #*1.0/gamma
+    dthetadz=np.hstack((element0, 1.0*dthetadz)) #*1.0/gamma
         
     #only need up to 2500meters
     top_index = np.where(abs(1670 - height) < 40.)[0][0]
@@ -95,12 +96,12 @@ for i in range(len(theta_file_list)):
 
     Ax.plot(dthetadz, scaled_height, marker_list[i], label = legend_list[i], markersize=10) #, 
 zeros = np.zeros_like(height)
-Ax.plot(zeros+.03, scaled_height, 'k-')
+#Ax.plot(zeros+.03, scaled_height, 'k-')
 Ax.plot(zeros+1, scaled_height, 'k-')
 #Ax.plot(zeros+.005, scaled_height, 'k-')
 #Ax.plot(zeros+.0025, scaled_height, 'k-')
 Ax.legend(numpoints=1, loc = 'lower right', prop={'size':14})
-Ax.set_xticks([.03, 1])
+Ax.set_xticks([0, .01])
 Ax.tick_params(axis="both", labelsize=15)
 plt.tight_layout()
 plt.show()
