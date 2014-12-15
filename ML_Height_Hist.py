@@ -29,29 +29,29 @@ warnings.simplefilter('ignore', np.RankWarning)
 
 
 dump_time_list, time_hrs = Make_Timelists(1, 3600, 28800)
-date_list = ["Dec252013"] #"Jan152014_1", "Nov302013",  
-width_list = [2.5] #  .005, .005, .005, 10, 5,  
-alpha_list = [.25] #1, .5,   
-label_list=[r"$\overline{w^{\prime}\theta^{\prime}}_{s} = 60 \ Wm^{-2}$"] #r"$\overline{w^{\prime}\theta^{\prime}}_{s} = 150 \ Wm^{-2}$", r"$\overline{w^{\prime}\theta^{\prime}}_{s} = 100 \ Wm^{-2}$", 
-color_list = ['0'] #'k', '.5',  
+date_list = ["Dec252013"] #,, "Nov302013", "Jan152014_1",  
+width_list = [.005] #, 2.5, 5, 10, .005, .005   
+alpha_list = [.25] #, .5, 1   
+label_list=[r"$\overline{w^{\prime}\theta^{\prime}}_{s} = 60$ Wm$^{-2}$"] #, r"$\overline{w^{\prime}\theta^{\prime}}_{s} = 100$ Wm$^{-2}$", r"$\overline{w^{\prime}\theta^{\prime}}_{s} = 150$ Wm$^{-2}$" 
+color_list = ['0'] #,'k', '.5',  
 theFig = plt.figure()
 theFig.clf()
 
 theAx = theFig.add_subplot(111)
-theAx.set_title(r"$\gamma = 2.5 \ (Kkm^{-1})$", fontsize=30)
-#theAx.set_ylabel(r'$P( \frac{h^{l}_{0}}{h} )$', fontsize=30)
-theAx.set_ylabel(r'$Count$', fontsize=30)
-#theAx.set_xlabel(r'$\frac{h^{l}_{0}}{h}$', fontsize=32)
-theAx.set_xlabel(r'$h^{l}_{0} \ (m)$', fontsize=32)
-#theAx.set_xticks([.6, .8, 1, 1.2])
-#theAx.set_yticks([0, 0.05, 0.1])
-theAx.set_xticks([500, 1000, 1500])
-theAx.set_yticks([0, 10000, 20000])
-theAx.set_xlim(400, 2100) #TODO:need to test axis limts first
-theAx.set_ylim(0, 25000)
+theAx.set_title(r"$\gamma = 2.5$ (Kkm$^{-1}$)", fontsize=30)
+theAx.set_ylabel(r'$P( \frac{h^{l}_{0}}{h} )$', fontsize=30)
+#theAx.set_ylabel(r'$Count$', fontsize=30)
+theAx.set_xlabel(r'$\frac{h^{l}_{0}}{h}$', fontsize=32)
+#theAx.set_xlabel(r'$h^{l}_{0}$ (m)', fontsize=32)
+theAx.set_xticks([.6, .8, 1, 1.2])
+theAx.set_yticks([0, 0.05, 0.1])
+#theAx.set_xticks([500, 1000, 1500])
+#theAx.set_yticks([0, 10000, 20000])
+#theAx.set_xlim(400, 1500) #TODO:need to test axis limts first
+#theAx.set_ylim(0, 25000)
 
-#theAx.set_xlim(0.6, 1.2) #TODO:need to test axis limts first
-#theAx.set_ylim(0, .1)
+theAx.set_xlim(0.6, 1.2) #TODO:need to test axis limts first
+theAx.set_ylim(0, .1)
 
 #theAx.text(1060, 10000, r"$\overline{w^{\prime}\theta^{\prime}}_{s} = 150 \ Wm^{-2}$", fontsize=20)
 #theAx.text(900, 12000, r"$\overline{w^{\prime}\theta^{\prime}}_{s} = 100 \ Wm^{-2}$", fontsize=20)
@@ -96,8 +96,10 @@ for j in range(len(date_list)):
           #set up plot
             h = AvProfVars[rinovals_index, 1]
           #theAx.set_title('Histogram of local Mixed Layer Heights from 1 Case at 5 hrs')
-            theAx.bar(1.0*height, 1.0*height_bin_vols, width = Width, alpha = Alpha, color=Color, label=Label)#h  //(zvals*yvals*xvals)     
-theAx.legend(loc = 'upper right', prop={'size':24.5})
+            theAx.bar(1.0*height/h, 1.0*height_bin_vols/(zvals*yvals*xvals), width = Width, alpha = Alpha, color=Color, label=Label)#h  /     
+#theAx.legend(prop={'size':24.5}) #bbox_to_anchor=(1.45, 1),, borderaxespad=0.0
+#box = theAx.get_position()
+#theAx.set_position([box.x0, box.y0, box.width*1.2, box.height])
 theFig.tight_layout()          
 theFig.show()          
 #theFig.savefig("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/ML_Height_hist.png")
