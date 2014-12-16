@@ -32,7 +32,7 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
 
      press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]
     
-     flux_quads_file_list = [files.get_file(dump_time, "flux_quads_theta") for dump_time in dump_time_list]
+     flux_quads_file_list = [files.get_file(dump_time, "flux_quads_wvel") for dump_time in dump_time_list]
      
      height_file = files.get_file("0000000600", "heights")
 
@@ -66,7 +66,7 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
          #flux_quads: 
          downwarm = flux_quads[h_lev, 1][0][0]
          print flux_s1, flux_s
-         downwarm_h.append(1.0*downwarm/thetastar)
+         downwarm_h.append(1.0*downwarm)# //thetastar 
 
      downwarm_h = np.array(downwarm_h)    
      if rundate=="Jan152014_1":
@@ -78,27 +78,30 @@ run_list = [["Dec142013", .01, 100, '100/10', 'kv'], ["Nov302013", .005, 100, '1
 Fig2 = plt.figure(2)
 Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
-Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=30)
+Ax3.set_xlabel(r"$Time$ (h)", fontsize=30)
 Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h}}{\gamma ( h_{1}-h)} \ (where \ w^{\prime}<0)$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{ \overline{w^{\prime-}\theta^{\prime+}}_{h}}{\overline{w^{\prime}\theta^{\prime}}_{s}}$", fontsize=30)
-Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h} (where \ w^{\prime}<0) }{\theta^{*}}$", fontsize=30)
+#Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h} (where \ w^{\prime}<0) }{\theta^{*}}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{\overline{w^{\prime-}_{h}}(where \ \theta^{\prime}>0) }{w^{*}}$ ", fontsize=30)
 
-#Ax3.set_ylabel(r"$\overline{\theta^{\prime+}}(where \ w^{\prime}<0) \ K$ ", fontsize=30)
+Ax3.set_ylabel(r"$(\overline{w^{\prime-}})_{h}(where \ \theta^{\prime}>0)$ (ms$^{-1}$)", fontsize=30)
 
 #Ax3.set_ylabel( r"$\overline{w^{\prime -}}_{h}} \ (where \ \theta^{\prime}>0)", fontsize=30)
 
-#Ax3.set_ylabel(r"$\overline{w^{\prime-}\theta^{\prime+}}_{h} \ (ms^{-1}K)$", fontsize=30)
+#Ax3.set_ylabel(r"$\overline{w^{\prime-}\theta^{\prime+}}_{h}$ (ms$^{-1}$K)", fontsize=30)
 
-#Ax3.set_ylim(-.12, 0)
-Ax3.set_ylim(0, 2.4)
+#Ax3.set_ylim(-.14, 0)
+#Ax3.set_ylim(0, .12)
+#Ax3.set_ylim(0, 1.5)
 Ax3.set_xlim(2, 8.2)
 for run in run_list:
     print run[0]
     Main_Fun(run[0], run[1], run[2], run[3], run[4])
 
-Ax3.legend(loc = 'upper left', prop={'size':20}, numpoints = 1)
+Ax3.legend(bbox_to_anchor=(1.49, 1.03), prop={'size':20}, numpoints = 1)
+box = Ax3.get_position()
+Ax3.set_position([box.x0, box.y0, box.width*1.3, box.height])
 plt.tight_layout()
 plt.show()
 
