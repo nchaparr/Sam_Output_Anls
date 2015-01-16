@@ -380,6 +380,29 @@ def Ensemble1_Average(list):
     
     return ens_avs
 
+
+def pert_h_Average(list):
+    """Gets average of pos or neg perts at each height level from a list of arrays
+
+    Arguments:
+    list -- list of arrays
+
+    Returns:
+    avs -- array
+
+    """
+    A = list[0]
+    to_av = np.average(A, axis=0, A.astype(bool))
+    for k in range(len(list)-1):
+         #print k, 'array sizes', to_av.shape, list[k+1].shape
+         B = list[k+1]
+         B = np.average(B, axis=0, B.astype(bool))
+         to_av = np.add(to_av, B)
+    avs = 1.0*to_av/len(list)
+    
+    return avs
+
+
 def Flux_Quad_Slow(wpert, thetapert):
     """
     Separates fluxes into quadratns

@@ -32,7 +32,7 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
 
      press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]
     
-     flux_quads_file_list = [files.get_file(dump_time, "flux_quads_wvel") for dump_time in dump_time_list]
+     flux_quads_file_list = [files.get_file(dump_time, "flux_quads_theta") for dump_time in dump_time_list]
      
      height_file = files.get_file("0000000600", "heights")
 
@@ -66,7 +66,7 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
          #flux_quads: 
          downwarm = flux_quads[h_lev, 1][0][0]
          print flux_s1, flux_s
-         downwarm_h.append(1.0*downwarm)# //thetastar 
+         downwarm_h.append(1.0*downwarm/(deltatheta*.1))# //thetastar 
 
      downwarm_h = np.array(downwarm_h)    
      if rundate=="Jan152014_1":
@@ -93,7 +93,7 @@ Ax3.set_ylabel(r"$(\overline{w^{\prime-}})_{h}(where \ \theta^{\prime}>0)$ (ms$^
 
 #Ax3.set_ylim(-.14, 0)
 #Ax3.set_ylim(0, .12)
-#Ax3.set_ylim(0, 1.5)
+Ax3.set_ylim(0, 1.2)
 Ax3.set_xlim(2, 8.2)
 for run in run_list:
     print run[0]
