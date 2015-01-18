@@ -392,14 +392,20 @@ def pert_h_Average(list):
 
     """
     A = list[0]
-    to_av = np.average(A, axis=0, A.astype(bool))
+    print A.shape, "shape of array to be averaged"
+    A = np.ma.average(A, axis=1, weights=A.astype(bool))
+    print A.shape, "shape of array to be averaged"
+    to_av = np.ma.average(A, axis=1, weights=A.astype(bool))
+    print to_av.shape, "shape of array to be averaged"
     for k in range(len(list)-1):
          #print k, 'array sizes', to_av.shape, list[k+1].shape
          B = list[k+1]
-         B = np.average(B, axis=0, B.astype(bool))
+         B = np.ma.average(B, axis=1, weights=B.astype(bool))
+         B = np.ma.average(B, axis=1, weights=B.astype(bool))
          to_av = np.add(to_av, B)
     avs = 1.0*to_av/len(list)
-    
+    print avs.shape
+        
     return avs
 
 

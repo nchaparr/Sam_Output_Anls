@@ -103,6 +103,7 @@ def Main_Fun(date, dump_time, hflux):
      #save text files
      print "SAVING", "/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads_theta1" + dump_time 
      #np.savetxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
+     print upwarm_bar.shape, downwarm_bar.shape, upcold_bar.shape, downcold_bar.shape, wvelthetapert_bar.shape
      np.savetxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads_theta1" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
      
      #flatten the arrays, TODO: make a function or class method
@@ -142,7 +143,7 @@ if go_ahead == 1:
          #    theAx2.axis('off')
          #else:         
          date = date_list[i]
-         dump_time_list, Times = Make_Timelists(1, 900, 28800)
+         dump_time_list, Times = Make_Timelists(1, 1800, 28800)
          hvals = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
          #    scales = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/invrinos")
          #    thetastar, wstar = scales[29, 9], scales[29, 2]
@@ -153,8 +154,13 @@ if go_ahead == 1:
              #theAx2.set_title(date, fontsize= 16) 
              #theAx2.set_title(r"$2d \ Histogram \ of \ Flux \ Quadrants$", fontsize= 16)
          for j in range(16):
+             if date=="Nov302013":
+                 hindex=2*(j+1)-1
+             else:
+                 hindex=3*(j+1)-1
          #    if i == 19:
-             height, wvelperts, thetaperts, wvelperts_slice, thetaperts_slice, upwarm, downwarm, upcold, downcold, avflux = Main_Fun(date, dump_time_list[2*(j+1)-1], hvals[3*(j+1)-1, 1])
+         #need index specialized for Nov runs
+             height, wvelperts, thetaperts, wvelperts_slice, thetaperts_slice, upwarm, downwarm, upcold, downcold, avflux = Main_Fun(date, dump_time_list[j], hvals[hindex, 1])
              #print "Heights", hvals[29, 0], hvals[29, 1], hvals[29, 2], dump_time_list[19], Times[19]
                
          #av_quad_profs = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time_list[i])
