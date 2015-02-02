@@ -65,7 +65,7 @@ for i in range(len(label_list)):
              #Deltah[13] = np.nan
              #Deltah[15:17] = np.nan
              #Deltah[24:26] = np.nan
-             points.Get_and_save_dhdt(Times0[7:], AvProfVars[7:, 4], rinovals[7:, 2], rinovals[7:, 1])
+             points.Get_and_save_dhdt(Times0[7:], AvProfVars[7:, 4], rinovals[7:, 2], rinovals[7:, 0])
              scaled_we_plot = points.scaled_we_plot()
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)
              #Ax3.loglog(rinovals[7:, 1], Deltah[7:], legend_list[i], label = label_list[i])
@@ -73,7 +73,7 @@ for i in range(len(label_list)):
     #TODO: alternative starting index for Nov302013
              #Deltah[16:21] = np.nan
              #print Deltah
-             points.Get_and_save_dhdt(Times[11:29], AvProfVars[11:29, 4], rinovals[11:29, 2], rinovals[11:29, 1])
+             points.Get_and_save_dhdt(Times[11:29], AvProfVars[11:29, 4], rinovals[11:29, 2], rinovals[11:29, 0])
              scaled_we_plot = points.scaled_we_plot()
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)            
              #Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i])
@@ -81,28 +81,28 @@ for i in range(len(label_list)):
     #TODO: alternative starting index for Nov302013
              #Deltah[11:17] = np.nan
              #print Deltah
-             points.Get_and_save_dhdt(Times[11:], AvProfVars[11:, 4], rinovals[11:, 2], rinovals[11:, 1])
+             points.Get_and_save_dhdt(Times[11:], AvProfVars[11:, 4], rinovals[11:, 2], rinovals[11:, 0])
              scaled_we_plot = points.scaled_we_plot()
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)            
                           
              #Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i])
         else:
-             points.Get_and_save_dhdt(Times[11:], AvProfVars[11:, 4], rinovals[11:, 2], rinovals[11:, 1])
+             points.Get_and_save_dhdt(Times[11:], AvProfVars[11:, 4], rinovals[11:, 2], rinovals[11:, 0])
              scaled_we_plot = points.scaled_we_plot()
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)             
              #Ax3.loglog(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i])
 
 xes = np.arange(0.03, .046, .0001)
-x1es = np.arange(.047, .081, .0001)
+x1es = np.arange(1, 1000, .0001)
 ys = 2.2*xes**(1.5)
-ys1= .47*x1es**(1)
-Ax3.loglog(xes, ys, 'k--')
+ys1= .1*x1es**(-1)
+#Ax3.loglog(xes, ys, 'k--')
 Ax3.loglog(x1es, ys1, 'k--')
 #Ax3.plot(np.arange(0, .1, .01)[2:10], np.arange(0, .1, .01)[2:10]**(3.0/2), 'k--')
 #Ax3.plot(Times[11:], Fit, 'b-', label="2nd Order Polyfit")
-Ax3.text(.03, .02, r'$a = -\frac{3}{2}$',  fontdict=None, withdash=False, fontsize = 32, rotation=47)
+#Ax3.text(.03, .02, r'$a = -\frac{3}{2}$',  fontdict=None, withdash=False, fontsize = 32, rotation=47)
 
-Ax3.text(.05, .034, r'$a = -1$',  fontdict=None, withdash=False, fontsize = 30, rotation=35)
+#Ax3.text(.05, .034, r'$a = -1$',  fontdict=None, withdash=False, fontsize = 30, rotation=35)
 
 #Ax3.set_ylim(0, 2500)
 Ax3.legend(bbox_to_anchor=(1.03, .65), prop={'size': 20}, numpoints=1)
@@ -122,17 +122,17 @@ Ax3.set_ylabel(r"$\frac{w_{e}}{w^{*}}$", fontsize=30)
 #Ax3.set_ylabel(r"$\Delta h \ (m)$", fontsize=20)
 #Ax3.set_ylabel(r"$z \ (m)$", fontsize=20)
 Ax3.set_xlabel(r"$Ri_{\Delta}^{-1}$", fontsize=30)
-Ax3.set_yticks([.01, .02, .03, .04])
-Ax3.set_yticklabels([.01, .02, .03, .04])
-Ax3.set_xticks([.04, .06, .08, .1, .12])
-Ax3.set_xticklabels([.04, .06, .08, .1, .12])
+#Ax3.set_yticks([.01, .02, .03, .04])
+#Ax3.set_yticklabels([.01, .02, .03, .04])
+#Ax3.set_xticks([.04, .06, .08, .1, .12])
+#Ax3.set_xticklabels([.04, .06, .08, .1, .12])
 #Ax3.set_xticks([.2, .4, .6, .8, 1])
 #Ax3.set_xticklabels([.02, .04, .06, .08, .1])
 Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
 #Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
-plt.xlim(0.025, .14)
-plt.ylim(0.008, .042)
+plt.xlim(10, 100)
+plt.ylim(0.001, 1)
 plt.tight_layout()
 plt.show()
 
