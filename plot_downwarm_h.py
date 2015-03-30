@@ -32,22 +32,23 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
 
      press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]
     
-     flux_quads_file_list = [files.get_file(dump_time, "flux_quads_theta1") for dump_time in dump_time_list]
+     flux_quads_file_list = [files.get_file(dump_time, "flux_quads_theta1") for dump_time in dump_time_list] #"flux_quads_theta1":[upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar] 
      
      height_file = files.get_file("0000000600", "heights")
 
+     #Get heights, scaling parameters
      AvProfVars = files.AvProfVars()
      rinovals = files.rinovals()
-     print AvProfVars.shape, rinovals.shape
+     #print AvProfVars.shape, rinovals.shape
      downwarm_h = []
      #loop over text files files
      for i in range(len(flux_quads_file_list)):
          #print i, theta_file_list[i]
-         if rundate=="Nov302013":
+         if rundate=="Nov302013": #different output frequency
              j = (i+1)*2 - 1
          else:
              j = (i+1)*3 - 1
-         print i, j
+         #print i, j
          height = np.genfromtxt(height_file)
          theta = np.genfromtxt(theta_file_list[i])
          #print theta.shape
@@ -64,9 +65,9 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
          flux_quads = np.genfromtxt(flux_quads_file_list[i])
          flux_s1 = 1.0*flux_s/(rhow[0]*1004)
          #flux_quads: 
-         downwarm = flux_quads[h_lev, 2][0][0]
-         print flux_s1, flux_s
-         downwarm_h.append(1.0*downwarm/(gamma*deltah))# // /(thetastar*5)
+         downwarm = flux_quads[h_lev, 1][0][0]
+         #print flux_s1, flux_s
+         downwarm_h.append(1.0*downwarm/(gamma*deltah))# // (thetastar)/(thetastar) /
 
      downwarm_h = np.array(downwarm_h)    
      if rundate=="Jan152014_1":
@@ -85,23 +86,23 @@ Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h} (where \ w^{\prime}<0) }{\theta^{*}}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{\overline{w^{\prime-}_{h}}(where \ \theta^{\prime}>0) }{w^{*}}$ ", fontsize=30)
 
-Ax3.set_ylabel(r"$(\overline{\theta^{\prime+}})_{h}(where \ w^{\prime}<0)$ (K)", fontsize=30)
+Ax3.set_ylabel(r"$(\overline{\theta^{\prime+}})_{h}(where \ w^{\prime}<0)/\delta h \gamma$", fontsize=30)
 
 #Ax3.set_ylabel( r"$\overline{w^{\prime -}}_{h}} \ (where \ \theta^{\prime}>0)", fontsize=30)
 
 #Ax3.set_ylabel(r"$\overline{w^{\prime-}\theta^{\prime+}}_{h}$ (ms$^{-1}$K)", fontsize=30)
 
 #Ax3.set_ylim(-.14, 0)
-#Ax3.set_ylim(0, .12)
-Ax3.set_ylim(-.5, 0)
+Ax3.set_ylim(0, 0.5)
+#Ax3.set_ylim(-.5, 0)
 Ax3.set_xlim(2, 8.2)
 for run in run_list:
-    print run[0]
+    #print run[0]
     Main_Fun(run[0], run[1], run[2], run[3], run[4])
 
-Ax3.legend(bbox_to_anchor=(1.49, 1.03), prop={'size':20}, numpoints = 1)
-box = Ax3.get_position()
-Ax3.set_position([box.x0, box.y0, box.width*1.33, box.height])
+#Ax3.legend(bbox_to_anchor=(1.49, 1.03), prop={'size':20}, numpoints = 1)
+#box = Ax3.get_position()
+#Ax3.set_position([box.x0, box.y0, box.width*1.33, box.height])
 plt.tight_layout()
 plt.show()
 
