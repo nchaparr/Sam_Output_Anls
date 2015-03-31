@@ -86,7 +86,7 @@ class Get_Var_Arrays1:
           wvelperts_list = []
           for i in range(len(self.nc_file_list)): #loop over list of nc files, not efficient to do this for each variable but can't think of better way right now
                thefile = self.nc_file_list[i]
-               print thefile
+               #print thefile
                ncdata = Dataset(thefile,'r')          
                wvelperts_list.append(np.squeeze(ncdata.variables['W'][...]))
                ncdata.close()
@@ -97,7 +97,7 @@ class Get_Var_Arrays1:
           uvelperts_list = []
           for i in range(len(self.nc_file_list)): #loop over list of nc files, not efficient to do this for each variable but can't think of better way right now
                thefile = self.nc_file_list[i]
-               print thefile
+               #print thefile
                ncdata = Dataset(thefile,'r')          
                uvelperts_list.append(np.squeeze(ncdata.variables['U'][...]))
                ncdata.close()
@@ -107,7 +107,7 @@ class Get_Var_Arrays1:
           vvelperts_list = []
           for i in range(len(self.nc_file_list)): #loop over list of nc files, not efficient to do this for each variable but can't think of better way right now
                thefile = self.nc_file_list[i]
-               print thefile
+               #print thefile
                ncdata = Dataset(thefile,'r')          
                vvelperts_list.append(np.squeeze(ncdata.variables['V'][...]))
                ncdata.close()
@@ -119,7 +119,7 @@ class Get_Var_Arrays1:
           press_list = []
           for i in range(len(self.nc_file_list)): #loop over list of nc files, not efficient to do this for each variable but can't think of better way right now
                thefile = self.nc_file_list[i]
-               print thefile
+               #print thefile
                ncdata = Dataset(thefile,'r')          
                temp = np.squeeze(ncdata.variables['TABS'][...])
                press = np.squeeze(ncdata.variables['p'][...])
@@ -135,7 +135,7 @@ class Get_Var_Arrays1:
 
      def get_height(self):
           thefile = self.nc_file_list[0]
-          print thefile
+          #print thefile
           ncdata = Dataset(thefile,'r')          
           height = np.squeeze(ncdata.variables['z'][...])
           ncdata.close()
@@ -144,7 +144,7 @@ class Get_Var_Arrays1:
      def get_wvelthetaperts(self):
           wvels_list = self.get_wvelperts()
           thetas_list, press_list = self.get_thetas()
-          #print 'checking thetas_list', len(thetas_list), thetas_list[0].shape
+          ##print 'checking thetas_list', len(thetas_list), thetas_list[0].shape
           ens_avthetas = nc.Ensemble1_Average(thetas_list)
           wvelthetaperts_list = []
           for i in range(len(wvels_list)):  
@@ -165,7 +165,7 @@ class Get_Var_Arrays1:
      def get_thetaperts(self):
           #wvels_list = self.get_wvelperts()
           thetas_list, press_list = self.get_thetas()
-          #print 'checking thetas_list', len(thetas_list), thetas_list[0].shape
+          ##print 'checking thetas_list', len(thetas_list), thetas_list[0].shape
           ens_avthetas = nc.Ensemble1_Average(thetas_list)
           thetaperts_list = []
           for i in range(len(thetas_list)):  
