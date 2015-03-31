@@ -93,7 +93,7 @@ Ax3.text(.03, .5, r'$b = -1$',  fontdict=None, withdash=False, fontsize = 25, ro
 Ax3.text(.048, .65, r'$b = -\frac{1}{2}$',  fontdict=None, withdash=False, fontsize = 25, rotation=20)
 
 #Ax3.set_ylim(0, 2500)
-Ax3.legend(loc = 'lower right', prop={'size': 14}, numpoints=1)
+#Ax3.legend(loc = 'lower right', prop={'size': 14}, numpoints=1)
 #Ax3.set_title(r'$\Delta h (Flux)\ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$Scaled \ Time \ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$\frac{\Delta h}{h} \ vs \ Ri^{-1}$', fontsize=20)
