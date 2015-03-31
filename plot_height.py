@@ -91,7 +91,7 @@ for i in range(len(label_list)):
              scaled_we_plot = points.scaled_we_plot()
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)             
              #Ax3.loglog(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i])
-
+Ax3.text(6, .01, r"$\frac{w_{e}}{w^{*}}=0.1Ri_{\delta}^{-1}$",  fontdict=None, withdash=False, fontsize = 25, rotation=-46)
 xes = np.arange(0.03, .046, .0001)
 x1es = np.arange(1, 1000, .0001)
 ys = 2.2*xes**(1.5)
@@ -105,9 +105,9 @@ Ax3.loglog(x1es, ys1, 'k--', label = r"$\frac{w_{e}}{w^{*}}=0.1Ri_{\delta}^{-1}$
 #Ax3.text(.05, .034, r'$a = -1$',  fontdict=None, withdash=False, fontsize = 30, rotation=35)
 
 #Ax3.set_ylim(0, 2500)
-Ax3.legend(bbox_to_anchor=(1.63, .75), prop={'size': 20}, numpoints=1)
-box = Ax3.get_position()
-Ax3.set_position([box.x0, box.y0, box.width*1.35, box.height])
+#Ax3.legend(bbox_to_anchor=(1.63, .75), prop={'size': 20}, numpoints=1)
+#box = Ax3.get_position()
+#Ax3.set_position([box.x0, box.y0, box.width*1.35, box.height])
 #Ax3.set_title(r'$\Delta h (Flux)\ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$Scaled \ Time \ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$\frac{\Delta h}{h} \ vs \ Ri^{-1}$', fontsize=20)
