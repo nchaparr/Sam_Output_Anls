@@ -181,7 +181,9 @@ for i in range(len(theta_file_list)):
        
         
 
-Ax.plot(theta_0 -.2, height[0:top_index], 'k--', label = r"$\overline{\theta}_{0}$") #, 
+Ax.plot(theta_0 -.2, height[0:top_index], 'k--', label = r"$\overline{\theta}_{0}$") #,
+Ax.spines['top'].set_visible(False)
+Ax.spines['bottom'].set_visible(False)
 #Ax.plot([theta_0[], theta[]], [height[], height[]], '--')
 
 #theAx.text(300, 1500, '',  fontdict=None, withdash=False)
