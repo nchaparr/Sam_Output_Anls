@@ -154,8 +154,8 @@ for i in range(len(theta_file_list)):
         Ax.annotate('', xy=(theta[h1_index], h), xycoords = 'data', xytext=(theta[h1_index], h1), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
         Ax.text(theta[h1_index]-.3, h+30, r"$\delta h$", size=30)
         Ax.set_yticks([h0, h, h1])
-        Ax.set_yticklabels(["h0", "h", "h1"])
-        Ax.tick_params(axis="both", labelsize=30)
+        Ax.set_yticklabels([r"$h_{0}$", r"$h$", r"$h_{1}$"])
+        Ax.tick_params(axis="both", labelsize=30, width=3, length=15)
         Ax.set_ylim(h0, h1)
         #Ax.plot([theta[], theta[]], [height[], height[]], '')
 
@@ -194,8 +194,8 @@ Ax.plot(theta_0 -.2, height[0:top_index], 'k--', label = r"$\overline{\theta}_{0
 #Ax2.plot(zeros, height, 'k-')#zeros line for reference 
 #Ax2.plot(theta_0, scaled_xheight[0:top_index], '--', label = 'Initial Sounding')#"
 #plt.xlim(300, 310)
-Ax.legend(loc = 'upper left', prop={'size':20})
-print "about to show"
+#Ax.legend(loc = 'upper left', prop={'size':20})
+print("about to show")
 Fig1.tight_layout()
 Fig1.show()
 #Fig1.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/theta_flux_profs.png")

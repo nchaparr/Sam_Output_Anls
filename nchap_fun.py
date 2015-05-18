@@ -164,7 +164,7 @@ def from_lmo():
      -- array    
     
     """
-     print 'Need to edit filepath for lmo.txt'
+     #print 'Need to edit filepath for lmo.txt'
      txtfile_list = ["/tera/phil/nchaparr/sam_ensemble/sam_case" + str(i+2) + "/OUT_STAT/lmo.txt" for i in range(9)]
      array_list = []
      for txtfile in txtfile_list:
@@ -329,7 +329,7 @@ def Bin_Peaks(peaks, heights):
     """
      bin_vols=np.zeros_like(heights)
      [xpos, ypos] = peaks.shape
-     print xpos, ypos
+     #print xpos, ypos
      for i in range(xpos):
           for j in range(ypos):
                             
@@ -432,7 +432,7 @@ def Get_Var_Arrays(ncfolder, ncfilename, dump_time, case_number):
      #create lists for variable arrays from each case
      
      thefile = ncfile
-     print thefile     
+     #print thefile     
      ncdata = Dataset(thefile,'r')
      wvel = np.squeeze(ncdata.variables['W'][...])
      
@@ -546,11 +546,11 @@ def Get_CBLHeights(heights, press, thetas, theta0, wvelthetapert, gamma, flux_s,
     #where gradient resumes as gamma
     dtheta_index_t = 999
     for k in range(len(dthetadz[:top_index])-1):
-        print k
-        print ""
-        print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
-        print ""
-        print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
+        #print k
+        #print ""
+        #print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
+        #print ""
+        #print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
         if np.abs(dthetadz[k+2]-1)<.03 and np.abs(dthetadz[k+1]-1)<.03 and dthetadz[k-1]>1:            
             dtheta_index_t = k+1
             
@@ -559,9 +559,9 @@ def Get_CBLHeights(heights, press, thetas, theta0, wvelthetapert, gamma, flux_s,
     #Hacky fix for when the upper theta gradient profiles are wonky
     if dtheta_index_t == 999:
          for k in range(len(dthetadz[:top_index])-1):
-           #   print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
-           #   print ""
-           #   print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
+           #   #print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
+           #   #print ""
+           #   #print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
               if np.abs(dthetadz[k+2]-1)<.04 and np.abs(dthetadz[k+1]-1)<.04 and dthetadz[k-1]>1:            
                    dtheta_index_t = k+1                        
                    break
@@ -575,11 +575,11 @@ def Get_CBLHeights(heights, press, thetas, theta0, wvelthetapert, gamma, flux_s,
             break
         
     for m in range(len(dthetadz[0:top_index])-1):
-         #print fluxes[m+1], fluxes[m], fluxes[m-1]
+         ##print fluxes[m+1], fluxes[m], fluxes[m-1]
          if (abs(fluxes[m+1]) < 0.01) and (abs(fluxes[m+2]) < 0.01) and (fluxes[m] < 0) and (fluxes[m-1] < 0):
             flux_index_t = m+1
             break
-    #print flux_index_t
+    ##print flux_index_t
     
     eltop_dthetadz = heights[dtheta_index_t]
     elbot_dthetadz = heights[dtheta_index_b]
