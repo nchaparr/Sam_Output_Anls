@@ -36,8 +36,8 @@ Ax.set_yticks([])
 Ax.set_yticklabels([])
 #Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 Ax.set_ylabel(r"$z$", fontsize=20)
-plt.xlim(300, 320)
-plt.ylim(100, 1500)
+plt.xlim(303, 311)
+plt.ylim(500, 1100)
 #plt.ylim(0.1, 1.4)
 
 
@@ -56,7 +56,7 @@ Ax1.set_yticklabels([])
 #Ax1.set_ylabel(r"$z$", fontsize=20)
 #plt.xlim(-.025, .025)
 plt.xlim(-1, 2.5)
-plt.ylim(100, 1500)
+plt.ylim(500, 1100)
 #plt.ylim(0.1, 1.4)
 
 Ax2 = Fig1.add_subplot(133)
@@ -64,18 +64,18 @@ Ax2 = Fig1.add_subplot(133)
 #Ax2.set_title(r"$Scaled \ \overline{w^{'} \theta^{'}}$", fontsize=20)
 Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
 #Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
-Ax2.set_xticks([-.2, 0, 1])
+Ax2.set_xticks([-.2, 0, .31])
 Ax2.set_xticklabels([-.2, 0, 1])
 Ax2.set_yticks([])
 Ax2.set_yticklabels([])
 #start, end = -.08, .14
-plt.xlim(-.2, 1)
+plt.xlim(-.2, .5)
 #start, end = -.6, 1.2
 #Ax2.set_xticks([-.08, 0, .07, .14])
 
 #Ax2.set_ylabel(r"$z$", fontsize=20)
 #Ax2.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-plt.ylim(100, 1500)
+plt.ylim(500, 1100)
 #plt.xlim(-.06, .14)
 #plt.xlim(-.4, 1.2)
 #plt.ylim(0.1, 1.4)
@@ -139,9 +139,9 @@ for i in range(len(theta_file_list)):
         #Ax.plot([theta[], theta[]], [height[], height[]], '')
 
         Ax1.plot(1.0*dthetadz, height, 'k-') #, label = str(Times[i])+'hrs'
-        Ax1.plot([dthetadz[h0_index]-.7, dthetadz[h0_index]+2], [h0, h0], 'k--')
+        Ax1.plot([dthetadz[h0_index]-.7, dthetadz[h0_index]+2], [h0, h0], 'k:')
         Ax1.plot([dthetadz[h0_index]-.7, dthetadz[h0_index]+2], [h, h], 'k-')
-        Ax1.plot([dthetadz[h0_index]-.7, dthetadz[h0_index]+2], [h1, h1], 'k--')
+        Ax1.plot([dthetadz[h0_index]-.7, dthetadz[h0_index]+2], [h1, h1], 'k:')
 
         Ax1.text(dthetadz[h0_index]-.7, h1, r"$h_{1}$", size=20)
         Ax1.text(dthetadz[h0_index]-.7, h, r"$h$", size=20)
@@ -149,13 +149,13 @@ for i in range(len(theta_file_list)):
                 
         
         Ax2.plot(wvelthetapert, height, 'k-') #, label = str(Times[i])+'hrs'    
-        Ax2.plot([wvelthetapert[z_f0_index]-.1, wvelthetapert[z_f0_index]+.8], [z_f0, z_f0], 'k--')
-        Ax2.plot([wvelthetapert[z_f0_index]-.1, wvelthetapert[z_f0_index]+.8], [z_f1, z_f1], 'k--')
-        Ax2.plot([wvelthetapert[z_f0_index]-.1, wvelthetapert[z_f0_index]+.8], [z_f, z_f], 'k-')
+        Ax2.plot([wvelthetapert[z_f0_index]-.1, wvelthetapert[z_f0_index]+.3], [z_f0, z_f0], 'k:')
+        Ax2.plot([wvelthetapert[z_f0_index]-.1, wvelthetapert[z_f0_index]+.3], [z_f1, z_f1], 'k:')
+        Ax2.plot([wvelthetapert[z_f0_index]-.1, wvelthetapert[z_f0_index]+.3], [z_f, z_f], 'k-')
 
-        Ax2.text(dthetadz[z_f0_index]+.70, z_f0, r"$z_{f0}$", size=20)
-        Ax2.text(dthetadz[z_f0_index]+.70, z_f1, r"$z_{f1}$", size=20)
-        Ax2.text(dthetadz[z_f0_index]+.70, z_f, r"$z_{f}$", size=20)
+        Ax2.text(dthetadz[z_f0_index]+.2, z_f0, r"$z_{f0}$", size=20)
+        Ax2.text(dthetadz[z_f0_index]+.2, z_f1, r"$z_{f1}$", size=20)
+        Ax2.text(dthetadz[z_f0_index]+.2, z_f, r"$z_{f}$", size=20)
        
         
 array = np.genfromtxt('/newtera/tera/phil/nchaparr/python/Pert_Files/snd')
@@ -185,7 +185,7 @@ Ax1.plot(zeros+1, height, 'k-')#zeros line for reference
 Ax2.plot(zeros, height, 'k-')#zeros line for reference 
 #Ax2.plot(theta_0, scaled_xheight[0:top_index], '--', label = 'Initial Sounding')#"
 #plt.xlim(300, 310)
-Ax.legend(loc = 'upper left', prop={'size':14})
+#Ax.legend(loc = 'upper left', prop={'size':14})
 plt.show()
 #Fig1.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/theta_flux_profs.png")
 
