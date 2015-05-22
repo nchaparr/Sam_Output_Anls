@@ -159,7 +159,7 @@ def from_lmo():
      -- array    
     
     """
-     print 'Need to edit filepath for lmo.txt'
+     #print 'Need to edit filepath for lmo.txt'
      txtfile_list = ["/tera/phil/nchaparr/sam_ensemble/sam_case" + str(i+2) + "/OUT_STAT/lmo.txt" for i in range(9)]
      array_list = []
      for txtfile in txtfile_list:
@@ -324,7 +324,7 @@ def Bin_Peaks(peaks, heights):
     """
      bin_vols=np.zeros_like(heights)
      [xpos, ypos] = peaks.shape
-     print xpos, ypos
+     #print xpos, ypos
      for i in range(xpos):
           for j in range(ypos):
                             
@@ -427,7 +427,7 @@ def Get_Var_Arrays(ncfolder, ncfilename, dump_time, case_number):
      #create lists for variable arrays from each case
      
      thefile = ncfile
-     print thefile     
+     #print thefile     
      ncdata = Dataset(thefile,'r')
      wvel = np.squeeze(ncdata.variables['W'][...])
      
@@ -486,7 +486,7 @@ class Get_Var_Arrays1:
           wvelperts_list = []
           for i in range(len(self.nc_file_list)): #loop over list of nc files, not efficient to do this for each variable but can't think of better way right now
                thefile = self.nc_file_list[i]
-               print thefile
+               #print thefile
                ncdata = Dataset(thefile,'r')          
                wvels_list.append(np.squeeze(ncdata.variables['W'][...]))
                ncdata.close()
@@ -497,7 +497,7 @@ class Get_Var_Arrays1:
           wvelperts_list = []
           for i in range(len(self.nc_file_list)): #loop over list of nc files, not efficient to do this for each variable but can't think of better way right now
                thefile = self.nc_file_list[i]
-               print thefile
+               #print thefile
                ncdata = Dataset(thefile,'r')          
                wvels_list.append(np.squeeze(ncdata.variables['U'][...]))
                ncdata.close()
@@ -507,7 +507,7 @@ class Get_Var_Arrays1:
           wvelperts_list = []
           for i in range(len(self.nc_file_list)): #loop over list of nc files, not efficient to do this for each variable but can't think of better way right now
                thefile = self.nc_file_list[i]
-               print thefile
+               #print thefile
                ncdata = Dataset(thefile,'r')          
                wvels_list.append(np.squeeze(ncdata.variables['V'][...]))
                ncdata.close()
@@ -519,7 +519,7 @@ class Get_Var_Arrays1:
           press_list = []
           for i in range(len(self.nc_file_list)): #loop over list of nc files, not efficient to do this for each variable but can't think of better way right now
                thefile = self.nc_file_list[i]
-               print thefile
+               #print thefile
                ncdata = Dataset(thefile,'r')          
                temp = np.squeeze(ncdata.variables['TABS'][...])
                press = np.squeeze(ncdata.variables['p'][...])
@@ -535,7 +535,7 @@ class Get_Var_Arrays1:
 
      def get_height(self):
           thefile = self.nc_file_list[i]
-          print thefile
+          #print thefile
           ncdata = Dataset(thefile,'r')          
           height = np.squeeze(ncdata.variables['z'][...])
           ncdata.close()
