@@ -44,10 +44,10 @@ def Main_Fun(rundate, gamma, flux_s):
      invrinos = []
      #loop over text files files
      for i in range(len(theta_file_list)):
-         #print i, theta_file_list[i]
+         ##print i, theta_file_list[i]
          theta = np.genfromtxt(theta_file_list[i])
          theta0 = np.genfromtxt(theta_file_list[0])
-         #print theta.shape
+         ##print theta.shape
          height = np.genfromtxt(height_file)    
          press = np.genfromtxt(press_file_list[i])
          rhow = nc.calc_rhow(press, height, theta[0])
@@ -59,19 +59,19 @@ def Main_Fun(rundate, gamma, flux_s):
          else:
              top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
            
-         #print height.shape, press.shape, theta.shape, wvelthetapert.shape, gamma, top_index
+         ##print height.shape, press.shape, theta.shape, wvelthetapert.shape, gamma, top_index
 
          #function for calcuating heights
          [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, Deltatheta, Deltatheta_f, deltatheta, deltatheta_f, mltheta]= nc.Get_CBLHeights(height, press, theta, theta0, wvelthetapert, gamma, flux_s, top_index)
-         print Deltatheta, Deltatheta_f, deltatheta, deltatheta_f
+         #print Deltatheta, Deltatheta_f, deltatheta, deltatheta_f
          h_lev = np.where(height==h)[0]
          #upwarm = flux_quads[h_lev]
          
-         #print elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta
+         ##print elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta
          
          delta_h=eltop_dthetadz - elbot_dthetadz
          
-         [rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(h_flux, mltheta, 1.0*flux_s/(rhow[0]*1004), Deltatheta_f, gamma, delta_h)
+         [rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), Deltatheta, gamma, delta_h)
 
          AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta])
          tau = 1.0*h/wstar
