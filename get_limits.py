@@ -19,7 +19,8 @@ rcParams.update({'font.size': 10})
    Calcs and dumps rino, invrino, wstar
 """
 #to be changed for each run
-rundate = 'Dec142013'
+#Nov302013-.005-100, Dec142013-.01-100, Dec202013-.005-60, Dec252013-.0025-60,  Jan152014_1-.005-150, Mar12014-.01-60, Mar52014-.01-150 
+rundate = 'Dec142013' 
 gamma = .01
 flux_s = 100
 
