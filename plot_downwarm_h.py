@@ -67,7 +67,7 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
          #flux_quads: 
          downwarm = flux_quads[h_lev, 1][0][0]
          #print flux_s1, flux_s
-         downwarm_h.append(1.0*downwarm/(gamma*deltah))# // (thetastar)/(thetastar) /
+         downwarm_h.append(1.0*downwarm)# // (thetastar)/(thetastar) / /(gamma*deltah)
 
      downwarm_h = np.array(downwarm_h)    
      if rundate=="Jan152014_1":
