@@ -24,4 +24,4 @@ newtera/tera/phil/nchaparr/python/Pert_Files
 
 ensemble code and output are in
 
-/newtera/tera/phil/nchaparr/sam_grex_ensemble (backed up in /newtera/tera/phil/nchaparr/Aug122014)
+/newtera/tera/phil/nchaparr/sam_grex_ensemble (backed up in /newtera/tera/phil/nchaparr/tera2_cp/nchaparr/Aug122014)
