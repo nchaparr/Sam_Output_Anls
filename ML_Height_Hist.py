@@ -1,4 +1,5 @@
 from __future__ import division
+from __future__ import print_function
 from netCDF4 import Dataset
 import glob,os.path
 import numpy as np
@@ -11,7 +12,7 @@ import matplotlib.pyplot as plt
 #from Percentiles import *
 from matplotlib.patches import Patch
 import sys
-sys.path.insert(0, '/tera/phil/nchaparr/python')
+#sys.path.insert(0, '/tera/phil/nchaparr/python')
 import nchap_fun as nc
 from Make_Timelist import *
 import warnings
@@ -47,9 +48,9 @@ for i in range(len(dump_time_list)):
           [zvals, yvals, xvals] = ML_Heights.shape
           ML_Heights = np.reshape(ML_Heights, (zvals*yvals*xvals,))
           v_max, v_min, mean, var = np.amax(ML_Heights), np.amin(ML_Heights), np.mean(ML_Heights), np.var(ML_Heights)
-          print 'max min std', v_max, v_min, mean, var
+          print('max min std', v_max, v_min, mean, var)
           rinovals_index = (i+1)*6-1
-          print rinovals_index
+          print(rinovals_index)
           ml_height_hist_vars.append([rinovals[rinovals_index,1], rinovals[rinovals_index,3], v_max, v_min, mean, var])
           #n, bins, patches = theAx.hist(tracer_peaks, bins=20)
           ML_Heights = np.reshape(ML_Heights, (zvals*yvals, xvals))
@@ -69,6 +70,3 @@ for i in range(len(dump_time_list)):
           theFig.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/ML_Height_hist.png")
 
 np.savetxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/ml_height_hist_vars", np.array(ml_height_hist_vars), delimiter=' ')
-
-    
-    
