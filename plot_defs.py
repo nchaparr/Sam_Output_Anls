@@ -26,7 +26,7 @@ plt.rc('font', family='serif')
 
 
 Ax = Fig1.add_subplot(131)
-#Ax.set_title( r'$\theta$', fontsize=20)
+#Ax.set_title( r'(a)', fontsize=20)
 #Ax.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
 Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
