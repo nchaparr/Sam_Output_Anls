@@ -67,7 +67,7 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
          #flux_quads: 
          downwarm = flux_quads[h_lev, 1][0][0]
          #print flux_s1, flux_s
-         downwarm_h.append(1.0*downwarm/(thetastar)/10)# // (thetastar) / /(gamma*deltah)
+         downwarm_h.append(1.0*downwarm/(0.2*thetastar))# // (thetastar) / /(gamma*deltah)
 
      downwarm_h = np.array(downwarm_h)    
      if rundate=="Jan152014_1":
@@ -86,14 +86,14 @@ Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h} (where \ w^{\prime}<0) }{\theta^{*}}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{\overline{w^{\prime-}_{h}}(where \ \theta^{\prime}>0) }{w^{*}}$ ", fontsize=30)
 
-Ax3.set_ylabel(r"$(\overline{\theta^{\prime+}})_{h}(where \ w^{\prime}<0)/(\frac{\theta^{*}}{10})$", fontsize=30)
+Ax3.set_ylabel(r"$(\overline{\theta^{\prime+}})_{h}(where \ w^{\prime}<0)/(0.2\theta^{*})$", fontsize=30)
 
 #Ax3.set_ylabel( r"$\overline{w^{\prime -}}_{h}} \ (where \ \theta^{\prime}>0)", fontsize=30)
 
 #Ax3.set_ylabel(r"$\overline{w^{\prime-}\theta^{\prime+}}_{h}$ (ms$^{-1}$K)", fontsize=30)
 
 #Ax3.set_ylim(-.14, 0)
-Ax3.set_ylim(0, 0.5)
+#Ax3.set_ylim(0, 0.5)
 #Ax3.set_ylim(-.5, 0)
 Ax3.set_xlim(2, 8.2)
 for run in run_list:
