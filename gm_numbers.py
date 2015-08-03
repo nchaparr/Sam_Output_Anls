@@ -21,5 +21,9 @@ def gm_vars(h,surface_flux,gamma):
 
 if __name__ == "__main__":
 
-
+#files = /newtera/tera/phil/nchaparr/python/Plotting/rundate/data/AvProfLims
+#indices of h0, h, h1 = 0, 1, 2
+#rundate = [Dec142013, Nov302013, Dec202013, Dec252013, Jan152014_1, Mar12014, Mar52014]
+#time increments for all except Nov302013 = 600, for Nov302013 = 900
+#end time = 28800
 
