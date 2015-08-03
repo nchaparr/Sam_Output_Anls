@@ -15,7 +15,6 @@ def calc_rino(BLHeight, MLTheta, SfcFlux, Theta_jump, gamma, delta_h):
     MLTheta -- average potential temperature in mixed layer, scalar, K
     SfcFlx -- surface heat flux, scalar, w/m2
     Theta_jump -- inversion temperature jump, scalar, K
-
     Returns:
     rino, invrino, wstar -- Richardson Number, Inverse Richardson Number, convective velocity scale
     
@@ -503,7 +502,7 @@ def Flux_Quad(wpert, thetapert):
 
 def Flux_Quad_Thetas(wpert, thetapert):
     """
-    Separates fluxes into quadrants
+    Separates thetaperts into quadrants
     
     Arguments:
     wpert -- array of w perturbations
@@ -517,7 +516,7 @@ def Flux_Quad_Thetas(wpert, thetapert):
     [rows, columnsx, columnsy] = wpert.shape
     [up, down, warm, cold] = [np.zeros_like(wpert) for i in range(4)]
     up[wpert>0], down[wpert<0], warm[thetapert>0], cold[thetapert<0] = wpert[wpert>0], wpert[wpert<0], thetapert[thetapert>0], thetapert[thetapert<0]
-    up[up>0], down[down<0] = 1, 1    
+    up[up>0], down[down<0] = 1, 1    #setting downward and upward velocities to 1
     upwarm, downwarm, upcold, downcold = np.multiply(up, warm), np.multiply(down, warm), np.multiply(up, cold), np.multiply(down, cold)
                                                              
     return [upwarm, downwarm, upcold, downcold]
@@ -538,7 +537,7 @@ def Flux_Quad_Wvels(wpert, thetapert):
     [rows, columnsx, columnsy] = wpert.shape
     [up, down, warm, cold] = [np.zeros_like(wpert) for i in range(4)]
     up[wpert>0], down[wpert<0], warm[thetapert>0], cold[thetapert<0] = wpert[wpert>0], wpert[wpert<0], thetapert[thetapert>0], thetapert[thetapert<0]
-    warm[warm>0], cold[cold<0] = 1, 1    
+    warm[warm>0], cold[cold<0] = 1, 1    #setting warm and cold to 1, to just get vel component
     upwarm, downwarm, upcold, downcold = np.multiply(up, warm), np.multiply(down, warm), np.multiply(up, cold), np.multiply(down, cold)
                                                              
     return [upwarm, downwarm, upcold, downcold]

@@ -32,7 +32,7 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
 
      press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]
     
-     flux_quads_file_list = [files.get_file(dump_time, "flux_quads_theta1") for dump_time in dump_time_list] #"flux_quads_theta1":[upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar] 
+     flux_quads_file_list = [files.get_file(dump_time, "flux_quads_wvel1") for dump_time in dump_time_list] #"flux_quads_theta1":[upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar] 
      
      height_file = files.get_file("0000000600", "heights")
 
@@ -67,7 +67,7 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
          #flux_quads: 
          downwarm = flux_quads[h_lev, 1][0][0]
          #print flux_s1, flux_s
-         downwarm_h.append(1.0*downwarm/(0.2*thetastar))# // (thetastar) / /(gamma*deltah)
+         downwarm_h.append(1.0*downwarm/(wstar))# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
 
      downwarm_h = np.array(downwarm_h)    
      if rundate=="Jan152014_1":
