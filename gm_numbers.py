@@ -1,17 +1,21 @@
-run_key={'Nov302013':(100,5),         
-         'Dec142013':(100,10),        
-         'Dec202013':(60,5),          
-         'Dec252013':(60,2.5),        
-         'Jan152014_1':(150,5),         
-         'Mar12014':(60,10),         
-         'Mar52014':(150,10)}        
+import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
+
+run_key={'Nov302013':{'params':(100,5)},         
+         'Dec142013':{'params':(100,10)},        
+         'Dec202013':{'params':(60,5)},          
+         'Dec252013':{'params':(60,2.5)},        
+         'Jan152014_1':{'params':(150,5)},         
+         'Mar12014':{'params':(60,10)},         
+         'Mar52014':{'params':(150,10)}}        
 
 def gm_vars(h,surface_flux,gamma):
     rho=1.
     cp=1004.
     g=9.8
     flux=surface_flux/(rho*cp)  #from W/m^2 to m K/s
-    theta_0=280.  #K
+    theta_0=300.  #K
     B0=flux*g/theta_0
     gamma=gamma/1000.  #K/m
     g=9.8  #m/s^2
@@ -24,15 +28,84 @@ def gm_vars(h,surface_flux,gamma):
     wstar_gm=(B0*h)**(1./3.)
     c_gamma=0.55
     delta=c_gamma*wstar/N
-    return delta,L0
+    return L0,N,B0,delta
+
+def find_height(height_m,time_sec,N,L0):
+    zenc=L0*(2*time_sec*N)**0.5
+    height_nd=height_m/zenc
+    return height_nd,zenc
 
 if __name__ == "__main__":
-    h=800.
-    for case,run_tup in run_key.items():
-        surface_flux,gamma=run_tup
-        print(case,h,surface_flux,gamma,gm_vars(h,surface_flux,gamma))
+    case_list=[]
+    datadir='/tera/phil/nchaparr/python/Plotting'
+    h=500.
+    for case,run_dict in run_key.items():
+        if case=='Nov302013':
+            time_int=900
+        else:
+            time_int=600
+        surface_flux,gamma=run_dict['params']
+        L0,N,B0,delta=gm_vars(h,surface_flux,gamma)
+        filename='{}/{}/data/AvProfLims'.format(datadir,case)
+        out=np.genfromtxt(filename)
+        columns=['h0','h','h1','4','5','6','7','8']
+        df=pd.DataFrame.from_records(out,columns=columns)
+        time_end=28800 
+        num_times=len(df)
+        time_beg=time_end -time_int*num_times
+        time_sec=np.linspace(time_beg,time_end,num_times)
+        run_dict['df']=df
+        run_dict['L0']=L0
+        run_dict['N']=N
+        run_dict['df']['time_sec']=time_sec
+        run_dict['df']['time_nd']=time_sec*N
+        case_list.append((case,L0))
+    case_list.sort(key=lambda case: case[1])
+    first=case_list[0][0]
+    L0,N=run_key[first]['L0'],run_key[first]['N']
+    df=run_key[first]['df']
+    height_nd,zenc=find_height(df['h'],df['time_sec'],N,L0)
+    df['zenc']=zenc
+    plt.close('all')
+    fig_h,ax_h=plt.subplots(1,1)
+    fig_h0,ax_h0=plt.subplots(1,1)
+    fig_h1,ax_h1=plt.subplots(1,1)
+    fig_delh,ax_delh=plt.subplots(1,1)
+    titles=dict(h='non-dimensional h',h1='non-dimensional h1',h0='non-dimensional h0',
+            delh='(h1 - h)/h',delgm='$\delta/z_{enc}$')
+    ylims=dict(h=(0.6,1.5),h1=(0.6,1.5),h0=(0.6,1.5))
+    for key,the_ax in plot_dict.items():
+        the_ax.set_ylim(ylims[key])
+        the_ax.set_title(titles[key])
+        the_ax.legend(loc='best')
+    cases=[name[0] for name in case_list]
+    df_cases=pd.DataFrame(cases,columns=['name'])
+    #
+    #  params keyword is (flux,gamma) tuple
+    #
+    gammas=[run_key[case]['params'][1] for case in cases]
+    fluxes=[run_key[case]['params'][0] for case in cases]
+    l0=[run_key[case]['L0'] for case in cases]
+    N=[run_key[case]['N'] for case in cases]
+    period=[1./Nval/60. for Nval in N]   #minutes
+    df_cases['L0']=l0
+    df_cases['Nperiod']=period
+    df_cases['fluxes']=fluxes
+    df_cases['gammas']=gammas
+    for key,axis in plot_dict.items():
+        filename='{}.png'.format(key)
+        axis.figure.savefig(filename)
+    plt.show()
+    with pd.HDFStore('paper_table.h5','w') as store:
+        store.put('cases',df_cases,format='table')
 
-#files = /newtera/tera/phil/nchaparr/python/Plotting/rundate/data/AvProfLims
+        
+
+        
+
+
+
+#Files = /newtera/tera/phil/nchaparr/python/Plotting/rundate/data/AvProfLims
 #indices of h0, h, h1 = 0, 1, 2
 #rundate = [Dec142013, Nov302013, Dec202013, Dec252013, Jan152014_1, Mar12014, Mar52014]
 #sfcflx/gamma = [100/10, 100/5, 60/5, 60/2.5, 150/5, 60/10, 150/10]
