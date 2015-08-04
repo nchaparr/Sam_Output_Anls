@@ -48,7 +48,7 @@ if __name__ == "__main__":
         L0,N,B0,delta=gm_vars(h,surface_flux,gamma)
         filename='{}/{}/data/AvProfLims'.format(datadir,case)
         out=np.genfromtxt(filename)
-        columns=['h0','h','h1','4','5','6','7','8']
+        columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
         df=pd.DataFrame.from_records(out,columns=columns)
         time_end=28800 
         num_times=len(df)
@@ -80,6 +80,7 @@ if __name__ == "__main__":
     fig_delgm,ax_delgm=plt.subplots(1,1)
     fig_delhbot,ax_delhbot=plt.subplots(1,1)
     fig_delhtot,ax_delhtot=plt.subplots(1,1)
+    fig_delhtot_rt,ax_delhtot_rt=plt.subplots(1,1)
     label='{:3.1f}'.format(L0)
     ax_h.plot(df['time_nd'],height_nd,label=label)
     ax_h0.plot(df['time_nd'],h0_nd,label=label)
@@ -88,6 +89,7 @@ if __name__ == "__main__":
     ax_delhbot.plot(df['time_nd'],df['delhbot'],label=label)
     ax_delhtot.plot(df['time_nd'],df['delhtot'],label=label)
     ax_delgm.plot(df['time_nd'],df['delgm'],label=label)
+    ax_delhtot_rt.plot(df['time_sec'],df['delhtot'],label=label)
     for casename,L0 in case_list[1:]:
         N=run_key[casename]['N']
         df=run_key[casename]['df']
@@ -106,21 +108,25 @@ if __name__ == "__main__":
         ax_delhtop.plot(df['time_nd'],df['delhtop'],label=label)
         ax_delhbot.plot(df['time_nd'],df['delhbot'],label=label)
         ax_delhtot.plot(df['time_nd'],df['delhtot'],label=label)
-        ax_delgm.plot(df['time_nd'],df['delgm'],label=label)
+        ax_delhtot_rt.plot(df['time_sec'],df['delhtot'],label=label)
 
     plot_dict=dict(h=ax_h,h1=ax_h1,h0=ax_h0,
-                   delhtop=ax_delhtop,delhbot=ax_delhbot,delhtot=ax_delhtot,delgm=ax_delgm)
+                   delhtop=ax_delhtop,delhbot=ax_delhbot,delhtot=ax_delhtot,delgm=ax_delgm,
+                   delhtot_rt=ax_delhtot_rt)
     titles=dict(h='non-dimensional h',h1='non-dimensional h1',h0='non-dimensional h0',
                 delhtop='(h1 - h)/h',delhbot='(h - h0)/h',delhtot='(h1 - h0)/h',
-                delgm='$\delta/z_{enc}$')
+                delgm='$\delta/z_{enc}$',delhtot_rt='(h1 - h0)/h vs. dimensional time')
     ylims=dict(h=(0.6,1.5),h1=(0.6,1.5),h0=(0.6,1.5),
                delgm=(0.0,0.7),delhtop=(0.0,0.7),delhbot=(0.0,0.7),
-               delhtot=(0.0,0.7))
+               delhtot=(0.0,0.7),delhtot_rt=(0.0,0.7))
     for key,the_ax in plot_dict.items():
         the_ax.set_ylim(ylims[key])
         the_ax.set_title(titles[key])
         the_ax.legend(loc='best')
-        the_ax.set_xlabel('time*N')
+        if key == 'delhtot_rt':
+            the_ax.set_xlabel('time (sec)')
+        else:
+            the_ax.set_xlabel('time*N')
     cases=[name[0] for name in case_list]
     df_cases=pd.DataFrame(cases,columns=['name'])
     #
