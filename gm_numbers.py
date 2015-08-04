@@ -65,19 +65,62 @@ if __name__ == "__main__":
     L0,N=run_key[first]['L0'],run_key[first]['N']
     df=run_key[first]['df']
     height_nd,zenc=find_height(df['h'],df['time_sec'],N,L0)
+    h0_nd,zenc=find_height(df['h0'],df['time_sec'],N,L0)
+    h1_nd,zenc=find_height(df['h1'],df['time_sec'],N,L0)
+    df['delhtop']=(df['h1'] - df['h'])/df['h']
+    df['delhbot']=(df['h'] - df['h0'])/df['h']
+    df['delhtot']=(df['h1'] - df['h0'])/df['h']
+    df['delgm']=0.55*(zenc/L0)**(-2/3.)  #eq. 26
     df['zenc']=zenc
     plt.close('all')
     fig_h,ax_h=plt.subplots(1,1)
     fig_h0,ax_h0=plt.subplots(1,1)
     fig_h1,ax_h1=plt.subplots(1,1)
-    fig_delh,ax_delh=plt.subplots(1,1)
+    fig_delhtop,ax_delhtop=plt.subplots(1,1)
+    fig_delgm,ax_delgm=plt.subplots(1,1)
+    fig_delhbot,ax_delhbot=plt.subplots(1,1)
+    fig_delhtot,ax_delhtot=plt.subplots(1,1)
+    label='{:3.1f}'.format(L0)
+    ax_h.plot(df['time_nd'],height_nd,label=label)
+    ax_h0.plot(df['time_nd'],h0_nd,label=label)
+    ax_h1.plot(df['time_nd'],h1_nd,label=label)
+    ax_delhtop.plot(df['time_nd'],df['delhtop'],label=label)
+    ax_delhbot.plot(df['time_nd'],df['delhbot'],label=label)
+    ax_delhtot.plot(df['time_nd'],df['delhtot'],label=label)
+    ax_delgm.plot(df['time_nd'],df['delgm'],label=label)
+    for casename,L0 in case_list[1:]:
+        N=run_key[casename]['N']
+        df=run_key[casename]['df']
+        height_nd,zenc=find_height(df['h'],df['time_sec'],N,L0)
+        df['zenc']=zenc
+        h0_nd,zenc=find_height(df['h0'],df['time_sec'],N,L0)
+        h1_nd,zenc=find_height(df['h1'],df['time_sec'],N,L0)
+        df['delhtop']=(df['h1'] - df['h'])/df['h']
+        df['delhbot']=(df['h'] - df['h0'])/df['h']
+        df['delhtot']=(df['h1'] - df['h0'])/df['h']
+        df['delgm']=0.55*(zenc/L0)**(-2/3.)  #eq. 26
+        label='{:3.1f}'.format(L0)
+        ax_h.plot(df['time_nd'],height_nd,label=label)
+        ax_h0.plot(df['time_nd'],h0_nd,label=label)
+        ax_h1.plot(df['time_nd'],h1_nd,label=label)
+        ax_delhtop.plot(df['time_nd'],df['delhtop'],label=label)
+        ax_delhbot.plot(df['time_nd'],df['delhbot'],label=label)
+        ax_delhtot.plot(df['time_nd'],df['delhtot'],label=label)
+        ax_delgm.plot(df['time_nd'],df['delgm'],label=label)
+
+    plot_dict=dict(h=ax_h,h1=ax_h1,h0=ax_h0,
+                   delhtop=ax_delhtop,delhbot=ax_delhbot,delhtot=ax_delhtot,delgm=ax_delgm)
     titles=dict(h='non-dimensional h',h1='non-dimensional h1',h0='non-dimensional h0',
-            delh='(h1 - h)/h',delgm='$\delta/z_{enc}$')
-    ylims=dict(h=(0.6,1.5),h1=(0.6,1.5),h0=(0.6,1.5))
+                delhtop='(h1 - h)/h',delhbot='(h - h0)/h',delhtot='(h1 - h0)/h',
+                delgm='$\delta/z_{enc}$')
+    ylims=dict(h=(0.6,1.5),h1=(0.6,1.5),h0=(0.6,1.5),
+               delgm=(0.0,0.7),delhtop=(0.0,0.7),delhbot=(0.0,0.7),
+               delhtot=(0.0,0.7))
     for key,the_ax in plot_dict.items():
         the_ax.set_ylim(ylims[key])
         the_ax.set_title(titles[key])
         the_ax.legend(loc='best')
+        the_ax.set_xlabel('time*N')
     cases=[name[0] for name in case_list]
     df_cases=pd.DataFrame(cases,columns=['name'])
     #
