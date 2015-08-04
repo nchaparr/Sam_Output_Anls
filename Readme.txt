@@ -25,3 +25,11 @@ newtera/tera/phil/nchaparr/python/Pert_Files
 ensemble code and output are in
 
 /newtera/tera/phil/nchaparr/sam_grex_ensemble (backed up in /newtera/tera/phil/nchaparr/tera2_cp/nchaparr/Aug122014)
+
+data txt files: output > Sam_Output_Anls > /newtera/tera/phil/nchaparr/python/Plotting/Run Date/data/
+
+eg
+
+AvProfLims = [h0, h, h1, zf0, zf, zf1, deltatheta (based on av theta profile), mltheta (av mixed layer pot temp based on av theta profile)])
+time increments for all except Nov302013 = 600, for Nov302013 = 900
+end time = 28800
