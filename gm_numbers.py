@@ -10,7 +10,7 @@ run_key={'Nov302013':{'params':(100,5)},
          'Mar12014':{'params':(60,10)},         
          'Mar52014':{'params':(150,10)}}        
 
-def gm_vars(h,surface_flux,gamma):
+def gm_vars(surface_flux,gamma):
     rho=1.
     cp=1004.
     g=9.8
@@ -22,33 +22,31 @@ def gm_vars(h,surface_flux,gamma):
     N2=g/theta_0*gamma  #s**(-2)
     N=N2**0.5
     L0=(B0/N**3.)**0.5  #gm eqn 3
-    Re0=(L0*B0)**(1./3.)
-    wstar=(g*h/theta_0*flux)**(1./3)
-    thetastar=flux/wstar
-    wstar_gm=(B0*h)**(1./3.)
-    c_gamma=0.55
-    delta=c_gamma*wstar/N
-    return L0,N,B0,delta
+    #Re0=(L0*B0)**(1./3.)
+    # wstar=(g*h/theta_0*flux)**(1./3)
+    # c_gamma=0.55
+    # delta=c_gamma*wstar/N
+    #thetastar=flux/wstar
+    #wstar_gm=(B0*h)**(1./3.)
+    return L0,N,B0
 
-def find_height(height_m,time_sec,N,L0):
+def find_zenc(time_sec,N,L0):
     zenc=L0*(2*time_sec*N)**0.5
-    height_nd=height_m/zenc
-    return height_nd,zenc
+    return zenc
 
 if __name__ == "__main__":
     case_list=[]
     datadir='/tera/phil/nchaparr/python/Plotting'
-    h=500.
+    columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
     for case,run_dict in run_key.items():
         if case=='Nov302013':
             time_int=900
         else:
             time_int=600
         surface_flux,gamma=run_dict['params']
-        L0,N,B0,delta=gm_vars(h,surface_flux,gamma)
+        L0,N,B0=gm_vars(surface_flux,gamma)
         filename='{}/{}/data/AvProfLims'.format(datadir,case)
         out=np.genfromtxt(filename)
-        columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
         df=pd.DataFrame.from_records(out,columns=columns)
         time_end=28800 
         num_times=len(df)
@@ -61,69 +59,50 @@ if __name__ == "__main__":
         run_dict['df']['time_nd']=time_sec*N
         case_list.append((case,L0))
     case_list.sort(key=lambda case: case[1])
-    first=case_list[0][0]
-    L0,N=run_key[first]['L0'],run_key[first]['N']
-    df=run_key[first]['df']
-    height_nd,zenc=find_height(df['h'],df['time_sec'],N,L0)
-    h0_nd,zenc=find_height(df['h0'],df['time_sec'],N,L0)
-    h1_nd,zenc=find_height(df['h1'],df['time_sec'],N,L0)
-    df['delhtop']=(df['h1'] - df['h'])/df['h']
-    df['delhbot']=(df['h'] - df['h0'])/df['h']
-    df['delhtot']=(df['h1'] - df['h0'])/df['h']
-    df['delgm']=0.55*(zenc/L0)**(-2/3.)  #eq. 26
-    df['zenc']=zenc
     plt.close('all')
-    fig_h,ax_h=plt.subplots(1,1)
-    fig_h0,ax_h0=plt.subplots(1,1)
-    fig_h1,ax_h1=plt.subplots(1,1)
-    fig_delhtop,ax_delhtop=plt.subplots(1,1)
-    fig_delgm,ax_delgm=plt.subplots(1,1)
-    fig_delhbot,ax_delhbot=plt.subplots(1,1)
-    fig_delhtot,ax_delhtot=plt.subplots(1,1)
-    fig_delhtot_rt,ax_delhtot_rt=plt.subplots(1,1)
-    label='{:3.1f}'.format(L0)
-    ax_h.plot(df['time_nd'],height_nd,label=label)
-    ax_h0.plot(df['time_nd'],h0_nd,label=label)
-    ax_h1.plot(df['time_nd'],h1_nd,label=label)
-    ax_delhtop.plot(df['time_nd'],df['delhtop'],label=label)
-    ax_delhbot.plot(df['time_nd'],df['delhbot'],label=label)
-    ax_delhtot.plot(df['time_nd'],df['delhtot'],label=label)
-    ax_delgm.plot(df['time_nd'],df['delgm'],label=label)
-    ax_delhtot_rt.plot(df['time_sec'],df['delhtot'],label=label)
-    for casename,L0 in case_list[1:]:
-        N=run_key[casename]['N']
+    plotlist=['h','h1','h0','delhtop','delhbot','delhtot','delgm',
+              'delhtot_rt','zf','zf0','zf1','delzfbot']
+    xy_dict={'h':('time_nd','h_nd'),'h1':('time_nd','h1_nd'),'h0':('time_nd','h0_nd'),'delhtop':('time_nd','delhtop'),
+             'delhbot':('time_nd','delhbot'),'delhtot':('time_nd','delhtot'),'delgm':('time_nd','delgm'),
+             'delhtot_rt':('time_sec','delhtot_rt'),'zf':('time_nd','zf_nd'),
+             'zf0':('time_nd','zf0_nd'),'zf1':('time_nd','zf1_nd'),'delzfbot':('time_nd','delzfbot')}
+    titles=dict(h='non-dimensional h',h1='non-dimensional h1',h0='non-dimensional h0',
+                delhtop='(h1 - h)/h',delhbot='(h - h0)/h',delhtot='(h1 - h0)/h',
+                delgm='$\delta/z_{enc}$',delhtot_rt='(h1 - h0)/h vs. dimensional time',
+                zf='non-dimensional zf',zf0='non-dimensional zf0',zf1='non-dimensional zf1',
+                delzfbot='(zf - zf0)/zf')
+    ylims=dict(h=(0.6,1.5),h1=(0.6,1.5),h0=(0.6,1.5),zf=(0.6,1.5),zf1=(0.6,1.5),zf0=(0.6,1.5),
+               delgm=(0.0,0.7),delhtop=(0.0,0.7),delhbot=(0.0,0.7),
+               delhtot=(0.0,0.7),delhtot_rt=(0.0,0.7),delzfbot=(0,0.7))
+    plot_dict={}
+    for plot in plotlist:
+        fig,ax=plt.subplots(1,1)
+        plot_dict[plot]=ax
+
+    for casename,L0 in case_list:
+        L0,N=run_key[casename]['L0'],run_key[casename]['N']
         df=run_key[casename]['df']
-        height_nd,zenc=find_height(df['h'],df['time_sec'],N,L0)
-        df['zenc']=zenc
-        h0_nd,zenc=find_height(df['h0'],df['time_sec'],N,L0)
-        h1_nd,zenc=find_height(df['h1'],df['time_sec'],N,L0)
+        zenc=find_zenc(df['time_sec'],N,L0)
+        for key in ['h','h0','h1','zf','zf0','zf1']:
+            nd_key='{}_nd'.format(key)
+            df[nd_key]=df[key]/zenc
         df['delhtop']=(df['h1'] - df['h'])/df['h']
         df['delhbot']=(df['h'] - df['h0'])/df['h']
         df['delhtot']=(df['h1'] - df['h0'])/df['h']
         df['delgm']=0.55*(zenc/L0)**(-2/3.)  #eq. 26
+        df['delhtot_rt']=(df['h1'] - df['h0'])/df['h']
+        df['delzfbot']=(df['zf'] - df['zf0'])/df['zf']
+        df['zenc']=zenc
         label='{:3.1f}'.format(L0)
-        ax_h.plot(df['time_nd'],height_nd,label=label)
-        ax_h0.plot(df['time_nd'],h0_nd,label=label)
-        ax_h1.plot(df['time_nd'],h1_nd,label=label)
-        ax_delhtop.plot(df['time_nd'],df['delhtop'],label=label)
-        ax_delhbot.plot(df['time_nd'],df['delhbot'],label=label)
-        ax_delhtot.plot(df['time_nd'],df['delhtot'],label=label)
-        ax_delhtot_rt.plot(df['time_sec'],df['delhtot'],label=label)
-
-    plot_dict=dict(h=ax_h,h1=ax_h1,h0=ax_h0,
-                   delhtop=ax_delhtop,delhbot=ax_delhbot,delhtot=ax_delhtot,delgm=ax_delgm,
-                   delhtot_rt=ax_delhtot_rt)
-    titles=dict(h='non-dimensional h',h1='non-dimensional h1',h0='non-dimensional h0',
-                delhtop='(h1 - h)/h',delhbot='(h - h0)/h',delhtot='(h1 - h0)/h',
-                delgm='$\delta/z_{enc}$',delhtot_rt='(h1 - h0)/h vs. dimensional time')
-    ylims=dict(h=(0.6,1.5),h1=(0.6,1.5),h0=(0.6,1.5),
-               delgm=(0.0,0.7),delhtop=(0.0,0.7),delhbot=(0.0,0.7),
-               delhtot=(0.0,0.7),delhtot_rt=(0.0,0.7))
-    for key,the_ax in plot_dict.items():
-        the_ax.set_ylim(ylims[key])
-        the_ax.set_title(titles[key])
+        for plot in plotlist:
+            xvals=df[xy_dict[plot][0]]
+            yvals=df[xy_dict[plot][1]]
+            plot_dict[plot].plot(xvals,yvals,label=label)
+    for plot,the_ax in plot_dict.items():
+        the_ax.set_ylim(ylims[plot])
+        the_ax.set_title(titles[plot])
         the_ax.legend(loc='best')
-        if key == 'delhtot_rt':
+        if plot == 'delhtot_rt':
             the_ax.set_xlabel('time (sec)')
         else:
             the_ax.set_xlabel('time*N')
