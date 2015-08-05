@@ -118,6 +118,7 @@ if __name__ == "__main__":
     period=[1./Nval/60. for Nval in N]   #minutes
     df_cases['L0']=l0
     df_cases['Nperiod']=period
+    df_cases['N']=N
     df_cases['fluxes']=fluxes
     df_cases['gammas']=gammas
     for key,axis in plot_dict.items():
