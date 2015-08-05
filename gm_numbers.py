@@ -126,10 +126,8 @@ if __name__ == "__main__":
         axis.figure.savefig(filename)
     plt.show()
     with pd.HDFStore('paper_table.h5','w') as store:
-        store.put('cases',df_cases,format='table')
-
-        
-
+        store.put('/df1/df2/cases',df_cases,format='table')
+        store.get_storer('/df1/df2/cases').attrs.history = 'written 2015/8/5'
         
 
 

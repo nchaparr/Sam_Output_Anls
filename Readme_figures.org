@@ -1,3 +1,22 @@
 * get pdfs from local heights
 
-** working with /tera/phil/paper_figs/python/ML_Height_Hist.py
+<2015-08-05 Wed>
+** working with [[file:~/repos/Sam_Output_Anls/ML_Height_Hist.py]]  on branch phil
+   (figure 4 histograms)
+
+** get Garcia Mellado scaling from [[file:~/repos/Sam_Output_Anls/gm_numbers.py]]
+   this writes paper_table.h5 with cases
+
+** applied new scaling to [[file:~/repos/Sam_Output_Anls/plot_downwarm_h.py]]
+   (figure 5 timeseries)
+   reads from paper_table.h5
+
+** look at vertical profiles using figure 6 code:
+    plot_theta_profs.py  96c220
+
+** look at Richardson numbers using 
+   get_limits and plot_heights
+
+
+
+
