@@ -6,6 +6,7 @@ from Make_Timelist import *
 #import sys
 #sys.path.insert(0, '/tera/phil/nchaparr/python')
 import nchap_fun as nc
+import pandas as pd
 
 from nchap_class import *
 from nchap_class import For_Plots
@@ -18,7 +19,7 @@ rcParams.update({'font.size': 10})
    for plotting the downward warm moving air at h
 """
 
-def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
+def Main_Fun(rundate, gamma, flux_s, the_label, the_legend,df_coeffs,the_ax):
      
      #output times
      dump_time_list, Times = Make_Timelists(1, 1800, 28800)
@@ -72,14 +73,16 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend):
      downwarm_h = np.array(downwarm_h)    
      if rundate=="Jan152014_1":
          Times, downwarm_h = Times[0:11], downwarm_h[0:11] 
-     Ax3.plot(Times, 1.0*downwarm_h, the_legend, label = the_label, markersize=12)
+
+     N=df_coeffs[rundate]['N']
+     the_ax.plot(Times*N*3600, 1.0*downwarm_h, the_legend, label = the_label, markersize=12)
 
 run_list = [["Dec142013", .01, 100, '100/10', 'kv'], ["Nov302013", .005, 100, '100/5','ko'], ["Dec202013", .005, 60,'60/5','yo'], ["Dec252013", .0025, 60,'60/2.5','y*'], ["Jan152014_1", .005, 150, '150/5','ro'], ["Mar12014", .01, 60,'60/10','yv'], ["Mar52014", .01, 150,'150/10','rv']]
 
 Fig2 = plt.figure(2)
 Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
-Ax3.set_xlabel(r"$Time$ (h)", fontsize=30)
+Ax3.set_xlabel(r"$Time \times N$", fontsize=30)
 Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h}}{\gamma ( h_{1}-h)} \ (where \ w^{\prime}<0)$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{ \overline{w^{\prime-}\theta^{\prime+}}_{h}}{\overline{w^{\prime}\theta^{\prime}}_{s}}$", fontsize=30)
@@ -95,10 +98,19 @@ Ax3.set_ylabel(r"$(\overline{\theta^{\prime+}})_{h}(where \ w^{\prime}<0)/(0.2\t
 #Ax3.set_ylim(-.14, 0)
 #Ax3.set_ylim(0, 0.5)
 #Ax3.set_ylim(-.5, 0)
-Ax3.set_xlim(2, 8.2)
+#Ax3.set_xlim(2, 8.2)
+
+with pd.HDFStore('paper_table.h5','r') as store:
+     print(store.keys())
+     cases=store.get('cases')
+
+out={}
+df_coeffs={row['name']:row for row in cases.to_dict('records')}
+
+
 for run in run_list:
     #print run[0]
-    Main_Fun(run[0], run[1], run[2], run[3], run[4])
+    Main_Fun(run[0], run[1], run[2], run[3], run[4],df_coeffs,Ax3)
 
 #Ax3.legend(bbox_to_anchor=(1.49, 1.03), prop={'size':20}, numpoints = 1)
 #box = Ax3.get_position()
