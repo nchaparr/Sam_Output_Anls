@@ -49,23 +49,33 @@ gamma_list=[.005, .01, .005, .0025, .005, .01, .01]
 dump_time = "0000010800"
 dump_time_index=29
 dump_time_index0=19
+
+
 theta_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/theta_bar"+ dump_time for run_name in run_name_list]
 press_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/press"+ dump_time for run_name in run_name_list]
 flux_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/wvelthetapert"+ dump_time for run_name in run_name_list]
 height_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/heights0000000600" for run_name in run_name_list]
 AvProfVars_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/AvProfLims" for run_name in run_name_list]
+invrinos_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/invrinos" for run_name in run_name_list]
 
 
 with pd.HDFStore('paper_table.h5','r') as store:
      print(store.keys())
      df_cases=store.get('cases')
 
-with pd.HDFStore('vert_profiles.h5','w') as store:
+group_attributes={}
+time_full=np.linspace(600,28800,48)
+time_nov302013=np.linspace(900,28800,32)
+history='written 2015/8/5 by plot_theta_profs.py  9542a821e'        
+group_attributes['/']=dict(time600=time_full,time900=time_nov302013,history=history)
+
+with pd.HDFStore('all_profiles.h5','w') as store:
     #loop over text files files
     store.put('df_overview',df_cases,format='table')
     for i in range(len(theta_file_list)):
         run_name = run_name_list[i]
         theta = np.genfromtxt(theta_file_list[i])
+        print('theta shape: ',theta.shape)
         height = np.genfromtxt(height_file_list[i])
         df_prof=pd.DataFrame(height,columns=['height'])
         df_prof['theta']=theta
@@ -79,15 +89,24 @@ with pd.HDFStore('vert_profiles.h5','w') as store:
         wvelthetapert[0] = np.nan
         df_prof['wvelthetapert']=wvelthetapert
         AvProfVars = np.genfromtxt(AvProfVars_list[i])
+        invrinosVars = np.genfromtxt(invrinos_list[i])
+        print(run_name,' invrinos ',invrinosVars.shape)
         if AvProfVars.shape[0]==32:
             big_array=np.empty([48,8],dtype=np.float64)
             big_array[:,:]=np.nan
             big_array[0:32,:]=AvProfVars[:,:]
             AvProfVars=big_array[:,:]
+        if invrinosVars.shape[0]==32:
+            big_array=np.empty([48,10],dtype=np.float64)
+            big_array[:,:]=np.nan
+            big_array[0:32,:]=invrinosVars[:,:]
+            invrinosVars=big_array[:,:]
         print('case: ',run_name,' shape: ',AvProfVars.shape)
         columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
         df_lims=pd.DataFrame(AvProfVars,columns=columns)
-
+        columns=['rino', 'invrino', 'wstar', 'S', 'tau', 'mltheta', 'deltatheta', 
+                 'pi3', 'pi4', 'thetastar']
+        df_rinos=pd.DataFrame(invrinosVars,columns=columns)
        #Now for the gradients
         dheight = np.diff(height)
         dtheta = np.diff(theta)      
@@ -95,10 +114,13 @@ with pd.HDFStore('vert_profiles.h5','w') as store:
         element0 = np.array([0])
         dthetadz=np.hstack((element0, 1.0*dthetadz)) #*1.0/gamma
         df_prof['dthetadz']=dthetadz
-        node='/{}'.format(run_name)
-        store.put('cases/{}/df_lims'.format(node),df_lims,format='table')
-        store.put('cases/{}/df_prof'.format(node),df_prof,format='table')
-        store.get_storer('cases/{}/df_prof'.format(node)).attrs.history='written 2015/8/5 by plot_theta_profs.py  '
+        node_name='cases/{}/df_lims'.format(run_name)
+        store.put(node_name,df_lims,format='table')
+        node_name='cases/{}/df_prof'.format(run_name)
+        store.put(node_name,df_prof,format='table')
+        node_name='cases/{}/df_rinos'.format(run_name)
+        store.put(node_name,df_rinos,format='table')
+
 
         #only need up to 2500meters
         top_index = np.where(abs(1670 - height) < 40.)[0][0]
@@ -120,6 +142,7 @@ with pd.HDFStore('vert_profiles.h5','w') as store:
         fluxes = np.multiply(wvelthetapert, rhow)*1004.0/flux_list[i]
 
         Ax.plot(dthetadz, scaled_height, marker_list[i], label = legend_list[i], markersize=10) #, 
+
 zeros = np.zeros_like(height)
 Ax.plot(zeros+.01, scaled_height, 'k-')
 Ax.plot(zeros+.005, scaled_height, 'k-')
