@@ -8,6 +8,7 @@ sys.path.insert(0, '/tera/phil/nchaparr/python')
 import nchap_fun as nc
 from matplotlib import rcParams
 rcParams.update({'font.size': 10})
+import pandas as pd
 
 """
 
@@ -54,47 +55,65 @@ flux_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+run_name+"/data
 height_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/heights0000000600" for run_name in run_name_list]
 AvProfVars_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/AvProfLims" for run_name in run_name_list]
 
-#loop over text files files
-for i in range(len(theta_file_list)):
-    run_name = run_name_list[i]
-    theta = np.genfromtxt(theta_file_list[i])
-    height = np.genfromtxt(height_file_list[i])
-        
-    gamma = gamma_list[i]
-        
-    press = np.genfromtxt(press_file_list[i])
-    rhow = nc.calc_rhow(press, height, theta[0])
-    wvelthetapert = np.genfromtxt(flux_file_list[i])
-    wvelthetapert[0] = np.nan
-    AvProfVars = np.genfromtxt(AvProfVars_list[i])
-    
-   #Now for the gradients
-    dheight = np.diff(height)
-    dtheta = np.diff(theta)      
-    dthetadz = np.divide(dtheta, dheight)        
-    element0 = np.array([0])
-    dthetadz=np.hstack((element0, 1.0*dthetadz)) #*1.0/gamma
-        
-    #only need up to 2500meters
-    top_index = np.where(abs(1670 - height) < 40.)[0][0]
 
-    #where gradient is max, and flux is min
-    ##print AvProfVars[:,1].shape, height.shape
-    
-    if run_name == "Nov302013":
-        h1 = AvProfVars[dump_time_index0, 1]
-    else:
-        h1 = AvProfVars[dump_time_index, 1]
+with pd.HDFStore('paper_table.h5','r') as store:
+     print(store.keys())
+     df_cases=store.get('cases')
 
-    h_index=np.where(dthetadz - np.amax(dthetadz[:top_index])==0)[0][0]
-    h=height[h_index]    
-    scaled_height = [1.0*ht/h for ht in height]
-    
-    #print h1, h_index, height[h_index]
-    
-    fluxes = np.multiply(wvelthetapert, rhow)*1004.0/flux_list[i]
+with pd.HDFStore('vert_profiles.h5','w') as store:
+    #loop over text files files
+    store.put('df_overview',df_cases,format='table')
+    for i in range(len(theta_file_list)):
+        run_name = run_name_list[i]
+        theta = np.genfromtxt(theta_file_list[i])
+        height = np.genfromtxt(height_file_list[i])
+        df_prof=pd.DataFrame(height,columns=['height'])
+        df_prof['theta']=theta
+        gamma = gamma_list[i]
 
-    Ax.plot(dthetadz, scaled_height, marker_list[i], label = legend_list[i], markersize=10) #, 
+        press = np.genfromtxt(press_file_list[i])
+        rhow = nc.calc_rhow(press, height, theta[0])
+        df_prof['press']=press
+        df_prof['rho']=rhow
+        wvelthetapert = np.genfromtxt(flux_file_list[i])
+        wvelthetapert[0] = np.nan
+        df_prof['wvelthetapert']=wvelthetapert
+        AvProfVars = np.genfromtxt(AvProfVars_list[i])
+        columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
+        df_lims=pd.DataFrame(AvProfVars,columns=columns)
+
+       #Now for the gradients
+        dheight = np.diff(height)
+        dtheta = np.diff(theta)      
+        dthetadz = np.divide(dtheta, dheight)        
+        element0 = np.array([0])
+        dthetadz=np.hstack((element0, 1.0*dthetadz)) #*1.0/gamma
+        df_prof['dthetadz']=dthetadz
+        node='/{}'.format(run_name)
+        store.put('cases/{}/df_lims'.format(node),df_lims,format='table')
+        store.put('cases/{}/df_prof'.format(node),df_prof,format='table')
+        store.get_storer('cases/{}/df_prof'.format(node)).attrs.history='written 2015/8/5'
+
+        #only need up to 2500meters
+        top_index = np.where(abs(1670 - height) < 40.)[0][0]
+
+        #where gradient is max, and flux is min
+        ##print AvProfVars[:,1].shape, height.shape
+
+        if run_name == "Nov302013":
+            h1 = AvProfVars[dump_time_index0, 1]
+        else:
+            h1 = AvProfVars[dump_time_index, 1]
+
+        h_index=np.where(dthetadz - np.amax(dthetadz[:top_index])==0)[0][0]
+        h=height[h_index]    
+        scaled_height = [1.0*ht/h for ht in height]
+
+        #print h1, h_index, height[h_index]
+
+        fluxes = np.multiply(wvelthetapert, rhow)*1004.0/flux_list[i]
+
+        Ax.plot(dthetadz, scaled_height, marker_list[i], label = legend_list[i], markersize=10) #, 
 zeros = np.zeros_like(height)
 Ax.plot(zeros+.01, scaled_height, 'k-')
 Ax.plot(zeros+.005, scaled_height, 'k-')
