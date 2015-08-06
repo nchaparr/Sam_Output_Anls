@@ -79,6 +79,12 @@ with pd.HDFStore('vert_profiles.h5','w') as store:
         wvelthetapert[0] = np.nan
         df_prof['wvelthetapert']=wvelthetapert
         AvProfVars = np.genfromtxt(AvProfVars_list[i])
+        if AvProfVars.shape[0]==32:
+            big_array=np.empty([48,8],dtype=np.float64)
+            big_array[:,:]=np.nan
+            big_array[0:32,:]=AvProfVars[:,:]
+            AvProfVars=big_array[:,:]
+        print('case: ',run_name,' shape: ',AvProfVars.shape)
         columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
         df_lims=pd.DataFrame(AvProfVars,columns=columns)
 
@@ -92,7 +98,7 @@ with pd.HDFStore('vert_profiles.h5','w') as store:
         node='/{}'.format(run_name)
         store.put('cases/{}/df_lims'.format(node),df_lims,format='table')
         store.put('cases/{}/df_prof'.format(node),df_prof,format='table')
-        store.get_storer('cases/{}/df_prof'.format(node)).attrs.history='written 2015/8/5'
+        store.get_storer('cases/{}/df_prof'.format(node)).attrs.history='written 2015/8/5 by plot_theta_profs.py  '
 
         #only need up to 2500meters
         top_index = np.where(abs(1670 - height) < 40.)[0][0]
