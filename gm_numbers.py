@@ -38,7 +38,10 @@ if __name__ == "__main__":
     case_list=[]
     datadir='/tera/phil/nchaparr/python/Plotting'
     columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
-    for case,run_dict in run_key.items():
+    keylist=list(run_key.keys())
+    keylist.sort()
+    for case in keylist:
+        run_dict=run_key[case]
         if case=='Nov302013':
             time_int=900
         else:
@@ -47,12 +50,11 @@ if __name__ == "__main__":
         L0,N,B0=gm_vars(surface_flux,gamma)
         filename='{}/{}/data/AvProfLims'.format(datadir,case)
         out=np.genfromtxt(filename)
+        print('gm: ',filename,out[0,0])
         df=pd.DataFrame.from_records(out,columns=columns)
         time_end=28800 
         num_times=len(df)
-        print(case,' num_times: ',num_times)
         time_sec=np.linspace(time_int,time_end,num_times)
-        print('times: ',time_sec)
         run_dict['df']=df
         run_dict['L0']=L0
         run_dict['N']=N

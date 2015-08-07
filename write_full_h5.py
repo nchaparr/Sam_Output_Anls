@@ -26,7 +26,6 @@ def find_zenc(time_sec,N,L0_val):
 # read the case information(stability, etc.) written by gm_numbers.py
 #
 with pd.HDFStore('paper_table.h5','r') as store:
-     print(store.keys())
      df_overview=store.get('cases')
 
 Nvals=df_overview['N']
@@ -45,6 +44,7 @@ file_dict = defaultdict(lambda: defaultdict(dict))
 root_dir='/newtera/tera/phil/nchaparr/python/Plotting'
 varnames=['theta_bar','press','wvelthetapert']
 run_name_list = ["Nov302013","Dec142013", "Dec202013", "Dec252013", "Jan152014_1", "Mar12014", "Mar52014"]
+run_name_list.sort()
 
 #
 # make a triply nested dict of all vertial profile files
@@ -60,7 +60,6 @@ for case in run_name_list:
             varname,the_time=expr.match(name).groups(1)
             filenames[int(the_time)]=file_name
         file_dict[case][var_name]=filenames
-        print(case,var_name,len(file_dict[case][var_name]))
 
 #all runs have the same heights, choose one at random
 height_file='/newtera/tera/phil/nchaparr/python/Plotting/Mar52014/data/heights0000013200'
@@ -129,9 +128,10 @@ for case in run_name_list:
     for var_name in layervars:
         glob_expr='{}/{}/data/{}'.format(root_dir,case,var_name)
         files=glob.glob(glob_expr)
-        print('hit: ',glob_expr,files[0])
         the_array=np.genfromtxt(files[0])
         df=pd.DataFrame(the_array,columns=layer_columns[var_name])
+        if var_name == 'AvProfLims':
+            print('all: ',files[0],the_array[0,0])
         df['time_secs']=time_dict[len(df)]
         df['time_nd']=df['time_secs']*N_dict[case]
         df['zenc']=find_zenc(df['time_secs'],N_dict[case],L0_dict[case])
@@ -166,5 +166,4 @@ rootname='/'
 with h5py.File(h5file,'a') as f:
     group=f[rootname]
     for key,value in group_attributes[rootname].items():
-        print(key,value,type(key),type(value))
         group.attrs[key]=value
