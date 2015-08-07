@@ -50,9 +50,9 @@ if __name__ == "__main__":
         df=pd.DataFrame.from_records(out,columns=columns)
         time_end=28800 
         num_times=len(df)
-        time_beg=time_end -time_int*num_times
         print(case,' num_times: ',num_times)
-        time_sec=np.linspace(time_beg,time_end,num_times)
+        time_sec=np.linspace(time_int,time_end,num_times)
+        print('times: ',time_sec)
         run_dict['df']=df
         run_dict['L0']=L0
         run_dict['N']=N
