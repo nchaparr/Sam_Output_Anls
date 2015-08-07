@@ -15,6 +15,26 @@ import re
 import os
 import h5py
 
+
+
+def find_zenc(time_sec,N,L0_val):
+    zenc=L0_val*np.sqrt(2*time_sec*N)
+    return zenc
+
+
+#
+# read the case information(stability, etc.) written by gm_numbers.py
+#
+with pd.HDFStore('paper_table.h5','r') as store:
+     print(store.keys())
+     df_overview=store.get('cases')
+
+Nvals=df_overview['N']
+names=df_overview['name']
+L0=df_overview['L0']
+N_dict={k:v for k,v in zip(names,Nvals)}
+L0_dict={k:v for k,v in zip(names,L0)}
+
 #split 'theta_bar0000003420' into two parts
 expr=re.compile('(.*)?(\d{10,10})')
 #http://stackoverflow.com/questions/2600790/multiple-levels-of-collection-defaultdict-in-python
@@ -50,6 +70,8 @@ num_levels,=heights.shape
 time_full=np.linspace(600,28800,48)
 time_nov302013=np.linspace(900,28800,32)
 
+time_dict={32:time_nov302013,48:time_full}
+
 #
 # create dataframes for each variable for each case
 # first column is height, subsequent columns are times
@@ -66,6 +88,7 @@ for case in run_name_list:
         file_dict[case][var_name]['df']=df
 #
 # now do derived variables for each case and time  rhow and dthetadz
+# using the dataframes we've just created
 #
 varnames.extend(['rhow','dthetadz'])            
 
@@ -101,44 +124,31 @@ thickness_columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
 rino_columns=['rino', 'invrino', 'wstar', 'S', 'tau', 'mltheta', 'deltatheta', 
               'pi3', 'pi4', 'thetastar']
 layer_columns=dict(invrinos=rino_columns,AvProfLims=thickness_columns)
-varnames.extend(layervars)            
 
-
-with pd.HDFStore('new.h5','r') as store:
 for case in run_name_list:
     for var_name in layervars:
-        colnames=layer_columns[var_name]
         glob_expr='{}/{}/data/{}'.format(root_dir,case,var_name)
-        glob_out=glob.glob(glob_expr)
-        the_var=np.genfromtxt(glob_out[0])
-        if the_var.shape[0]==32:
-            big_array=np.empty([48,len(colnames)],dtype=np.float64)
-            big_array[:,:]=np.nan
-            big_array[0:32,:]=the_var[:,:]
-            the_var=big_array[:,:]
-        new_var=file_dict[case][var_name]
-        new_var['df']=pd.DataFrame.from_records(the_var,columns=colnames)
-        node_name='{}/AvProfLims'.format(
+        files=glob.glob(glob_expr)
+        print('hit: ',glob_expr,files[0])
+        the_array=np.genfromtxt(files[0])
+        df=pd.DataFrame(the_array,columns=layer_columns[var_name])
+        df['time_secs']=time_dict[len(df)]
+        df['time_nd']=df['time_secs']*N_dict[case]
+        df['zenc']=find_zenc(df['time_secs'],N_dict[case],L0_dict[case])
+        file_dict[case][var_name]['df']=df
 
-#
-# write the case information(stability, etc.)
-#
-with pd.HDFStore('paper_table.h5','r') as store:
-     print(store.keys())
-     df_cases=store.get('cases')
+varnames.extend(layervars)            
 
 h5file='all_profiles.h5'
 with pd.HDFStore(h5file,'w') as store:
-    #loop over text files files
-    store.put('df_overview',df_cases,format='table')
+    store.put('df_overview',df_overview,format='table')
     #
-    # write the vertical profiles
+    # write  vertical profiles and layer variables
     # 
     for case in run_name_list:
         for var_name in varnames:
             node_name='/{}/{}'.format(case,var_name)
             store.put(node_name,file_dict[case][var_name]['df'],format='table')            
-
 #
 # hdf doesn't know how to store a list of strings, turn it into a single string
 # using repr

@@ -56,16 +56,25 @@ if __name__ == "__main__":
         run_dict['df']=df
         run_dict['L0']=L0
         run_dict['N']=N
-        run_dict['df']['time_sec']=time_sec
+        run_dict['df']['time_secs']=time_sec
         run_dict['df']['time_nd']=time_sec*N
+        zenc=find_zenc(df['time_secs'],N,L0)
+        run_dict['df']['zenc']=zenc
+        run_dict['df']['h0_nd']=run_dict['df']['h0']/zenc
         case_list.append((case,L0))
+
+    with pd.HDFStore('gm_try.h5','w') as store:
+        for case,run_dict in run_key.items():
+            nodename='/{}/AvProfLims'.format(case)
+            store.put(nodename,run_dict['df'])
+
     case_list.sort(key=lambda case: case[1])
     plt.close('all')
     plotlist=['h','h1','h0','delhtop','delhbot','delhtot','delgm',
               'delhtot_rt','zf','zf0','zf1','delzfbot']
     xy_dict={'h':('time_nd','h_nd'),'h1':('time_nd','h1_nd'),'h0':('time_nd','h0_nd'),'delhtop':('time_nd','delhtop'),
              'delhbot':('time_nd','delhbot'),'delhtot':('time_nd','delhtot'),'delgm':('time_nd','delgm'),
-             'delhtot_rt':('time_sec','delhtot_rt'),'zf':('time_nd','zf_nd'),
+             'delhtot_rt':('time_secs','delhtot_rt'),'zf':('time_nd','zf_nd'),
              'zf0':('time_nd','zf0_nd'),'zf1':('time_nd','zf1_nd'),'delzfbot':('time_nd','delzfbot')}
     titles=dict(h='non-dimensional h',h1='non-dimensional h1',h0='non-dimensional h0',
                 delhtop='(h1 - h)/h',delhbot='(h - h0)/h',delhtot='(h1 - h0)/h',
@@ -83,7 +92,7 @@ if __name__ == "__main__":
     for casename,L0 in case_list:
         L0,N=run_key[casename]['L0'],run_key[casename]['N']
         df=run_key[casename]['df']
-        zenc=find_zenc(df['time_sec'],N,L0)
+        zenc=find_zenc(df['time_secs'],N,L0)
         for key in ['h','h0','h1','zf','zf0','zf1']:
             nd_key='{}_nd'.format(key)
             df[nd_key]=df[key]/zenc

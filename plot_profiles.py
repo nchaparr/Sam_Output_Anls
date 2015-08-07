@@ -119,6 +119,17 @@ for case in case_list:
 ax3.legend(loc='best')
 ax3.set_ylim([0.6,1.4])
 
+def make_time(df):
+    time_end=28800 
+    num_times=len(df)
+    if num_times==32:
+        time_int=900
+    else:
+        time_int=600
+    time_sec=np.linspace(time_int,time_end,num_times)
+    return time_sec
+    
+
 datadir='/tera/phil/nchaparr/python/Plotting'
 columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
 test_dict={}
@@ -126,54 +137,90 @@ for case in case_list:
         filename='{}/{}/data/AvProfLims'.format(datadir,case)
         out=np.genfromtxt(filename)
         df_orig=pd.DataFrame.from_records(out,columns=columns)
-        time_end=28800 
-        num_times=len(df_orig)
-        if case=='Nov302013':
-            time_int=900
-            special_48=np.linspace(900,900*48,48)
-            time_h5=special_48
-        else:
-            time_int=600
-            time_h5=np.linspace(time_int,time_end,num_times)
-        time_sec=np.linspace(time_int,time_end,num_times)
+        time_sec=make_time(df_orig)
         zenc=find_zenc(time_sec,N_dict[case],L0_dict[case])
-        zenc_h5=find_zenc(time_h5,N_dict[case],L0_dict[case])
-        print('check lengths: ',len(time_h5),len(df_lims))
+        print('check lengths: {} {}'.format(case,len(df_orig)))
         test_dict[case]={'unscaled':(time_sec*N_dict[case],df_orig['h0']),
-                         'scaled':(time_sec*N_dict[case],df_orig['h0']/zenc),
-                         'h5':(time_h5*N_dict[case],df_lims['h0']/zenc_h5)}
+                         'scaled':(time_sec*N_dict[case],df_orig['h0']/zenc)}
+
+
+
 
 fig4,ax4=plt.subplots(1,1)
 fig5,ax5=plt.subplots(1,1)
-fig6,ax6=plt.subplots(1,1)
+# fig6,ax6=plt.subplots(1,1)
 
-for case in case_list:
-    ax4.plot(test_dict[case]['unscaled'][0],test_dict[case]['unscaled'][1],label=L0_legend[case])
-    ax5.plot(test_dict[case]['scaled'][0],test_dict[case]['scaled'][1],label=L0_legend[case])
-    ax5.plot(test_dict[case]['h5'][0],test_dict[case]['h5'][1],label=L0_legend[case])
-ax4.legend(loc='best')
-ax4.legend(loc='best')
-ax5.set_ylim([0.6,1.4])
-ax6.set_ylim([0.6,1.4])
+h5file='all_profiles.h5'
+with pd.HDFStore(h5file,'r') as store:
+    for case in case_list:
+        nodename='/{}/AvProfLims'.format(case)
+        df_all=store.get(nodename)
+        ax4.plot(df_all['time_secs'],df_all['zenc'],label=L0_legend[case])
+    ax4.legend(loc='best')
+    ax4.set_title('dim h0 all')
 
-# with pd.HDFStore(h5file,'r') as store:
-#     fig,ax=plt.subplots(1,1)
-#     for case in case_list:
-#         ax.plot(test_dict[case][0],test_dict[case][1],label=L0_legend[case])
-#         nodename='/{}/AvProfLims'.format(case)
-#         df_lims=store.get(nodename)
-#         ax.plot(test_dict[case][0],df_lims['h0'],label=L0_legend[case])
-#         print(len(df_lims))
+h5file='gm_try.h5'
+with pd.HDFStore(h5file,'r') as store:
+    for case in case_list:
+        nodename='/{}/AvProfLims'.format(case)
+        df_gm=store.get(nodename)
+        ax5.plot(df_gm['time_secs'],df_gm['zenc'],label=L0_legend[case])
+    ax5.legend(loc='best')
+    ax5.set_title('dim h0 gm')
+
 
 plt.show()
 
+h5file='test.h5'
+with pd.HDFStore(h5file,'w') as store:
+    for case in case_list:
+            filename='{}/{}/data/AvProfLims'.format(datadir,case)
+            out=np.genfromtxt(filename)
+            df_orig=pd.DataFrame.from_records(out,columns=columns)
+            print('testing: {} {}'.format(case,len(df_orig)))
+            nodename='/{}/AvProfLims'.format(case)
+            store.put(nodename,df_orig)
+
+with pd.HDFStore(h5file,'r') as store:
+    for case in case_list:
+        nodename='/{}/AvProfLims'.format(case)
+        df_good=store.get(nodename)
+        print('test 2: ',case,len(df_good))
 
 
-# with pd.HDFStore(h5file,'r') as store:
-#     for key,value in store.root._v_children.items():
-#         print(key,value)
-#         print(dir(value))
-#     #print(store.get('/Nov302013/theta_bar'))
+thecase='Nov302013'
+h5file='test.h5'
+with pd.HDFStore(h5file,'r') as store:
+    nodename='/{}/AvProfLims'.format(thecase)
+    df_orig=store.get(nodename)
+    print('test 3: ',case,len(df_orig))
+
+h5file='all_profiles.h5'
+with pd.HDFStore(h5file,'r') as store:
+    nodename='/{}/AvProfLims'.format(thecase)
+    df_orig=store.get(nodename)
+    print('test 4: ',case,len(df_orig))
+
+# print(len(df_orig),len(df_bad))
+
+# # with pd.HDFStore(h5file,'r') as store:
+# #     fig,ax=plt.subplots(1,1)
+# #     for case in case_list:
+# #         ax.plot(test_dict[case][0],test_dict[case][1],label=L0_legend[case])
+# #         nodename='/{}/AvProfLims'.format(case)
+# #         df_lims=store.get(nodename)
+# #         ax.plot(test_dict[case][0],df_lims['h0'],label=L0_legend[case])
+# #         print(len(df_lims))
+
+# plt.show()
+
+
+
+# # with pd.HDFStore(h5file,'r') as store:
+# #     for key,value in store.root._v_children.items():
+# #         print(key,value)
+# #         print(dir(value))
+# #     #print(store.get('/Nov302013/theta_bar'))
 
 
 
