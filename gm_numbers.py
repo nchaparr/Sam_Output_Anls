@@ -36,7 +36,7 @@ def find_zenc(time_sec,N,L0):
 
 if __name__ == "__main__":
     case_list=[]
-    datadir='/tera/phil/nchaparr/python/Plotting'
+    datadir='/newtera/tera/phil/nchaparr/python/Plotting'
     columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
     keylist=list(run_key.keys())
     keylist.sort()
