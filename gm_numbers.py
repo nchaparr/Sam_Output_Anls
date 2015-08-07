@@ -134,7 +134,7 @@ if __name__ == "__main__":
     df_cases['fluxes']=fluxes
     df_cases['gammas']=gammas
     for key,axis in plot_dict.items():
-        filename='{}.png'.format(key)
+        filename='tera_{}.png'.format(key)
         axis.figure.savefig(filename)
     plt.show()
     with pd.HDFStore('paper_table.h5','w') as store:

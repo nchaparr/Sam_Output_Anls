@@ -4,7 +4,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from Make_Timelist import *
 import sys
-sys.path.insert(0, '/tera/phil/nchaparr/python')
+sys.path.insert(0, '/newtera/tera/phil/nchaparr/python')
 import nchap_fun as nc
 from matplotlib import rcParams
 rcParams.update({'font.size': 10})
