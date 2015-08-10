@@ -1,14 +1,40 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+import h5py
+import ast
 
-run_key={'Nov302013':{'params':(100,5)},         
-         'Dec142013':{'params':(100,10)},        
-         'Dec202013':{'params':(60,5)},          
-         'Dec252013':{'params':(60,2.5)},        
-         'Jan152014_1':{'params':(150,5)},         
-         'Mar12014':{'params':(60,10)},         
-         'Mar52014':{'params':(150,10)}}        
+h5file='all_profiles.h5'
+
+#
+# get the root attributes
+#
+with h5py.File(h5file,'r') as f:
+    time600=f.attrs['time600']
+    time900=f.attrs['time900']
+    #
+    # turn repr strings into python list objects
+    #
+    varnames=ast.literal_eval(f.attrs['varnames'])
+    case_names=ast.literal_eval(f.attrs['case_list'])
+#
+# read in the case variables
+#
+with pd.HDFStore(h5file,'r') as store:
+    df_overview=store.get('/df_overview')
+#
+# get N and L0 for each case
+#
+Nvals=df_overview['N']
+names=df_overview['name']
+L0=df_overview['L0']
+N_dict={k:v for k,v in zip(names,Nvals)}
+L0_dict={k:v for k,v in zip(names,L0)}
+L0_legend={k:'{:2d}'.format(int(np.round(v,decimals=0))) for k,v in L0_dict.items()}
+
+run_key={}
+for item in df_overview.to_dict('records'):
+    run_key[item['name']]=dict(params=(item['fluxes'],item['gammas']))
 
 def gm_vars(surface_flux,gamma):
     rho=1.
@@ -36,39 +62,26 @@ def find_zenc(time_sec,N,L0):
 
 if __name__ == "__main__":
     case_list=[]
-    datadir='/newtera/tera/phil/nchaparr/python/Plotting'
-    columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
-    keylist=list(run_key.keys())
-    keylist.sort()
-    for case in keylist:
-        run_dict=run_key[case]
-        if case=='Nov302013':
-            time_int=900
-        else:
-            time_int=600
-        surface_flux,gamma=run_dict['params']
-        L0,N,B0=gm_vars(surface_flux,gamma)
-        filename='{}/{}/data/AvProfLims'.format(datadir,case)
-        out=np.genfromtxt(filename)
-        print('gm: ',filename,out[0,0])
-        df=pd.DataFrame.from_records(out,columns=columns)
-        time_end=28800 
-        num_times=len(df)
-        time_sec=np.linspace(time_int,time_end,num_times)
-        run_dict['df']=df
-        run_dict['L0']=L0
-        run_dict['N']=N
-        run_dict['df']['time_secs']=time_sec
-        run_dict['df']['time_nd']=time_sec*N
-        zenc=find_zenc(df['time_secs'],N,L0)
-        run_dict['df']['zenc']=zenc
-        run_dict['df']['h0_nd']=run_dict['df']['h0']/zenc
-        case_list.append((case,L0))
-
-    with pd.HDFStore('gm_try.h5','w') as store:
-        for case,run_dict in run_key.items():
+    with pd.HDFStore(h5file,'r') as store:
+        for case in run_key.keys():
+            run_dict=run_key[case]
+            surface_flux,gamma=run_dict['params']
+            L0,N,B0=gm_vars(surface_flux,gamma)
             nodename='/{}/AvProfLims'.format(case)
-            store.put(nodename,run_dict['df'])
+            df=store.get(nodename)
+            if len(df) == 48:
+                time_sec=time600
+            else:
+                time_sec=time900
+            run_dict['df']=df
+            run_dict['L0']=L0
+            run_dict['N']=N
+            run_dict['df']['time_secs']=time_sec
+            run_dict['df']['time_nd']=time_sec*N
+            zenc=find_zenc(df['time_secs'],N,L0)
+            run_dict['df']['zenc']=zenc
+            run_dict['df']['h0_nd']=run_dict['df']['h0']/zenc
+            case_list.append((case,L0))
 
     case_list.sort(key=lambda case: case[1])
     plt.close('all')
@@ -137,12 +150,7 @@ if __name__ == "__main__":
         filename='tera_{}.png'.format(key)
         axis.figure.savefig(filename)
     plt.show()
-    with pd.HDFStore('paper_table.h5','w') as store:
-        store.put('cases',df_cases,format='table')
-        store.get_storer('cases').attrs.history = 'written 2015/8/5'
         
-
-
 
 #Files = /newtera/tera/phil/nchaparr/python/Plotting/rundate/data/AvProfLims
 #indices of h0, h, h1 = 0, 1, 2
