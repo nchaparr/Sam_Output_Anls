@@ -3,8 +3,6 @@ import h5py
 import ast
 import numpy as np
 from collections import OrderedDict as od
-from ordered_defaultdict import OrderedDefaultdict as od_def
-import pdb
 
 
 def find_zenc(time_sec,N,L0_val):
@@ -39,9 +37,7 @@ N_dict={k:v for k,v in zip(names,Nvals)}
 L0_dict={k:v for k,v in zip(names,L0)}
 L0_legend={k:'{:2d}'.format(int(np.round(v,decimals=0))) for k,v in L0_dict.items()}
 
-#
-# for each case, find the time for N*time==200
-#
+
 index_dict=od()
 times_dict=od()
 ntimes_dict=od()
@@ -82,10 +78,7 @@ compare_cases.sort(key=case_sort)
 # now get the profiles  of gradient and flux and the h0,h1 limits
 # from dataframes  /case/dthetadz, /case/wvelthetapert /case/AvProfLims
 #
-h0_point_dict=od()
-zf0_point_dict=od()
-profile_dict=od_def(od)
-h0_fulldict=od()
+profile_dict=od()
 #
 # read in all profiles for all cases
 #
@@ -99,6 +92,9 @@ with pd.HDFStore(h5file,'r') as store:
         nodename='/{}/dthetadz'.format(case)
         df_gradient=store.get(nodename)
         profile_dict[case,'gradient']=df_gradient
+        nodename='/{}/rhow'.format(case)
+        df_rhow=store.get(nodename)
+        profile_dict[case,'rhow']=df_rhow
         nodename='/{}/wvelthetapert'.format(case)
         df_flux=store.get(nodename)
         profile_dict[case,'flux']=df_flux
@@ -116,86 +112,53 @@ with pd.HDFStore(h5file,'r') as store:
 #
 plot_dict=od()
 #
-# only one set of dimensional heights
+# get all the variables we want to plot
+# note that every case was run with the same vertical grid
 #
 heights=profile_dict[case_list[0],'gradient']['height']
 for case in compare_cases:
     zenc=profile_dict[case,'zenc']
     for nd_time in target_times:
         index=index_dict[nd_time,case]
-        print(nd_time,case,index)
-        plot_dict[case,nd_time,'nd_heights']=heights/zenc[index]
-        key=(nd_time,case)
-        h=profile_dict[case,'df_lims']['h'][index]
-        plot_dict[case,nd_time,'h_nd']=h/zenc[index]
-        h0=profile_dict[case,'df_lims']['h0'][index]
-        zf0=profile_dict[case,'df_lims']['zf0'][index]
-        plot_dict[case,nd_time,'h0_nd']=h0/zenc[index]
-        plot_dict[case,nd_time,'zf0_nd']=zf0/zenc[index]
+        plot_dict[case,nd_time,'df_prof']=pd.DataFrame(heights,columns=['height'])
+        plot_dict[case,nd_time,'h']=profile_dict[case,'df_lims']['h'][index]
+        plot_dict[case,nd_time,'h0']=profile_dict[case,'df_lims']['h0'][index]
+        plot_dict[case,nd_time,'zenc']=zenc[index]
+        plot_dict[case,nd_time,'zf0']=profile_dict[case,'df_lims']['zf0'][index]
         the_time=times_dict[nd_time,case]
-        plot_dict[case,nd_time,'flux_prof']=profile_dict[case,'flux'][the_time]
-        plot_dict[case,nd_time,'grad_prof']=profile_dict[case,'gradient'][the_time]
+        plot_dict[case,nd_time,'df_prof']['flux_prof']=profile_dict[case,'flux'][the_time]
+        plot_dict[case,nd_time,'df_prof']['grad_prof']=profile_dict[case,'gradient'][the_time]
+        plot_dict[case,nd_time,'df_prof']['rhow']=profile_dict[case,'rhow'][the_time]
 
 from matplotlib import pyplot as plt
 plt.close('all')
 
+cpd=1004.
 for the_time in target_times:
-    fig1,ax1=plt.subplots(1,1)
-    fig2,ax2=plt.subplots(1,1)
+    flux_fig,flux_ax=plt.subplots(1,1)
+    grad_fig,grad_ax=plt.subplots(1,1)
     for case in compare_cases:
-        x1=plot_dict[case,the_time,'flux_prof']
-        x2=plot_dict[case,the_time,'grad_prof']
-        y=plot_dict[case,the_time,'nd_heights']
-        ax1.plot(x1,y,label=L0_legend[case])
-        ax2.plot(x2,y,label=L0_legend[case])
-        x=0.
-        y1=plot_dict[case,the_time,'zf0_nd']
-        y2=plot_dict[case,the_time,'h0_nd']
-        ax1.plot(x,y1,'k*')
-        ax2.plot(x,y2,'k*')
-    ax1.set_ylim(0,1.3)
-    ax2.set_ylim(0,1.3)
-    ax2.set_xlim([-0.001,0.005])
-    ax1.legend(loc='best')
-    ax2.legend(loc='best')
-    ax1.set_title('flux profile at nd time of {}'.format(the_time))
-    ax2.set_title('gradient profile at nd time of {}'.format(the_time))
+        sfc_flux=float(df_overview[df_overview['name']==case]['fluxes'])
+        df_prof=plot_dict[case,the_time,'df_prof']
+        rhow=plot_dict[case,the_time,'df_prof']['rhow']
+        df_prof['ndh_flux']=df_prof['height']/plot_dict[case,nd_time,'zf0']
+        df_prof['nd_flux']=plot_dict[case,nd_time,'df_prof']['flux_prof']*rhow*cpd/sfc_flux
+        df_prof['ndh_h']=df_prof['height']/plot_dict[case,nd_time,'h']
+        df_prof.plot(x='nd_flux',y='ndh_flux',label=L0_legend[case],ax=flux_ax,legend=False)
+        df_prof.plot(x='grad_prof',y='ndh_h',label=L0_legend[case],ax=grad_ax,legend=False)
+    flux_ax.set_title('flux profile at nd time of {}'.format(the_time))
+    grad_ax.set_title('gradient profile at nd time of {}'.format(the_time))
+    flux_ax.set_ylim(0,1.3)
+    grad_ax.set_ylim(0,1.3)
+    flux_ax.set_xlim([-0.3,1.])
+    grad_ax.set_xlim([-0.001,0.005])
+    flux_ax.legend(loc='best')
+    grad_ax.legend(loc='best')
+    filename='flux_{}.png'.format(the_time)
+    flux_fig.savefig(filename)
+    filename='grad_{}.png'.format(the_time)
+    grad_fig.savefig(filename)
 plt.show()
 
-#     ax1.plot(-0.01,zf0_point_dict[case],'k*')
-# ax1.plot([0,0],[1.2,0],'k',linewidth=2)
-# ax1.set_ylim([0,1.2])
-# ax1.legend(loc='best')
 
-
-# fig2,ax2=plt.subplots(1,1)
-# for case in case_list:
-#     ax2.plot(profile_dict[case]['gradient'],profile_dict[case]['nd_heights'],label=L0_legend[case])
-#     ax2.plot(-0.0005,h0_point_dict[case],'k*')
-# ax2.plot([0,0],[1.2,0],'k',linewidth=2)
-# ax2.set_ylim([0,1.2])
-# ax2.set_xlim([-0.001,0.005])
-# ax2.legend(loc='lower right')
-
-
-# fig3,ax3=plt.subplots(1,1)
-# for case in case_list:
-#     ax3.plot(h0_fulldict[case][0],h0_fulldict[case][1],label=L0_legend[case])
-# ax3.legend(loc='best')
-# ax3.set_ylim([0.6,1.4])
-
-# ax3.set_title('h0 non dimensional')
-
-    
-# fig4,ax4=plt.subplots(1,1)
-# with pd.HDFStore(h5file,'r') as store:
-#     for case in case_list:
-#         nodename='/{}/AvProfLims'.format(case)
-#         df_all=store.get(nodename)
-#         ax4.plot(df_all['time_secs'],df_all['zenc'],label=L0_legend[case])
-#     ax4.legend(loc='best')
-#     ax4.set_title('zenc')
-
-
-# plt.show()
 

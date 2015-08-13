@@ -147,7 +147,7 @@ if __name__ == "__main__":
     df_cases['fluxes']=fluxes
     df_cases['gammas']=gammas
     for key,axis in plot_dict.items():
-        filename='tera_{}.png'.format(key)
+        filename='{}.png'.format(key)
         axis.figure.savefig(filename)
     plt.show()
         
