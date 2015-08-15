@@ -59,8 +59,9 @@ for date in case_list:
             prof_dict[date,var,the_time]=numbers
 
 plt.close('all')
-vvplt.rc('text', usetex=True)
+plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
+
 Fig1,axes = plt.subplots(1,3)
 for the_ax in axes:
     the_ax.set_ylim(0.1,1.4)
@@ -71,40 +72,15 @@ Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
 Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 Ax.set_xlim(300, 312)
 
-
-
-#Ax1 = Fig1.add_subplot(132)
-#Ax1.set_title( r'$Scaled \ \frac{\partial \theta}{\partial z}$', fontsize=20)
-#Ax1.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
-#Ax1.set_xlabel(r"$\frac{\partial \theta}{\partial z}$", fontsize=20)
-#Ax1.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-#start, end = -.025, .025
 start, end = -1, 2.5
 Ax1.set_xticks([.02, 1])
-#Ax1.set_ylabel(r"$z$", fontsize=20)
-#plt.xlim(-.025, .025)
-#plt.xlim(-1, 2.5)
-#plt.ylim(100, 1600)
-
-#Ax2 = Fig1.add_subplot(133)
-#Ax2.set_title(r"$\overline{w^{'} \theta^{'}}$", fontsize=20)
-#Ax2.set_title(r"$Scaled \ \overline{w^{'} \theta^{'}}$", fontsize=20)
-#Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
 Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
-#start, end = -.06, .14
-#start, end = -.4, 1.2
-#Ax2.set_xticks(np.arange(start, end, 1.0*(end-start)/5))
-
-#Ax2.set_ylabel(r"$z$", fontsize=20)
-#Ax2.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-#plt.ylim(100, 1600)
-#plt.xlim(-.06, .14)
-#plt.xlim(-.4, 1.2)
 
 date = "Mar12014"
-sfc_flx = 60
-gamma = .01
+sfc_flux=df_overview[df_overview['name']==date]['fluxes']  #W/m^2
+gamma=float(df_overview[df_overview['name']==date]['gammas']/1.e3)  #K/m
+
 
 for index,the_time in enumerate(time600):
     theta=prof_dict[date,'theta_bar',the_time]
@@ -116,21 +92,14 @@ for index,the_time in enumerate(time600):
     #Now for the gradients
     dheight = np.diff(height)
     dtheta = np.diff(theta)      
-    dthetadz = np.divide(dtheta, dheight)
+    dthetadz = dtheta/dheight
 
     element0 = np.array([0])
     dthetadz=np.hstack((dthetadz, element0))
 
-    #only need up to 2500meters
-    top_index = np.where(abs(2545 - height) < 40.)[0][0]
-
-    #where gradient is max, and flux is min
-    #print AvProfVars[:,1].shape, height.shape
     the_h=prof_dict[date,'AvProfLims'][index,1]
     scaled_height = [1.0*h/the_h for h in height]
-    df_rhowprof[the_time]=rhow
-
-    fluxes = np.multiply(wvelthetapert, rhow)*1004.0/sfc_flx
+    fluxes = wvelthetapert*rhow*1004.0/sfc_flx
     if np.mod(the_time,3600) == 0:
         print(the_time,the_h)
         Ax.plot(theta, scaled_height, '-') #, label = str(Times[i])+'hrs'
