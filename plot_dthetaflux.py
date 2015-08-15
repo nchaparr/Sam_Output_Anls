@@ -19,13 +19,6 @@ import ast
 
 """
 
-def get_fields(date,filelist,timelist,varname):
-    itervars=zip(timelist,filelist)
-    out_dict=od()
-    for the_time, filename in itervars:
-        out_dict[case,the_time,varname]=np.genfromtxt(filename)
-    return out_dict
-
 h5file='all_profiles.h5'
 with pd.HDFStore(h5file,'r') as store:
     nodename='/df_overview'
@@ -47,22 +40,23 @@ with h5py.File(h5file,'r') as f:
     case_list=ast.literal_eval(f.attrs['case_list'])
 
 root_dir="/newtera/tera/phil/nchaparr/python/Plotting"
-prof_names=['theta_bar','press','wvelthetapert']
+prof_names=['heights','theta_bar','press','wvelthetapert']
+prof_dict=od()
 for date in case_list:
     if date == 'Nov302013':
         times=time900
     else:
         times=time600
     dir_path='{}/{}/data'.format(root_dir,date)
-    for var in prof_names:
-        for the_time in times:
+    full_path='{:s}/AvProfLims'.format(dir_path)
+    numbers=np.genfromtxt(full_path)
+    prof_dict[date,'AvProfLims']=numbers
+    for the_time in times:
+        for var in prof_names:
             the_var='{:s}{:010d}'.format(var,int(the_time))
             full_path='{}/{}'.format(dir_path,the_var)
             numbers=np.genfromtxt(full_path)
-
-date = "Mar12014"
-sfc_flx = 60
-gamma = .01
+            prof_dict[date,var,the_time]=numbers
 
 plt.close('all')
 Fig1 = plt.figure(1)
@@ -127,19 +121,20 @@ AvProfVars = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"
 height = np.genfromtxt(height_file)
 df_fluxprof=pd.DataFrame(height,columns=['height'])
 df_rhowprof=pd.DataFrame(height,columns=['height'])
-h0=[]
+h_array=[]
 time_list=[]
-for i in range(len(theta_file_list)):
-    print(flux_file_list[i])
-    theta = np.genfromtxt(theta_file_list[i])
-    press = np.genfromtxt(press_file_list[i])
+
+date = "Mar12014"
+sfc_flx = 60
+gamma = .01
+
+for index,the_time in enumerate(time600):
+    theta=prof_dict[date,'theta_bar',the_time]
+    press = prof_dict[date,'press',the_time]
+    height=prof_dict[date,'heights',the_time]
     rhow = nc.calc_rhow(press, height, theta[0])
-    wvelthetapert = np.genfromtxt(flux_file_list[i])
+    wvelthetapert = prof_dict[date,'wvelthetapert',the_time]
     wvelthetapert[0] = np.nan
-    the_time=int(dump_time_list[i])
-    time_list.append(the_time)
-    col_name='hf_{}'.format(the_time)
-    df_fluxprof[the_time]=wvelthetapert
     #Now for the gradients
     dheight = np.diff(height)
     dtheta = np.diff(theta)      
@@ -153,67 +148,19 @@ for i in range(len(theta_file_list)):
 
     #where gradient is max, and flux is min
     #print AvProfVars[:,1].shape, height.shape
-    h0.append(AvProfVars[i,1])
-    scaled_height = [1.0*h/AvProfVars[i,1] for h in height]
+    the_h=prof_dict[date,'AvProfLims'][index,1]
+    scaled_height = [1.0*h/the_h for h in height]
     df_rhowprof[the_time]=rhow
 
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/sfc_flx
-
-    if np.mod(i+1, 6) == 0:
-    #if i > 14 and i < 21:
-
-        fluxes[0] = np.nan
-        zeros = np.zeros_like(height)
-
+    if np.mod(the_time,3600) == 0:
+        print(the_time,the_h)
         Ax.plot(theta, scaled_height, '-') #, label = str(Times[i])+'hrs'
-
         Ax1.plot(1.0*dthetadz/gamma, scaled_height, '-', label = str(Times[i])+'hrs')
-
         Ax2.plot(fluxes, scaled_height, '-', label = str(Times[i])+'hrs')    
 
-h5file='mar12014.h5'
-with pd.HDFStore(h5file,'w') as store:
-    nodename='/Mar12014/flux_prof'
-    store.put(nodename,df_fluxprof,format='table')
-    nodename='/Mar12014/rhow_prof'
-    store.put(nodename,df_rhowprof,format='table')
-    h0_array=np.array([time_list,h0])
-    df_h0=pd.DataFrame(h0_array.T,columns=['times','h0'])
-    nodename='/Mar12014/h0'
-    store.put(nodename,df_h0,format='table')
-
-rootname='/'
-with h5py.File(h5file,'a') as f:
-    group=f[rootname]
-    group.attrs['comments']='flux units K (m/s), rhow units kg/m^3'
-    
-array = np.genfromtxt('/newtera/tera/phil/nchaparr/python/Pert_Files/snd')
-    
-height_0 = array[:, 0]
-theta_0 = array[:, 1]
-f=interp1d(height_0, theta_0)
-
-#Now plot inital sounding
-top_index = np.where(height <= 2500)[0][-1]
-theta_0 = f(height[0:top_index])
-dtheta0 = np.diff(theta_0)
-dthetadz0 = np.divide(dtheta0, dheight[0:top_index-1])
-element0 = np.array([.005])
-dthetadz0=np.hstack((element0, dthetadz0))
-
-#Ax1.plot(dthetadz0, scaled_height[0:top_index], '--', label = 'Initial Sounding')
-Ax1.plot(zeros, height)#zeros line for reference
-#Ax1.plot(gamma, scaled_height)#zeros line for reference
-Ax1.plot(zeros+1, height, 'k-')#zeros line for reference
-Ax1.plot(zeros+.02, height, 'k-')#zeros line for reference
-#Ax2.plot(zeros, height)#zeros line for reference
-Ax2.plot(zeros, height)#zeros line for reference 
-plt.legend(loc = 'lower right', prop={'size':8})
-#Ax2.plot(theta_0, scaled_xheight[0:top_index], '--', label = 'Initial Sounding')#"
-#plt.xlim(300, 310)
-plt.legend(loc = 'upper right', prop={'size':8})
 plt.show()
-#Fig1.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/theta_flux_profs.png")
+
 
 
 
