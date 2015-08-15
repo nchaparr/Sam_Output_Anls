@@ -42,36 +42,49 @@ for date in case_list:
     dir_path='{}/{}/data'.format(root_dir,date)
     full_path='{:s}/AvProfLims'.format(dir_path)
     numbers=np.genfromtxt(full_path)
-
-    columns=times
-    prof_dict[date,'AvProfLims']=numbers
-    prof_dict[date,'AvProfLims2']=pd.DataFrame(numbers,columns=avprof_cols)
+    #
+    # save the heights to a dataframe
+    #
+    prof_dict[date,'AvProfLims']=pd.DataFrame(numbers,columns=avprof_cols)
     sfc_flux=df_overview[df_overview['name']==date]['fluxes']  #W/m^2
     gamma=float(df_overview[df_overview['name']==date]['gammas']/1.e3)  #K/m
+    #
+    # read a height array (arbitrary, all runs are the same)
+    #
+    the_var='{:s}{:010d}'.format('heights',int(times[0]))
+    full_path='{}/{}'.format(dir_path,the_var)
+    height=np.genfromtxt(full_path)
     for var in prof_names:
+        #
+        # initialize the first column sor each new dataframe
+        #
+        prof_dict[date,var]=pd.DataFrame(height,columns=['height'])
         for the_time in times:
             the_var='{:s}{:010d}'.format(var,int(the_time))
             full_path='{}/{}'.format(dir_path,the_var)
             numbers=np.genfromtxt(full_path)
-            prof_dict[date,var,the_time]=numbers
+            prof_dict[date,var][the_time]=numbers
+    derived_names=['scaled_flux','dthetadz','scaled_dtheta',
+                   'scaled_height','rhow']
+    for var in derived_names:
+        prof_dict[date,var]=pd.DataFrame(height,columns=['height'])
     for index,the_time in enumerate(times):
-        theta=prof_dict[date,'theta_bar',the_time]
-        press = prof_dict[date,'press',the_time]
-        height=prof_dict[date,'heights',the_time]
+        theta=prof_dict[date,'theta_bar'][the_time]
+        press = prof_dict[date,'press'][the_time]
+        height=prof_dict[date,'heights'][the_time]
         rhow = nc.calc_rhow(press, height, theta[0])
-        wvelthetapert = prof_dict[date,'wvelthetapert',the_time]
+        wvelthetapert = prof_dict[date,'wvelthetapert'][the_time]
         wvelthetapert[0] = np.nan
         dthetadz = np.diff(theta)/np.diff(height)
         dthetadz=np.hstack((dthetadz, [0]))
-        the_h=prof_dict[date,'AvProfLims2'].loc[index]['h']
+        the_h=prof_dict[date,'AvProfLims'].loc[index]['h']
         scaled_height = height/the_h
         fluxes = wvelthetapert*rhow*1004.0/sfc_flx
-        prof_dict[date,'scaled_flux',the_time]=fluxes
-        prof_dict[date,'dthetadz',the_time]=dthetadz
-        prof_dict[date,'scaled_dtheta',the_time]=dthetadz/gamma
-        prof_dict[date,'scaled_height',the_time]=scaled_height
-        prof_dict[date,'rhow',the_time]=rhow
-        prof_dict[date,'h_val',the_time]=the_h
+        prof_dict[date,'scaled_flux'][the_time]=fluxes
+        prof_dict[date,'dthetadz'][the_time]=dthetadz
+        prof_dict[date,'scaled_dtheta'][the_time]=dthetadz/gamma
+        prof_dict[date,'scaled_height'][the_time]=scaled_height
+        prof_dict[date,'rhow'][the_time]=rhow
 
 plt.close('all')
 plt.rc('text', usetex=True)
@@ -100,14 +113,10 @@ for date in case_list:
         times=time600
 
     for index,the_time in enumerate(times):
-        theta=prof_dict[date,'theta_bar',the_time]
-        press = prof_dict[date,'press',the_time]
-        height=prof_dict[date,'heights',the_time]
-        rhow = prof_dict[date,'rhow',the_time]
-        wvelthetapert = prof_dict[date,'wvelthetapert',the_time]
-        dthetadz = prof_dict[date,'scaled_dtheta',the_time]
-        scaled_height = prof_dict[date,'scaled_height',the_time]
-        fluxes = prof_dict[date,'scaled_flux',the_time]
+        scaled_height = prof_dict[date,'scaled_height'][the_time]
+        theta=prof_dict[date,'theta_bar'][the_time]
+        dthetadz = prof_dict[date,'scaled_dtheta'][the_time]
+        fluxes = prof_dict[date,'scaled_flux'][the_time]
         if np.mod(the_time,3600) == 0:
             Ax.plot(theta, scaled_height, '-')
             Ax1.plot(dthetadz,scaled_height, '-')
