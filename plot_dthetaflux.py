@@ -66,14 +66,18 @@ for date in case_list:
         rhow = nc.calc_rhow(press, height, theta[0])
         wvelthetapert = prof_dict[date,'wvelthetapert',the_time]
         wvelthetapert[0] = np.nan
-        dheight = np.diff(height)
-        dtheta = np.diff(theta)      
-        dthetadz = dtheta/dheight
-        element0 = np.array([0])
-        dthetadz=np.hstack((dthetadz, element0))
+        dthetadz = np.diff(theta)/np.diff(height)
+        dthetadz=np.hstack((dthetadz, [0]))
         the_h=prof_dict[date,'AvProfLims'][index,1]
-        scaled_height = [1.0*h/the_h for h in height]
+        scaled_height = height/the_h
+        print('scaling with: ',the_h)
         fluxes = wvelthetapert*rhow*1004.0/sfc_flx
+        prof_dict[date,'scaled_flux',the_time]=fluxes
+        prof_dict[date,'dthetadz',the_time]=dthetadz
+        prof_dict[date,'scaled_dtheta',the_time]=dthetadz/gamma
+        prof_dict[date,'scaled_height',the_time]=scaled_height
+        prof_dict[date,'rhow',the_time]=rhow
+        prof_dict[date,'h_val',the_time]=the_h
 
 plt.close('all')
 plt.rc('text', usetex=True)
@@ -84,43 +88,33 @@ for the_ax in axes:
     the_ax.set_ylim(0.1,1.4)
 
 Ax,Ax1,Ax2=axes
-prof_dict[date,'AvProfLims']=numbers
+
 sfc_flux=df_overview[df_overview['name']==date]['fluxes']  #W/m^2
+gamma=float(df_overview[df_overview['name']==date]['gammas']/1.e3)  #K/m
 
 Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
 Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 Ax.set_xlim(300, 312)
 
 Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
-start, end = -1, 2.5
 Ax1.set_xticks([.02, 1])
 Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
 
 date = "Mar12014"
 
-
 for index,the_time in enumerate(time600):
     theta=prof_dict[date,'theta_bar',the_time]
     press = prof_dict[date,'press',the_time]
     height=prof_dict[date,'heights',the_time]
-    rhow = nc.calc_rhow(press, height, theta[0])
+    rhow = prof_dict[date,'rhow',the_time]
     wvelthetapert = prof_dict[date,'wvelthetapert',the_time]
-    wvelthetapert[0] = np.nan
-    #Now for the gradients
-    dheight = np.diff(height)
-    dtheta = np.diff(theta)      
-    dthetadz = dtheta/dheight
-
-    element0 = np.array([0])
-    dthetadz=np.hstack((dthetadz, element0))
-
-    the_h=prof_dict[date,'AvProfLims'][index,1]
-    scaled_height = [1.0*h/the_h for h in height]
-    fluxes = wvelthetapert*rhow*1004.0/sfc_flx
+    dthetadz = prof_dict[date,'scaled_dtheta',the_time]
+    scaled_height = prof_dict[date,'scaled_height',the_time]
+    fluxes = prof_dict[date,'scaled_flux',the_time]
     if np.mod(the_time,3600) == 0:
         print(the_time,the_h)
         Ax.plot(theta, scaled_height, '-') #, label = str(Times[i])+'hrs'
-        Ax1.plot(1.0*dthetadz/gamma, scaled_height, '-', label = str(Times[i])+'hrs')
+        Ax1.plot(dthetadz,scaled_height, '-', label = str(Times[i])+'hrs')
         Ax2.plot(fluxes, scaled_height, '-', label = str(Times[i])+'hrs')    
 
 plt.show()
