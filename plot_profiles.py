@@ -10,36 +10,20 @@ def find_zenc(time_sec,N,L0_val):
     return zenc
 
 h5file_new='good.h5'
-
-h5file='all_profiles.h5'
 #
 # get the root attributes
 #
 df_dict=od()
 with pd.HDFStore(h5file_new,'r') as store:
+    df_overview=store.get('/df_overview')
     varnames=list(store.get('/var_names'))
     case_list=list(store.get('/date_names'))
-    time600=list(store.get('/time600'))
-    time900=list(store.get('/time900'))
+    time600=np.array(store.get('/time600'))
+    time900=np.array(store.get('/time900'))
     for case in case_list:
         for name in varnames:
             nodename='{}/{}'.format(case,name)
             df_dict[case,name]=store.get(nodename)
-        
-
-with h5py.File(h5file,'r') as f:
-    time600=f.attrs['time600']
-    time900=f.attrs['time900']
-    #
-    # turn repr strings into python list objects
-    #
-    varnames=ast.literal_eval(f.attrs['varnames'])
-    case_list=ast.literal_eval(f.attrs['case_list'])
-#
-# read in the case variables
-#
-with pd.HDFStore(h5file,'r') as store:
-    df_overview=store.get('/df_overview')
 #
 # get N and L0 for each case
 #
@@ -87,84 +71,28 @@ def case_sort(casename):
     return L0_dict[casename]
 
 compare_cases.sort(key=case_sort)
-#
-# now get the profiles  of gradient and flux and the h0,h1 limits
-# from dataframes  /case/dthetadz, /case/wvelthetapert /case/AvProfLims
-#
-profile_dict=od()
-#
-# read in all profiles for all cases
-#
-with pd.HDFStore(h5file,'r') as store:
-    for case in case_list:
-        if case == 'Nov302013':
-            times=time900
-        else:
-            times=time600
-        Ntimes=N_dict[case]*times
-        nodename='/{}/dthetadz'.format(case)
-        df_gradient=store.get(nodename)
-        profile_dict[case,'gradient']=df_gradient
-        nodename='/{}/rhow'.format(case)
-        df_rhow=store.get(nodename)
-        profile_dict[case,'rhow']=df_rhow
-        nodename='/{}/wvelthetapert'.format(case)
-        df_flux=store.get(nodename)
-        profile_dict[case,'flux']=df_flux
-        nodename='/{}/dthetadz'.format(case)
-        df_gradient=store.get(nodename)
-        nodename='/{}/AvProfLims'.format(case)
-        df_lims=store.get(nodename)
-        profile_dict[case,'df_lims']=df_lims
-        print('input: ',case,len(df_lims))
-        zenc=find_zenc(times,N_dict[case],L0_dict[case])
-        profile_dict[case,'zenc']=zenc
-#
-# extract vertical profiles of flux and gradient at the
-# target times for plotting
-#
-plot_dict=od()
-#
-# get all the variables we want to plot
-# note that every case was run with the same vertical grid
-#
-heights=profile_dict[case_list[0],'gradient']['height']
-for case in compare_cases:
-    zenc=profile_dict[case,'zenc']
-    for nd_time in target_times:
-        index=index_dict[nd_time,case]
-        plot_dict[case,nd_time,'df_prof']=pd.DataFrame(heights,columns=['height'])
-        plot_dict[case,nd_time,'h']=profile_dict[case,'df_lims']['h'][index]
-        plot_dict[case,nd_time,'h0']=profile_dict[case,'df_lims']['h0'][index]
-        plot_dict[case,nd_time,'zenc']=zenc[index]
-        plot_dict[case,nd_time,'zf0']=profile_dict[case,'df_lims']['zf0'][index]
-        the_time=times_dict[nd_time,case]
-        plot_dict[case,nd_time,'df_prof']['flux_prof']=profile_dict[case,'flux'][the_time]
-        plot_dict[case,nd_time,'df_prof']['grad_prof']=profile_dict[case,'gradient'][the_time]
-        plot_dict[case,nd_time,'df_prof']['rhow']=profile_dict[case,'rhow'][the_time]
+
 
 from matplotlib import pyplot as plt
+cpd=1004.
 plt.close('all')
 
-cpd=1004.
 for the_time in target_times:
     flux_fig,flux_ax=plt.subplots(1,1)
     grad_fig,grad_ax=plt.subplots(1,1)
     for case in compare_cases:
-        sfc_flux=float(df_overview[df_overview['name']==case]['fluxes'])
-        df_prof=plot_dict[case,the_time,'df_prof']
-        rhow=plot_dict[case,the_time,'df_prof']['rhow']
-        df_prof['ndh_flux']=df_prof['height']/plot_dict[case,nd_time,'zf0']
-        df_prof['nd_flux']=plot_dict[case,nd_time,'df_prof']['flux_prof']*rhow*cpd/sfc_flux
-        df_prof['ndh_h']=df_prof['height']/plot_dict[case,nd_time,'h']
-        df_prof.plot(x='nd_flux',y='ndh_flux',label=L0_legend[case],ax=flux_ax,legend=False)
-        df_prof.plot(x='grad_prof',y='ndh_h',label=L0_legend[case],ax=grad_ax,legend=False)
+        real_time=times_dict[nd_time,case]
+        x=df_dict[case,'scaled_flux'][real_time]
+        y=df_dict[case,'scaled_height'][real_time]
+        flux_ax.plot(x,y,label=L0_legend[case])
+        x=df_dict[case,'scaled_dtheta'][real_time]
+        grad_ax.plot(x,y,label=L0_legend[case])
     flux_ax.set_title('flux profile at nd time of {}'.format(the_time))
     grad_ax.set_title('gradient profile at nd time of {}'.format(the_time))
-    flux_ax.set_ylim(0,1.3)
+    [ax.set_ylim(0,1.3) for ax in [flux_ax,grad_ax]]
     grad_ax.set_ylim(0,1.3)
     flux_ax.set_xlim([-0.3,1.])
-    grad_ax.set_xlim([-0.001,0.005])
+    grad_ax.set_xlim([-0.3,2.0])
     flux_ax.legend(loc='best')
     grad_ax.legend(loc='best')
     filename='flux_{}.png'.format(the_time)
