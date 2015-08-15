@@ -10,12 +10,55 @@ from matplotlib import rcParams
 rcParams.update({'font.size': 10})
 import pandas as pd
 import h5py
+from collections import OrderedDict as od
+import ast
 
 """
 
    For plotting the (scaled) temperature gradient and flux profiles.
 
 """
+
+def get_fields(date,filelist,timelist,varname):
+    itervars=zip(timelist,filelist)
+    out_dict=od()
+    for the_time, filename in itervars:
+        out_dict[case,the_time,varname]=np.genfromtxt(filename)
+    return out_dict
+
+h5file='all_profiles.h5'
+with pd.HDFStore(h5file,'r') as store:
+    nodename='/df_overview'
+    df_overview=store.get(nodename)
+    Nvals=df_overview['N']
+    names=df_overview['name']
+    L0=df_overview['L0']
+    N_dict={k:v for k,v in zip(names,Nvals)}
+    L0_dict={k:v for k,v in zip(names,L0)}
+    L0_legend={k:'{:2d}'.format(int(np.round(v,decimals=0))) for k,v in L0_dict.items()}
+
+with h5py.File(h5file,'r') as f:
+    time600=f.attrs['time600']
+    time900=f.attrs['time900']
+    #
+    # turn repr strings into python list objects
+    #
+    varnames=ast.literal_eval(f.attrs['varnames'])
+    case_list=ast.literal_eval(f.attrs['case_list'])
+
+root_dir="/newtera/tera/phil/nchaparr/python/Plotting"
+prof_names=['theta_bar','press','wvelthetapert']
+for date in case_list:
+    if date == 'Nov302013':
+        times=time900
+    else:
+        times=time600
+    dir_path='{}/{}/data'.format(root_dir,date)
+    for var in prof_names:
+        for the_time in times:
+            the_var='{:s}{:010d}'.format(var,int(the_time))
+            full_path='{}/{}'.format(dir_path,the_var)
+            numbers=np.genfromtxt(full_path)
 
 date = "Mar12014"
 sfc_flx = 60
@@ -77,6 +120,8 @@ press_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/pr
 flux_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
 height_file = "/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/heights0000000600"
 AvProfVars = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
+
+
 
 #loop over text files files
 height = np.genfromtxt(height_file)
