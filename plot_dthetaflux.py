@@ -33,6 +33,7 @@ case_list.sort()
 root_dir="/newtera/tera/phil/nchaparr/python/Plotting"
 prof_names=['heights','theta_bar','press','wvelthetapert']
 prof_dict=od()
+avprof_cols=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
 for date in case_list:
     if date == 'Nov302013':
         times=time900
@@ -41,11 +42,14 @@ for date in case_list:
     dir_path='{}/{}/data'.format(root_dir,date)
     full_path='{:s}/AvProfLims'.format(dir_path)
     numbers=np.genfromtxt(full_path)
+
+    columns=times
     prof_dict[date,'AvProfLims']=numbers
+    prof_dict[date,'AvProfLims2']=pd.DataFrame(numbers,columns=avprof_cols)
     sfc_flux=df_overview[df_overview['name']==date]['fluxes']  #W/m^2
     gamma=float(df_overview[df_overview['name']==date]['gammas']/1.e3)  #K/m
-    for the_time in times:
-        for var in prof_names:
+    for var in prof_names:
+        for the_time in times:
             the_var='{:s}{:010d}'.format(var,int(the_time))
             full_path='{}/{}'.format(dir_path,the_var)
             numbers=np.genfromtxt(full_path)
@@ -59,7 +63,7 @@ for date in case_list:
         wvelthetapert[0] = np.nan
         dthetadz = np.diff(theta)/np.diff(height)
         dthetadz=np.hstack((dthetadz, [0]))
-        the_h=prof_dict[date,'AvProfLims'][index,1]
+        the_h=prof_dict[date,'AvProfLims2'].loc[index]['h']
         scaled_height = height/the_h
         fluxes = wvelthetapert*rhow*1004.0/sfc_flx
         prof_dict[date,'scaled_flux',the_time]=fluxes
