@@ -51,12 +51,29 @@ for date in case_list:
     full_path='{:s}/AvProfLims'.format(dir_path)
     numbers=np.genfromtxt(full_path)
     prof_dict[date,'AvProfLims']=numbers
+    sfc_flux=df_overview[df_overview['name']==date]['fluxes']  #W/m^2
+    gamma=float(df_overview[df_overview['name']==date]['gammas']/1.e3)  #K/m
     for the_time in times:
         for var in prof_names:
             the_var='{:s}{:010d}'.format(var,int(the_time))
             full_path='{}/{}'.format(dir_path,the_var)
             numbers=np.genfromtxt(full_path)
             prof_dict[date,var,the_time]=numbers
+    for index,the_time in enumerate(times):
+        theta=prof_dict[date,'theta_bar',the_time]
+        press = prof_dict[date,'press',the_time]
+        height=prof_dict[date,'heights',the_time]
+        rhow = nc.calc_rhow(press, height, theta[0])
+        wvelthetapert = prof_dict[date,'wvelthetapert',the_time]
+        wvelthetapert[0] = np.nan
+        dheight = np.diff(height)
+        dtheta = np.diff(theta)      
+        dthetadz = dtheta/dheight
+        element0 = np.array([0])
+        dthetadz=np.hstack((dthetadz, element0))
+        the_h=prof_dict[date,'AvProfLims'][index,1]
+        scaled_height = [1.0*h/the_h for h in height]
+        fluxes = wvelthetapert*rhow*1004.0/sfc_flx
 
 plt.close('all')
 plt.rc('text', usetex=True)
@@ -67,6 +84,8 @@ for the_ax in axes:
     the_ax.set_ylim(0.1,1.4)
 
 Ax,Ax1,Ax2=axes
+prof_dict[date,'AvProfLims']=numbers
+sfc_flux=df_overview[df_overview['name']==date]['fluxes']  #W/m^2
 
 Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
 Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
@@ -78,8 +97,6 @@ Ax1.set_xticks([.02, 1])
 Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
 
 date = "Mar12014"
-sfc_flux=df_overview[df_overview['name']==date]['fluxes']  #W/m^2
-gamma=float(df_overview[df_overview['name']==date]['gammas']/1.e3)  #K/m
 
 
 for index,the_time in enumerate(time600):
