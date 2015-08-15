@@ -13,15 +13,9 @@ import h5py
 from collections import OrderedDict as od
 import ast
 
-"""
-
-   For plotting the (scaled) temperature gradient and flux profiles.
-
-"""
-
-h5file='all_profiles.h5'
+h5file='paper_table.h5'
 with pd.HDFStore(h5file,'r') as store:
-    nodename='/df_overview'
+    nodename='cases'
     df_overview=store.get(nodename)
     Nvals=df_overview['N']
     names=df_overview['name']
@@ -30,14 +24,11 @@ with pd.HDFStore(h5file,'r') as store:
     L0_dict={k:v for k,v in zip(names,L0)}
     L0_legend={k:'{:2d}'.format(int(np.round(v,decimals=0))) for k,v in L0_dict.items()}
 
-with h5py.File(h5file,'r') as f:
-    time600=f.attrs['time600']
-    time900=f.attrs['time900']
-    #
-    # turn repr strings into python list objects
-    #
-    varnames=ast.literal_eval(f.attrs['varnames'])
-    case_list=ast.literal_eval(f.attrs['case_list'])
+time_600=np.linspace(600,28800,48)
+time_900=np.linspace(900,28800,32)
+varnames=['theta_bar','press','wvelthetapert']
+case_list = ["Nov302013","Dec142013", "Dec202013", "Dec252013", "Jan152014_1", "Mar12014", "Mar52014"]
+case_list.sort()
 
 root_dir="/newtera/tera/phil/nchaparr/python/Plotting"
 prof_names=['heights','theta_bar','press','wvelthetapert']
@@ -70,7 +61,6 @@ for date in case_list:
         dthetadz=np.hstack((dthetadz, [0]))
         the_h=prof_dict[date,'AvProfLims'][index,1]
         scaled_height = height/the_h
-        print('scaling with: ',the_h)
         fluxes = wvelthetapert*rhow*1004.0/sfc_flx
         prof_dict[date,'scaled_flux',the_time]=fluxes
         prof_dict[date,'dthetadz',the_time]=dthetadz
@@ -115,10 +105,9 @@ for date in case_list:
         scaled_height = prof_dict[date,'scaled_height',the_time]
         fluxes = prof_dict[date,'scaled_flux',the_time]
         if np.mod(the_time,3600) == 0:
-            print(the_time,the_h)
-            Ax.plot(theta, scaled_height, '-') #, label = str(Times[i])+'hrs'
-            Ax1.plot(dthetadz,scaled_height, '-', label = str(Times[i])+'hrs')
-            Ax2.plot(fluxes, scaled_height, '-', label = str(Times[i])+'hrs')    
+            Ax.plot(theta, scaled_height, '-')
+            Ax1.plot(dthetadz,scaled_height, '-')
+            Ax2.plot(fluxes, scaled_height, '-')
 
 plt.show()
 
