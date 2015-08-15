@@ -83,39 +83,42 @@ plt.close('all')
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 
-Fig1,axes = plt.subplots(1,3)
-for the_ax in axes:
-    the_ax.set_ylim(0.1,1.4)
+for date in case_list:
 
-Ax,Ax1,Ax2=axes
+    Fig1,axes = plt.subplots(1,3)
+    Fig1.suptitle(date)
+    for the_ax in axes:
+        the_ax.set_ylim(0.1,1.4)
 
-sfc_flux=df_overview[df_overview['name']==date]['fluxes']  #W/m^2
-gamma=float(df_overview[df_overview['name']==date]['gammas']/1.e3)  #K/m
+    Ax,Ax1,Ax2=axes
 
-Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
-Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-Ax.set_xlim(300, 312)
+    Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
+    Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
+    Ax.set_xlim(300, 312)
 
-Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
-Ax1.set_xticks([.02, 1])
-Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
+    Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
+    Ax1.set_xticks([.02, 1])
+    Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
 
-date = "Mar12014"
+    if date == 'Nov302013':
+        times=time900
+    else:
+        times=time600
 
-for index,the_time in enumerate(time600):
-    theta=prof_dict[date,'theta_bar',the_time]
-    press = prof_dict[date,'press',the_time]
-    height=prof_dict[date,'heights',the_time]
-    rhow = prof_dict[date,'rhow',the_time]
-    wvelthetapert = prof_dict[date,'wvelthetapert',the_time]
-    dthetadz = prof_dict[date,'scaled_dtheta',the_time]
-    scaled_height = prof_dict[date,'scaled_height',the_time]
-    fluxes = prof_dict[date,'scaled_flux',the_time]
-    if np.mod(the_time,3600) == 0:
-        print(the_time,the_h)
-        Ax.plot(theta, scaled_height, '-') #, label = str(Times[i])+'hrs'
-        Ax1.plot(dthetadz,scaled_height, '-', label = str(Times[i])+'hrs')
-        Ax2.plot(fluxes, scaled_height, '-', label = str(Times[i])+'hrs')    
+    for index,the_time in enumerate(times):
+        theta=prof_dict[date,'theta_bar',the_time]
+        press = prof_dict[date,'press',the_time]
+        height=prof_dict[date,'heights',the_time]
+        rhow = prof_dict[date,'rhow',the_time]
+        wvelthetapert = prof_dict[date,'wvelthetapert',the_time]
+        dthetadz = prof_dict[date,'scaled_dtheta',the_time]
+        scaled_height = prof_dict[date,'scaled_height',the_time]
+        fluxes = prof_dict[date,'scaled_flux',the_time]
+        if np.mod(the_time,3600) == 0:
+            print(the_time,the_h)
+            Ax.plot(theta, scaled_height, '-') #, label = str(Times[i])+'hrs'
+            Ax1.plot(dthetadz,scaled_height, '-', label = str(Times[i])+'hrs')
+            Ax2.plot(fluxes, scaled_height, '-', label = str(Times[i])+'hrs')    
 
 plt.show()
 
