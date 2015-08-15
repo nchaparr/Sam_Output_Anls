@@ -1,36 +1,29 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-import h5py
-import ast
-
-h5file='all_profiles.h5'
-
+from collections import OrderedDict as od
+h5new='good.h5'
 #
 # get the root attributes
 #
-with h5py.File(h5file,'r') as f:
-    time600=f.attrs['time600']
-    time900=f.attrs['time900']
-    #
-    # turn repr strings into python list objects
-    #
-    varnames=ast.literal_eval(f.attrs['varnames'])
-    case_names=ast.literal_eval(f.attrs['case_list'])
-#
-# read in the case variables
-#
-with pd.HDFStore(h5file,'r') as store:
+
+df_dict=od()
+with pd.HDFStore(h5new,'r') as store:
     df_overview=store.get('/df_overview')
+    varnames=list(store.get('/var_names'))
+    case_names=list(store.get('/date_names'))
+    time600=np.array(store.get('/time600'))
+    time900=np.array(store.get('/time900'))
+    for case in case_names:
+        for name in ['AvProfLims']:
+            nodename='{}/{}'.format(case,name)
+            df_dict[case,name]=store.get(nodename)
 #
 # get N and L0 for each case
 #
 Nvals=df_overview['N']
 names=df_overview['name']
 L0=df_overview['L0']
-N_dict={k:v for k,v in zip(names,Nvals)}
-L0_dict={k:v for k,v in zip(names,L0)}
-L0_legend={k:'{:2d}'.format(int(np.round(v,decimals=0))) for k,v in L0_dict.items()}
 
 run_key={}
 for item in df_overview.to_dict('records'):
@@ -56,32 +49,20 @@ def gm_vars(surface_flux,gamma):
     #wstar_gm=(B0*h)**(1./3.)
     return L0,N,B0
 
-def find_zenc(time_sec,N,L0):
-    zenc=L0*(2*time_sec*N)**0.5
-    return zenc
-
 if __name__ == "__main__":
     case_list=[]
-    with pd.HDFStore(h5file,'r') as store:
-        for case in run_key.keys():
-            run_dict=run_key[case]
-            surface_flux,gamma=run_dict['params']
-            L0,N,B0=gm_vars(surface_flux,gamma)
-            nodename='/{}/AvProfLims'.format(case)
-            df=store.get(nodename)
-            if len(df) == 48:
-                time_sec=time600
-            else:
-                time_sec=time900
-            run_dict['df']=df
-            run_dict['L0']=L0
-            run_dict['N']=N
-            run_dict['df']['time_secs']=time_sec
-            run_dict['df']['time_nd']=time_sec*N
-            zenc=find_zenc(df['time_secs'],N,L0)
-            run_dict['df']['zenc']=zenc
-            run_dict['df']['h0_nd']=run_dict['df']['h0']/zenc
-            case_list.append((case,L0))
+    for case in run_key.keys():
+        run_dict=run_key[case]
+        surface_flux,gamma=run_dict['params']
+        L0,N,B0=gm_vars(surface_flux,gamma)
+        df=df_dict[case,'AvProfLims']
+        run_dict['df']=df
+        run_dict['L0']=L0
+        run_dict['N']=N
+        run_dict['df']['time_secs']=df['times']
+        run_dict['df']['time_nd']=df['Ntimes']
+        run_dict['df']['h0_nd']=df['h0']/df['zenc']
+        case_list.append((case,L0))
 
     case_list.sort(key=lambda case: case[1])
     plt.close('all')
@@ -106,18 +87,16 @@ if __name__ == "__main__":
 
     for casename,L0 in case_list:
         L0,N=run_key[casename]['L0'],run_key[casename]['N']
-        df=run_key[casename]['df']
-        zenc=find_zenc(df['time_secs'],N,L0)
+        df=df_dict[casename,'AvProfLims']
         for key in ['h','h0','h1','zf','zf0','zf1']:
             nd_key='{}_nd'.format(key)
-            df[nd_key]=df[key]/zenc
+            df[nd_key]=df[key]/df['zenc']
         df['delhtop']=(df['h1'] - df['h'])/df['h']
         df['delhbot']=(df['h'] - df['h0'])/df['h']
         df['delhtot']=(df['h1'] - df['h0'])/df['h']
-        df['delgm']=0.55*(zenc/L0)**(-2/3.)  #eq. 26
+        df['delgm']=0.55*(df['zenc']/L0)**(-2/3.)  #eq. 26
         df['delhtot_rt']=(df['h1'] - df['h0'])/df['h']
         df['delzfbot']=(df['zf'] - df['zf0'])/df['zf']
-        df['zenc']=zenc
         label='{:3.1f}'.format(L0)
         for plot in plotlist:
             xvals=df[xy_dict[plot][0]]
@@ -131,31 +110,9 @@ if __name__ == "__main__":
             the_ax.set_xlabel('time (sec)')
         else:
             the_ax.set_xlabel('time*N')
-    cases=[name[0] for name in case_list]
-    df_cases=pd.DataFrame(cases,columns=['name'])
-    #
-    #  params keyword is (flux,gamma) tuple
-    #
-    gammas=[run_key[case]['params'][1] for case in cases]
-    fluxes=[run_key[case]['params'][0] for case in cases]
-    l0=[run_key[case]['L0'] for case in cases]
-    N=[run_key[case]['N'] for case in cases]
-    period=[1./Nval/60. for Nval in N]   #minutes
-    df_cases['L0']=l0
-    df_cases['Nperiod']=period
-    df_cases['N']=N
-    df_cases['fluxes']=fluxes
-    df_cases['gammas']=gammas
     for key,axis in plot_dict.items():
         filename='{}.png'.format(key)
         axis.figure.savefig(filename)
     plt.show()
         
-
-#Files = /newtera/tera/phil/nchaparr/python/Plotting/rundate/data/AvProfLims
-#indices of h0, h, h1 = 0, 1, 2
-#rundate = [Dec142013, Nov302013, Dec202013, Dec252013, Jan152014_1, Mar12014, Mar52014]
-#sfcflx/gamma = [100/10, 100/5, 60/5, 60/2.5, 150/5, 60/10, 150/10]
-#time increments for all except Nov302013 = 600, for Nov302013 = 900
-#end time = 28800
 
