@@ -24,8 +24,8 @@ with pd.HDFStore(h5file,'r') as store:
     L0_dict={k:v for k,v in zip(names,L0)}
     L0_legend={k:'{:2d}'.format(int(np.round(v,decimals=0))) for k,v in L0_dict.items()}
 
-time_600=np.linspace(600,28800,48)
-time_900=np.linspace(900,28800,32)
+time600=np.linspace(600,28800,48)
+time900=np.linspace(900,28800,32)
 varnames=['theta_bar','press','wvelthetapert']
 case_list = ["Nov302013","Dec142013", "Dec202013", "Dec252013", "Jan152014_1", "Mar12014", "Mar52014"]
 case_list.sort()
@@ -46,7 +46,8 @@ for date in case_list:
     # save the heights to a dataframe
     #
     prof_dict[date,'AvProfLims']=pd.DataFrame(numbers,columns=avprof_cols)
-    sfc_flux=df_overview[df_overview['name']==date]['fluxes']  #W/m^2
+    sfc_flux=float(df_overview[df_overview['name']==date]['fluxes'])  #W/m^2
+    print('here is sfc_flux',sfc_flux)
     gamma=float(df_overview[df_overview['name']==date]['gammas']/1.e3)  #K/m
     #
     # read a height array (arbitrary, all runs are the same)
@@ -79,12 +80,51 @@ for date in case_list:
         dthetadz=np.hstack((dthetadz, [0]))
         the_h=prof_dict[date,'AvProfLims'].loc[index]['h']
         scaled_height = height/the_h
-        fluxes = wvelthetapert*rhow*1004.0/sfc_flx
+        fluxes = wvelthetapert*rhow*1004.0/sfc_flux
         prof_dict[date,'scaled_flux'][the_time]=fluxes
         prof_dict[date,'dthetadz'][the_time]=dthetadz
         prof_dict[date,'scaled_dtheta'][the_time]=dthetadz/gamma
         prof_dict[date,'scaled_height'][the_time]=scaled_height
         prof_dict[date,'rhow'][the_time]=rhow
+#
+# write out all frames
+#
+var_list=[]
+date_list=[]
+all_frames=prof_dict.keys()
+var_names=set()
+date_names=set()
+h5file='good.h5'
+with pd.HDFStore(h5file,'w') as store:
+    node_name='/df_overview'
+    print(df_overview)
+    store.put(node_name,df_overview,format='table')
+    for date,var in all_frames:
+        date_names.add(date)
+        var_names.add(var)
+        node_name='/{}/{}'.format(date,var)
+        store.put(node_name,prof_dict[date,var],format='table')
+    var_names=list(var_names)    
+    var_names.sort()
+    date_names=list(date_names)
+    date_names.sort()
+    var_ser=pd.Series(var_names)
+    date_ser=pd.Series(date_names)
+    store.put('/var_names',var_ser)
+    store.put('/date_names',date_ser)
+    store.put('/time600',pd.Series(time600))
+    store.put('/time900',pd.Series(time900))
+
+group_attributes={}
+history='written 2015/8/15 by plot_dthetaflux.py  9542a821e'        
+group_attributes['/']=dict(history=history)
+
+rootname='/'
+with h5py.File(h5file,'a') as f:
+    group=f[rootname]
+    for key,value in group_attributes[rootname].items():
+        group.attrs[key]=value
+
 
 plt.close('all')
 plt.rc('text', usetex=True)
