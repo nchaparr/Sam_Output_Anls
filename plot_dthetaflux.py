@@ -9,6 +9,7 @@ import nchap_fun as nc
 from matplotlib import rcParams
 rcParams.update({'font.size': 10})
 import pandas as pd
+import h5py
 
 """
 
@@ -79,7 +80,8 @@ AvProfVars = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"
 
 #loop over text files files
 height = np.genfromtxt(height_file)
-df_prof=pd.DataFrame(height,columns=['height'])
+df_fluxprof=pd.DataFrame(height,columns=['height'])
+df_rhowprof=pd.DataFrame(height,columns=['height'])
 h0=[]
 time_list=[]
 for i in range(len(theta_file_list)):
@@ -91,7 +93,8 @@ for i in range(len(theta_file_list)):
     wvelthetapert[0] = np.nan
     the_time=int(dump_time_list[i])
     time_list.append(the_time)
-    df_prof[the_time]=wvelthetapert
+    col_name='hf_{}'.format(the_time)
+    df_fluxprof[the_time]=wvelthetapert
     #Now for the gradients
     dheight = np.diff(height)
     dtheta = np.diff(theta)      
@@ -107,6 +110,7 @@ for i in range(len(theta_file_list)):
     #print AvProfVars[:,1].shape, height.shape
     h0.append(AvProfVars[i,1])
     scaled_height = [1.0*h/AvProfVars[i,1] for h in height]
+    df_rhowprof[the_time]=rhow
 
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/sfc_flx
 
@@ -122,14 +126,21 @@ for i in range(len(theta_file_list)):
 
         Ax2.plot(fluxes, scaled_height, '-', label = str(Times[i])+'hrs')    
 
-with pd.HDFStore('mar12014.h5','w') as store:
+h5file='mar12014.h5'
+with pd.HDFStore(h5file,'w') as store:
     nodename='/Mar12014/flux_prof'
-    store.put(nodename,df_prof,format='table')
+    store.put(nodename,df_fluxprof,format='table')
+    nodename='/Mar12014/rhow_prof'
+    store.put(nodename,df_rhowprof,format='table')
     h0_array=np.array([time_list,h0])
     df_h0=pd.DataFrame(h0_array.T,columns=['times','h0'])
     nodename='/Mar12014/h0'
     store.put(nodename,df_h0,format='table')
-    
+
+rootname='/'
+with h5py.File(h5file,'a') as f:
+    group=f[rootname]
+    group.attrs['comments']='flux units K (m/s), rhow units kg/m^3'
     
 array = np.genfromtxt('/newtera/tera/phil/nchaparr/python/Pert_Files/snd')
     
