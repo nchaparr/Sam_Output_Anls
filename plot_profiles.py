@@ -9,11 +9,24 @@ def find_zenc(time_sec,N,L0_val):
     zenc=L0_val*np.sqrt(2*time_sec*N)
     return zenc
 
-h5file='all_profiles.h5'
+h5file_new='good.h5'
 
+h5file='all_profiles.h5'
 #
 # get the root attributes
 #
+df_dict=od()
+with pd.HDFStore(h5file_new,'r') as store:
+    varnames=list(store.get('/var_names'))
+    case_list=list(store.get('/date_names'))
+    time600=list(store.get('/time600'))
+    time900=list(store.get('/time900'))
+    for case in case_list:
+        for name in varnames:
+            nodename='{}/{}'.format(case,name)
+            df_dict[case,name]=store.get(nodename)
+        
+
 with h5py.File(h5file,'r') as f:
     time600=f.attrs['time600']
     time900=f.attrs['time900']
