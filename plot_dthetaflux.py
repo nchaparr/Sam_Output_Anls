@@ -1,8 +1,6 @@
 import numpy as np
-from scipy.interpolate import interp1d
-import matplotlib
 import matplotlib.pyplot as plt
-from Make_Timelist import *
+
 import sys
 sys.path.insert(0, '/tera/phil/nchaparr/python')
 import nchap_fun as nc
@@ -11,7 +9,10 @@ rcParams.update({'font.size': 10})
 import pandas as pd
 import h5py
 from collections import OrderedDict as od
-import ast
+
+def find_zenc(time_sec,N,L0_val):
+    zenc=L0_val*np.sqrt(2*time_sec*N)
+    return zenc
 
 h5file='paper_table.h5'
 with pd.HDFStore(h5file,'r') as store:
@@ -46,6 +47,13 @@ for date in case_list:
     # save the heights to a dataframe
     #
     prof_dict[date,'AvProfLims']=pd.DataFrame(numbers,columns=avprof_cols)
+    #
+    # add the encroachment height
+    #
+    zenc=find_zenc(times,N_dict[date],L0_dict[date])
+    prof_dict[date,'AvProfLims']['zenc']=zenc
+    prof_dict[date,'AvProfLims']['times']=times
+    prof_dict[date,'AvProfLims']['Ntimes']=times*N_dict[date]
     sfc_flux=float(df_overview[df_overview['name']==date]['fluxes'])  #W/m^2
     print('here is sfc_flux',sfc_flux)
     gamma=float(df_overview[df_overview['name']==date]['gammas']/1.e3)  #K/m
@@ -69,6 +77,7 @@ for date in case_list:
                    'scaled_height','rhow']
     for var in derived_names:
         prof_dict[date,var]=pd.DataFrame(height,columns=['height'])
+    cpd=1004.
     for index,the_time in enumerate(times):
         theta=prof_dict[date,'theta_bar'][the_time]
         press = prof_dict[date,'press'][the_time]
@@ -80,7 +89,7 @@ for date in case_list:
         dthetadz=np.hstack((dthetadz, [0]))
         the_h=prof_dict[date,'AvProfLims'].loc[index]['h']
         scaled_height = height/the_h
-        fluxes = wvelthetapert*rhow*1004.0/sfc_flux
+        fluxes = wvelthetapert*rhow*cpd/sfc_flux
         prof_dict[date,'scaled_flux'][the_time]=fluxes
         prof_dict[date,'dthetadz'][the_time]=dthetadz
         prof_dict[date,'scaled_dtheta'][the_time]=dthetadz/gamma
@@ -116,7 +125,7 @@ with pd.HDFStore(h5file,'w') as store:
     store.put('/time900',pd.Series(time900))
 
 group_attributes={}
-history='written 2015/8/15 by plot_dthetaflux.py  9542a821e'        
+history='written 2015/8/15 by plot_dthetaflux.py  e6dec4235a2c'        
 group_attributes['/']=dict(history=history)
 
 rootname='/'

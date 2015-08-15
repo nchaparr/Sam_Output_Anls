@@ -1,17 +1,11 @@
 import pandas as pd
-import h5py
-import ast
 import numpy as np
 from collections import OrderedDict as od
 
 
-def find_zenc(time_sec,N,L0_val):
-    zenc=L0_val*np.sqrt(2*time_sec*N)
-    return zenc
-
 h5file_new='good.h5'
 #
-# get the root attributes
+# get the root series and dataframes
 #
 df_dict=od()
 with pd.HDFStore(h5file_new,'r') as store:
@@ -34,7 +28,6 @@ N_dict={k:v for k,v in zip(names,Nvals)}
 L0_dict={k:v for k,v in zip(names,L0)}
 L0_legend={k:'{:2d}'.format(int(np.round(v,decimals=0))) for k,v in L0_dict.items()}
 
-
 index_dict=od()
 times_dict=od()
 ntimes_dict=od()
@@ -44,21 +37,16 @@ ntimes_dict=od()
 target_times=[250,500]
 for nd_time in target_times:
     for case in case_list:
-        N=N_dict[case]
-        if case == 'Nov302013':
-            times=time900
-            Ntimes=N*time900
-        else:
-            times=time600
-            Ntimes=N*time600
-            delta=np.diff(Ntimes)[0]
-            try:
-                index=np.where(np.abs(Ntimes - nd_time) < delta/2.)[0][0]
-            except IndexError:
-                continue
-            index_dict[(nd_time,case)]=index
-            times_dict[(nd_time,case)]=times[index]
-            ntimes_dict[(nd_time,case)]=Ntimes[index]
+        Ntimes=df_dict[case,'AvProfLims']['Ntimes']
+        times=df_dict[case,'AvProfLims']['times']
+        delta=np.diff(Ntimes)[0]
+        try:
+            index=np.where(np.abs(Ntimes - nd_time) < delta/2.)[0][0]
+        except IndexError:
+            continue
+        index_dict[(nd_time,case)]=index
+        times_dict[(nd_time,case)]=times[index]
+        ntimes_dict[(nd_time,case)]=Ntimes[index]
 #
 # these are the cases that have all target times
 #
@@ -81,7 +69,7 @@ for the_time in target_times:
     flux_fig,flux_ax=plt.subplots(1,1)
     grad_fig,grad_ax=plt.subplots(1,1)
     for case in compare_cases:
-        real_time=times_dict[nd_time,case]
+        real_time=times_dict[the_time,case]
         x=df_dict[case,'scaled_flux'][real_time]
         y=df_dict[case,'scaled_height'][real_time]
         flux_ax.plot(x,y,label=L0_legend[case])
