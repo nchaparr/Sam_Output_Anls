@@ -59,25 +59,21 @@ for date in case_list:
             prof_dict[date,var,the_time]=numbers
 
 plt.close('all')
-Fig1 = plt.figure(1)
-Fig1.clf()
-plt.rc('text', usetex=True)
+vvplt.rc('text', usetex=True)
 plt.rc('font', family='serif')
+Fig1,axes = plt.subplots(1,3)
+for the_ax in axes:
+    the_ax.set_ylim(0.1,1.4)
 
+Ax,Ax1,Ax2=axes
 
-Ax = Fig1.add_subplot(131)
-#Ax.set_title( r'$\theta$', fontsize=20)
-#Ax.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
-#Ax.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
 Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
 Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-#Ax.set_ylabel(r"$z$", fontsize=20)
-plt.xlim(300, 312)
-#plt.ylim(100, 1600)
-plt.ylim(0.1, 1.4)
+Ax.set_xlim(300, 312)
 
 
-Ax1 = Fig1.add_subplot(132)
+
+#Ax1 = Fig1.add_subplot(132)
 #Ax1.set_title( r'$Scaled \ \frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax1.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
@@ -90,9 +86,8 @@ Ax1.set_xticks([.02, 1])
 #plt.xlim(-.025, .025)
 #plt.xlim(-1, 2.5)
 #plt.ylim(100, 1600)
-plt.ylim(0.1, 1.4)
 
-Ax2 = Fig1.add_subplot(133)
+#Ax2 = Fig1.add_subplot(133)
 #Ax2.set_title(r"$\overline{w^{'} \theta^{'}}$", fontsize=20)
 #Ax2.set_title(r"$Scaled \ \overline{w^{'} \theta^{'}}$", fontsize=20)
 #Ax2.set_xlabel(r"$\overline{w^{'}\theta^{'}}$", fontsize=20)
@@ -106,23 +101,6 @@ Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{
 #plt.ylim(100, 1600)
 #plt.xlim(-.06, .14)
 #plt.xlim(-.4, 1.2)
-plt.ylim(0.1, 1.4)
-dump_time_list, Times = Make_Timelists(1, 600, 28800)
- 
-theta_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/theta_bar"+ dump_time for dump_time in dump_time_list]
-press_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/press"+ dump_time for dump_time in dump_time_list]
-flux_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
-height_file = "/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/heights0000000600"
-AvProfVars = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
-
-
-
-#loop over text files files
-height = np.genfromtxt(height_file)
-df_fluxprof=pd.DataFrame(height,columns=['height'])
-df_rhowprof=pd.DataFrame(height,columns=['height'])
-h_array=[]
-time_list=[]
 
 date = "Mar12014"
 sfc_flx = 60
