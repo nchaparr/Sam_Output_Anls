@@ -29,32 +29,38 @@ run_key={}
 for item in df_overview.to_dict('records'):
     run_key[item['name']]=dict(params=(item['fluxes'],item['gammas']))
 
-def gm_vars(surface_flux,gamma):
+def gm_vars(surface_flux,gamma,h,theta_0):
+    """
+    surface_flux in W/m^2
+    gamma in K/m
+    """
     rho=1.
     cp=1004.
     g=9.8
     flux=surface_flux/(rho*cp)  #from W/m^2 to m K/s
-    theta_0=300.  #K
     B0=flux*g/theta_0
-    gamma=gamma/1000.  #K/m
     g=9.8  #m/s^2
     N2=g/theta_0*gamma  #s**(-2)
     N=N2**0.5
     L0=(B0/N**3.)**0.5  #gm eqn 3
     #Re0=(L0*B0)**(1./3.)
-    # wstar=(g*h/theta_0*flux)**(1./3)
+    wstar=(g*h/theta_0*flux)**(1./3)
     # c_gamma=0.55
     # delta=c_gamma*wstar/N
     #thetastar=flux/wstar
-    #wstar_gm=(B0*h)**(1./3.)
-    return L0,N,B0
+    wstar_gm=(B0*h)**(1./3.)
+    print('in gm: B0,surface_flux,theta_0,L0',B0,surface_flux,theta_0,L0)
+    return L0,N,B0,wstar,wstar_gm
 
 if __name__ == "__main__":
     case_list=[]
     for case in run_key.keys():
         run_dict=run_key[case]
         surface_flux,gamma=run_dict['params']
-        L0,N,B0=gm_vars(surface_flux,gamma)
+        gamma=gamma/1.e3  #K/m
+        theta_0=300.  #K approx
+        h=1000.  #meters 
+        L0,N,B0,wstar,wstar_gm=gm_vars(surface_flux,gamma,h,theta_0)
         df=df_dict[case,'AvProfLims']
         run_dict['df']=df
         run_dict['L0']=L0

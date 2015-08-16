@@ -1,14 +1,15 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-import sys
-sys.path.insert(0, '/tera/phil/nchaparr/python')
 import nchap_fun as nc
 from matplotlib import rcParams
 rcParams.update({'font.size': 10})
 import pandas as pd
 import h5py
 from collections import OrderedDict as od
+import plot_gm_numbers,importlib
+importlib.reload(plot_gm_numbers)
+from plot_gm_numbers import gm_vars
 
 def find_zenc(time_sec,N,L0_val):
     zenc=L0_val*np.sqrt(2*time_sec*N)
@@ -32,7 +33,7 @@ case_list = ["Nov302013","Dec142013", "Dec202013", "Dec252013", "Jan152014_1", "
 case_list.sort()
 
 root_dir="/newtera/tera/phil/nchaparr/python/Plotting"
-prof_names=['heights','theta_bar','press','wvelthetapert']
+prof_names=['heights','theta_bar','press','wvelthetapert','rootmeanwsq']
 prof_dict=od()
 avprof_cols=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
 for date in case_list:
@@ -74,7 +75,7 @@ for date in case_list:
             numbers=np.genfromtxt(full_path)
             prof_dict[date,var][the_time]=numbers
     derived_names=['scaled_flux','dthetadz','scaled_dtheta',
-                   'scaled_height','rhow']
+                   'scaled_height','rhow','scaled_wrms']
     for var in derived_names:
         prof_dict[date,var]=pd.DataFrame(height,columns=['height'])
     cpd=1004.
@@ -84,16 +85,21 @@ for date in case_list:
         height=prof_dict[date,'heights'][the_time]
         rhow = nc.calc_rhow(press, height, theta[0])
         wvelthetapert = prof_dict[date,'wvelthetapert'][the_time]
+        wrms=prof_dict[date,'rootmeanwsq'][the_time]
         wvelthetapert[0] = np.nan
         dthetadz = np.diff(theta)/np.diff(height)
         dthetadz=np.hstack((dthetadz, [0]))
         the_h=prof_dict[date,'AvProfLims'].loc[index]['h']
         scaled_height = height/the_h
         fluxes = wvelthetapert*rhow*cpd/sfc_flux
+        theta_0=prof_dict[date,'theta_bar'][the_time][0]
+        L0,N,B0,wstar,wstar_gm=gm_vars(sfc_flux,gamma,the_h,theta_0)
+        print('L0,wstar',L0,wstar)
         prof_dict[date,'scaled_flux'][the_time]=fluxes
         prof_dict[date,'dthetadz'][the_time]=dthetadz
         prof_dict[date,'scaled_dtheta'][the_time]=dthetadz/gamma
         prof_dict[date,'scaled_height'][the_time]=scaled_height
+        prof_dict[date,'scaled_wrms'][the_time]=wrms/wstar
         prof_dict[date,'rhow'][the_time]=rhow
 #
 # write out all frames
@@ -142,7 +148,8 @@ plt.rc('font', family='serif')
 for date in case_list:
 
     Fig1,axes = plt.subplots(1,3)
-    Fig1.suptitle(date)
+    title='{} L0={}'.format(date,L0_legend[date])
+    Fig1.suptitle(title)
     for the_ax in axes:
         the_ax.set_ylim(0.1,1.4)
 
@@ -161,15 +168,21 @@ for date in case_list:
     else:
         times=time600
 
+    hour=1
     for index,the_time in enumerate(times):
         scaled_height = prof_dict[date,'scaled_height'][the_time]
         theta=prof_dict[date,'theta_bar'][the_time]
         dthetadz = prof_dict[date,'scaled_dtheta'][the_time]
         fluxes = prof_dict[date,'scaled_flux'][the_time]
+        label='hour {}'.format(hour)
         if np.mod(the_time,3600) == 0:
-            Ax.plot(theta, scaled_height, '-')
-            Ax1.plot(dthetadz,scaled_height, '-')
-            Ax2.plot(fluxes, scaled_height, '-')
+            Ax.plot(theta, scaled_height, '-',label=label)
+            Ax1.plot(dthetadz,scaled_height, '-',label=label)
+            Ax2.plot(fluxes, scaled_height, '-',label=label)
+            hour+=1
+        Ax2.legend(loc='best')
+    the_file='L0_{}.png'.format(L0_legend[date])
+    Fig1.savefig(the_file)
 
 plt.show()
 
