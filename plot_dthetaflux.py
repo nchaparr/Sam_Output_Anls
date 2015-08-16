@@ -101,7 +101,7 @@ for i in range(len(theta_file_list)):
 
     fluxes = np.multiply(wvelthetapert, rhow)*1004.0/sfc_flx
     
-    if np.mod(i+1, 6) == 0:
+    if np.mod(i+1, 1) == 0:
     #if i > 14 and i < 21:
         
         fluxes[0] = np.nan
@@ -134,10 +134,10 @@ Ax1.plot(zeros+1, height, 'k-')#zeros line for reference
 Ax1.plot(zeros+.02, height, 'k-')#zeros line for reference
 #Ax2.plot(zeros, height)#zeros line for reference
 Ax2.plot(zeros, height)#zeros line for reference 
-plt.legend(loc = 'Lower right', prop={'size':8})
+#plt.legend(loc = 'Lower right', prop={'size':8})
 #Ax2.plot(theta_0, scaled_xheight[0:top_index], '--', label = 'Initial Sounding')#"
 #plt.xlim(300, 310)
-plt.legend(loc = 'upper right', prop={'size':8})
+#plt.legend(loc = 'upper right', prop={'size':8})
 plt.show()
 #Fig1.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/theta_flux_profs.png")
 
