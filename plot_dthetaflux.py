@@ -16,6 +16,11 @@ def find_zenc(time_sec,N,L0_val):
     return zenc
 
 h5file='paper_table.h5'
+#
+# read in the dataframe with
+# ['name', 'L0', 'Nperiod', 'N', 'fluxes', 'gammas']
+# for each of the 7 cases
+#
 with pd.HDFStore(h5file,'r') as store:
     nodename='cases'
     df_overview=store.get(nodename)
@@ -35,6 +40,13 @@ case_list.sort()
 root_dir="/newtera/tera/phil/nchaparr/python/Plotting"
 prof_names=['heights','theta_bar','press','wvelthetapert','rootmeanwsq']
 prof_dict=od()
+#
+# read in the horizontal limit files (AvProfLims, time) and
+# and the vertical profiles 'heights','theta_bar','press','wvelthetapert'
+# (height,time)  and calculate derivied profiles, saving
+# the arrays as dataframes
+# 
+#
 avprof_cols=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
 for date in case_list:
     if date == 'Nov302013':
@@ -58,9 +70,6 @@ for date in case_list:
     sfc_flux=float(df_overview[df_overview['name']==date]['fluxes'])  #W/m^2
     print('here is sfc_flux',sfc_flux)
     gamma=float(df_overview[df_overview['name']==date]['gammas']/1.e3)  #K/m
-    #
-    # read a height array (arbitrary, all runs are the same)
-    #
     the_var='{:s}{:010d}'.format('heights',int(times[0]))
     full_path='{}/{}'.format(dir_path,the_var)
     height=np.genfromtxt(full_path)
@@ -102,7 +111,7 @@ for date in case_list:
         prof_dict[date,'scaled_wrms'][the_time]=wrms/wstar
         prof_dict[date,'rhow'][the_time]=rhow
 #
-# write out all frames
+# write out all frames to and hdf file using pytables
 #
 var_list=[]
 date_list=[]
@@ -140,6 +149,10 @@ with h5py.File(h5file,'a') as f:
     for key,value in group_attributes[rootname].items():
         group.attrs[key]=value
 
+#
+# now do the plots
+#
+        
 
 plt.close('all')
 plt.rc('text', usetex=True)
