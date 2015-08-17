@@ -103,12 +103,7 @@ def Main_Fun(date, dump_time, hflux):
 
      #save text files
      print "SAVING", "/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads_theta" + dump_time 
-     #np.savetxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
-<<<<<<< Updated upstream
      np.savetxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads_wvel" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
-     
-=======
-     #print upwarm_bar.shape, downwarm_bar.shape, upcold_bar.shape, downcold_bar.shape, wvelthetapert_bar.shape
      rootdir="./dump/{}/data".format(date)
      try:
           os.makedirs(rootdir)
@@ -119,7 +114,6 @@ def Main_Fun(date, dump_time, hflux):
      np.savetxt("{}/flux_quads_wvel1.format{}".format(rootdir, dump_time), 
            np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, 
                                   downcold_bar, wvelthetapert_bar])), delimiter=' ')
->>>>>>> Stashed changes
      #flatten the arrays, TODO: make a function or class method
      wvelperts = np.array(wvelperts_list)
      thetaperts = np.array(thetaperts_list)
