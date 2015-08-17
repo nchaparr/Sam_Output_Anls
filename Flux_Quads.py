@@ -12,6 +12,7 @@ import nchap_fun as nc
 from matplotlib.colors import Normalize
 from Make_Timelist import *
 from nchap_class import *
+import errno,os
 
 #site.addsitedir('/tera2/nchaparr/Dcc252013/hist2d')
 #from nchap_2dhist import *
@@ -81,7 +82,6 @@ def Main_Fun(date, dump_time, hflux):
          upcold_list.append(upcold)
          downcold_list.append(downcold)
          wvelthetaperts_list.append(wvelthetapert)     
-         
      #and ensemble average them     
      ens_upwarm = nc.Ensemble1_Average(upwarm_list)
      ens_downwarm = nc.Ensemble1_Average(downwarm_list)
@@ -94,12 +94,32 @@ def Main_Fun(date, dump_time, hflux):
      upcold_bar = nc.Horizontal_Average(ens_upcold)
      downcold_bar = nc.Horizontal_Average(ens_downcold)
      wvelthetapert_bar = nc.Horizontal_Average(ens_avwvelthetaperts)
-               
+
+     upwarm_bar = nc.pert_h_Average(upwarm_list)     
+     downwarm_bar = nc.pert_h_Average(downwarm_list)
+     upcold_bar = nc.pert_h_Average(upcold_list)
+     downcold_bar = nc.pert_h_Average(downcold_list)
+     wvelthetapert_bar = nc.pert_h_Average(wvelthetaperts_list)               
+
      #save text files
      print "SAVING", "/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads_theta" + dump_time 
      #np.savetxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
+<<<<<<< Updated upstream
      np.savetxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads_wvel" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
      
+=======
+     #print upwarm_bar.shape, downwarm_bar.shape, upcold_bar.shape, downcold_bar.shape, wvelthetapert_bar.shape
+     rootdir="./dump/{}/data".format(date)
+     try:
+          os.makedirs(rootdir)
+     except OSError as e:
+          if e.errno == errno.EEXIST:
+               pass  #not a problem if file exists
+
+     np.savetxt("{}/flux_quads_wvel1.format{}".format(rootdir, dump_time), 
+           np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, 
+                                  downcold_bar, wvelthetapert_bar])), delimiter=' ')
+>>>>>>> Stashed changes
      #flatten the arrays, TODO: make a function or class method
      wvelperts = np.array(wvelperts_list)
      thetaperts = np.array(thetaperts_list)
@@ -116,11 +136,10 @@ def Main_Fun(date, dump_time, hflux):
      wvelpertslice = wvelperts[0]
      thetapertslice = thetaperts[0]
      
-     #wvelperts = np.reshape(wvelperts, enum*ynum*xnum)
-     #thetaperts = np.reshape(thetaperts, enum*ynum*xnum)
      
      return height, wvelperts, thetaperts, wvelperts_slice, thetaperts_slice, upwarm_bar[slice_lev], downwarm_bar[slice_lev], upcold_bar[slice_lev], downcold_bar[slice_lev], wvelthetapert_bar[slice_lev]
 
+<<<<<<< Updated upstream
 go_ahead = np.int(raw_input('have you changed the write out folder paths? 1 or 0: '))
 
 if go_ahead == 1:
@@ -196,6 +215,25 @@ if go_ahead == 1:
 
 else:
     print 'need to update write out folders' 
+=======
+     
+date_list = ["Mar52014", "Jan152014_1", "Dec142013", "Nov302013", "Mar12014", "Dec202013", "Dec252013"] #"","", 
+
+
+for i in range(len(date_list)):
+    date = date_list[i]
+    dump_time_list, Times = Make_Timelists(1, 1800, 28800)
+    hvals = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
+
+    for j in range(16):
+        if date=="Nov302013":
+            hindex=2*(j+1)-1
+        else:
+            hindex=3*(j+1)-1
+    #    if i == 19:
+    #need index specialized for Nov runs
+        height, wvelperts, thetaperts, wvelperts_slice, thetaperts_slice, upwarm, downwarm, upcold, downcold, avflux = Main_Fun(date, dump_time_list[j], hvals[hindex, 1])
+>>>>>>> Stashed changes
      
 
 
