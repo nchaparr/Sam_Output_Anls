@@ -10,10 +10,16 @@ from collections import OrderedDict as od
 import plot_gm_numbers,importlib
 importlib.reload(plot_gm_numbers)
 from plot_gm_numbers import gm_vars
+from scipy import signal
 
 def find_zenc(time_sec,N,L0_val):
     zenc=L0_val*np.sqrt(2*time_sec*N)
     return zenc
+
+def moving_average(interval,height, window_size):
+    window= np.ones(int(window_size))/float(window_size)
+    print('window: ',window)
+    return np.convolve(interval, window, 'same')
 
 h5file='paper_table.h5'
 #
@@ -84,7 +90,7 @@ for date in case_list:
             numbers=np.genfromtxt(full_path)
             prof_dict[date,var][the_time]=numbers
     derived_names=['scaled_flux','dthetadz','scaled_dtheta',
-                   'scaled_height','rhow','scaled_wrms']
+                   'scaled_height','rhow','scaled_wrms','flux_grad','scaled_flux_grad']
     for var in derived_names:
         prof_dict[date,var]=pd.DataFrame(height,columns=['height'])
     cpd=1004.
@@ -98,6 +104,10 @@ for date in case_list:
         wvelthetapert[0] = np.nan
         dthetadz = np.diff(theta)/np.diff(height)
         dthetadz=np.hstack((dthetadz, [0]))
+        #flux_smooth=signal.medfilt(wvelthetapert,3)
+        flux_smooth=wvelthetapert
+        dfluxdz = np.diff(flux_smooth)/np.diff(height)
+        dfluxdz=np.hstack((dfluxdz, [0]))
         the_h=prof_dict[date,'AvProfLims'].loc[index]['h']
         scaled_height = height/the_h
         fluxes = wvelthetapert*rhow*cpd/sfc_flux
@@ -109,6 +119,8 @@ for date in case_list:
         prof_dict[date,'scaled_dtheta'][the_time]=dthetadz/gamma
         prof_dict[date,'scaled_height'][the_time]=scaled_height
         prof_dict[date,'scaled_wrms'][the_time]=wrms/wstar
+        prof_dict[date,'flux_grad'][the_time]=dfluxdz
+        prof_dict[date,'scaled_flux_grad'][the_time]=dfluxdz/gamma
         prof_dict[date,'rhow'][the_time]=rhow
 #
 # write out all frames to and hdf file using pytables
@@ -160,13 +172,13 @@ plt.rc('font', family='serif')
 
 for date in case_list:
 
-    Fig1,axes = plt.subplots(1,3)
+    Fig1,axes = plt.subplots(1,4)
     title='{} L0={}'.format(date,L0_legend[date])
     Fig1.suptitle(title)
     for the_ax in axes:
         the_ax.set_ylim(0.1,1.4)
 
-    Ax,Ax1,Ax2=axes
+    Ax,Ax1,Ax2,Ax3=axes
 
     Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
     Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
@@ -175,6 +187,7 @@ for date in case_list:
     Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
     Ax1.set_xticks([.02, 1])
     Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
+    Ax3.set_xlabel(r"$\frac{\overline{dw^{'}\theta^{'}}}{dz}/\gamma$", fontsize=20)
 
     if date == 'Nov302013':
         times=time900
@@ -187,11 +200,14 @@ for date in case_list:
         theta=prof_dict[date,'theta_bar'][the_time]
         dthetadz = prof_dict[date,'scaled_dtheta'][the_time]
         fluxes = prof_dict[date,'scaled_flux'][the_time]
+        scaled_dflxdz = prof_dict[date,'scaled_flux_grad'][the_time]
+        dflxdz=prof_dict[date,'flux_grad'][the_time]
         label='hour {}'.format(hour)
         if np.mod(the_time,3600) == 0:
             Ax.plot(theta, scaled_height, '-',label=label)
             Ax1.plot(dthetadz,scaled_height, '-',label=label)
             Ax2.plot(fluxes, scaled_height, '-',label=label)
+            Ax3.plot(scaled_dflxdz,scaled_height,'-',label=label)
             hour+=1
         Ax2.legend(loc='best')
     the_file='L0_{}.png'.format(L0_legend[date])
