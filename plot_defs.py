@@ -29,14 +29,14 @@ Ax = Fig1.add_subplot(131)
 #Ax.set_title( r'(a)', fontsize=20)
 #Ax.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
-Ax.set_xlabel(r"$\overline{\theta}$", fontsize=20)
+Ax.set_xlabel(r"$\theta_{0}, \overline{\theta}$", fontsize=20)
 Ax.set_xticks([])
 Ax.set_xticklabels([])
 Ax.set_yticks([])
 Ax.set_yticklabels([])
 #Ax.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 Ax.set_ylabel(r"$z$", fontsize=20)
-plt.xlim(303, 311)
+plt.xlim(303, 313)
 plt.ylim(500, 1100)
 #plt.ylim(0.1, 1.4)
 
@@ -45,29 +45,15 @@ Ax1 = Fig1.add_subplot(132)
 #Ax1.set_title( r'$Scaled \ \frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax1.set_title( r'$\frac{\partial \theta}{\partial z}$', fontsize=20)
 #Ax1.set_xlabel(r"$\frac{\frac{\partial \theta}{\partial z}}{\gamma}$", fontsize=20)
-Ax1.set_xlabel(r"$\frac{\partial \theta}{\partial z}/\gamma$", fontsize=20)
+Ax1.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{(\overline{w^{'}\theta^{'}})_{s}}$", fontsize=20)
 #Ax1.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 #start, end = -.025, .025
 #start, end = -1, 2.5
-Ax1.set_xticks([0, 1])
-Ax1.set_xticklabels([0, 1], fontsize=15)
+plt.ylim(0.1, 1.4)
+Ax1.set_xticks([0])
+Ax1.set_xticklabels([0], fontsize=15)
 Ax1.set_yticks([])
 Ax1.set_yticklabels([])
-#Ax1.set_ylabel(r"$z$", fontsize=20)
-#plt.xlim(-.025, .025)
-plt.xlim(-1, 2.5)
-plt.ylim(500, 1100)
-#plt.ylim(0.1, 1.4)
-
-Ax2 = Fig1.add_subplot(133)
-#Ax2.set_title(r"$\overline{w^{'} \theta^{'}}$", fontsize=20)
-#Ax2.set_title(r"$Scaled \ \overline{w^{'} \theta^{'}}$", fontsize=20)
-Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{(\overline{w^{'}\theta^{'}})_{s}}$", fontsize=20)
-#Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
-Ax2.set_xticks([0])
-Ax2.set_xticklabels([0], fontsize=15)
-Ax2.set_yticks([])
-Ax2.set_yticklabels([])
 #start, end = -.08, .14
 plt.xlim(-.2, .5)
 #start, end = -.6, 1.2
@@ -76,6 +62,21 @@ plt.xlim(-.2, .5)
 #Ax2.set_ylabel(r"$z$", fontsize=20)
 #Ax2.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 plt.ylim(500, 1100)
+
+Ax2 = Fig1.add_subplot(133)
+#Ax2.set_title(r"$\overline{w^{'} \theta^{'}}$", fontsize=20)
+#Ax2.set_title(r"$Scaled \ \overline{w^{'} \theta^{'}}$", fontsize=20)
+Ax2.set_xlabel(r"$\frac{\partial \overline{\theta}}{\partial z}/\gamma$", fontsize=20)
+#Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
+Ax2.set_xticks([0, 1])
+Ax2.set_xticklabels([0, 1], fontsize=15)
+Ax2.set_yticks([])
+Ax2.set_yticklabels([])
+#Ax1.set_ylabel(r"$z$", fontsize=20)
+#plt.xlim(-.025, .025)
+plt.xlim(-1, 2.5)
+plt.ylim(500, 1100)
+#
 #plt.xlim(-.06, .14)
 #plt.xlim(-.4, 1.2)
 #plt.ylim(0.1, 1.4)
@@ -137,28 +138,30 @@ for i in range(len(theta_file_list)):
         wvelthetapert = fluxes
         Ax.plot(theta, height, 'k-', label = r"$\overline{\theta}$") # 
         #Ax.plot([theta[], theta[]], [height[], height[]], '')
+        Ax.text(311.5, 1070, r"(a)", size=20)
+        
+        Ax2.plot(1.0*dthetadz, height, 'k-') #, label = str(Times[i])+'hrs'
+        Ax2.plot([dthetadz[h0_index]-1, dthetadz[h0_index]+4], [h0, h0], 'k:')
+        Ax2.plot([dthetadz[h0_index]-1, dthetadz[h0_index]+4], [h-5, h-5], 'k:')
+        Ax2.plot([dthetadz[h0_index]-1, dthetadz[h0_index]+4], [h1, h1], 'k:')
+        Ax2.axhspan(h0, h1, alpha=0.1, color='grey')
 
-        Ax1.plot(1.0*dthetadz, height, 'k-') #, label = str(Times[i])+'hrs'
-        Ax1.plot([dthetadz[h0_index]-1, dthetadz[h0_index]+4], [h0, h0], 'k:')
-        Ax1.plot([dthetadz[h0_index]-1, dthetadz[h0_index]+4], [h-5, h-5], 'k:')
-        Ax1.plot([dthetadz[h0_index]-1, dthetadz[h0_index]+4], [h1, h1], 'k:')
-        Ax1.axhspan(h0, h1, alpha=0.1, color='grey')
-
-        Ax1.text(dthetadz[h0_index]-.7, h1, r"$h_{1}$", size=20)
-        Ax1.text(dthetadz[h0_index]-.7, h, r"$h$", size=20)
-        Ax1.text(dthetadz[h0_index]-.7, h0, r"$h_{0}$", size=20)
+        Ax2.text(dthetadz[h0_index]-.7, h1, r"$h_{1}$", size=20)
+        Ax2.text(dthetadz[h0_index]-.7, h, r"$h$", size=20)
+        Ax2.text(dthetadz[h0_index]-.7, h0, r"$h_{0}$", size=20)
+        Ax2.text(dthetadz[h0_index]+2, h1+10, r"(c)", size=20)
                 
         
-        Ax2.plot(wvelthetapert, height, 'k-') #, label = str(Times[i])+'hrs'    
-        Ax2.plot([wvelthetapert[z_f0_index]-.4, wvelthetapert[z_f0_index]+.5], [z_f0, z_f0], 'k:')
-        Ax2.plot([wvelthetapert[z_f0_index]-.4, wvelthetapert[z_f0_index]+.5], [z_f1, z_f1], 'k:')
-        Ax2.plot([wvelthetapert[z_f0_index]-.4, wvelthetapert[z_f0_index]+.5], [z_f, z_f], 'k:')
-        Ax2.axhspan(z_f0, z_f1, alpha=0.1, color='grey')
+        Ax1.plot(wvelthetapert, height, 'k-') #, label = str(Times[i])+'hrs'    
+        Ax1.plot([wvelthetapert[z_f0_index]-.4, wvelthetapert[z_f0_index]+.5], [z_f0, z_f0], 'k:')
+        Ax1.plot([wvelthetapert[z_f0_index]-.4, wvelthetapert[z_f0_index]+.5], [z_f1, z_f1], 'k:')
+        Ax1.plot([wvelthetapert[z_f0_index]-.4, wvelthetapert[z_f0_index]+.5], [z_f, z_f], 'k:')
+        Ax1.axhspan(z_f0, z_f1, alpha=0.1, color='grey')
         
-        Ax2.text(dthetadz[z_f0_index]+.2, z_f0, r"$z_{f0}$", size=20)
-        Ax2.text(dthetadz[z_f0_index]+.2, z_f1, r"$z_{f1}$", size=20)
-        Ax2.text(dthetadz[z_f0_index]+.2, z_f, r"$z_{f}$", size=20)
-       
+        Ax1.text(dthetadz[z_f0_index]+.2, z_f0, r"$z_{f0}$", size=20)
+        Ax1.text(dthetadz[z_f0_index]+.2, z_f1, r"$z_{f1}$", size=20)
+        Ax1.text(dthetadz[z_f0_index]+.2, z_f, r"$z_{f}$", size=20)
+        Ax1.text(.4, h1+10, r"(b)", size=20)         
         
 array = np.genfromtxt('/newtera/tera/phil/nchaparr/python/Pert_Files/snd')
     
@@ -174,17 +177,19 @@ dthetadz0 = np.divide(dtheta0, dheight[0:top_index-1])
 element0 = np.array([.005])
 dthetadz0=np.hstack((element0, dthetadz0))
 
-Ax.plot(theta_0 -.2, height[0:top_index], 'k--', label = r"$\overline{\theta}_{0}$") #, 
+Ax.plot(theta_0 -.2, height[0:top_index], 'k--', label = r"$\overline{\theta}_{0}$")
+Ax.text(900, 305, r"(a)", size=20)
+#, 
 #Ax.plot([theta_0[], theta[]], [height[], height[]], '--')
 
 #theAx.text(300, 1500, '',  fontdict=None, withdash=False)
 #theAx.text(300, 1400, '',  fontdict=None, withdash=False)
 
-Ax1.plot(zeros, height, 'k-')#zeros line for reference
+Ax2.plot(zeros, height, 'k-')#zeros line for reference
 #Ax1.plot(gamma, height)#zeros line for reference
-Ax1.plot(zeros+1, height, 'k-')#zeros line for reference
+Ax2.plot(zeros+1, height, 'k-')#zeros line for reference
 #Ax2.plot(zeros, height)#zeros line for reference
-Ax2.plot(zeros, height, 'k-')#zeros line for reference 
+Ax1.plot(zeros, height, 'k-')#zeros line for reference 
 #Ax2.plot(theta_0, scaled_xheight[0:top_index], '--', label = 'Initial Sounding')#"
 #plt.xlim(300, 310)
 #Ax.legend(loc = 'upper left', prop={'size':14})
