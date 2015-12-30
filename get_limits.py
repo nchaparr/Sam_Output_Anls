@@ -28,10 +28,10 @@ flux_s = 100
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
 Times = np.array(Times)  
  
-theta_file_list = ["/tera/phil/nchaparr/python/Plotting/" + rundate + "/data/theta_bar"+ dump_time for dump_time in dump_time_list]
-press_file_list = ["/tera/phil/nchaparr/python/Plotting/" + rundate + "/data/press"+ dump_time for dump_time in dump_time_list]
-flux_file_list = ["/tera/phil/nchaparr/python/Plotting/" + rundate + "/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
-height_file = "/tera/phil/nchaparr/python/Plotting/" + rundate + "/data/heights0000000600"
+theta_file_list = ["/tera/users/nchaparr/" + rundate + "/data/theta_bar"+ dump_time for dump_time in dump_time_list]
+press_file_list = ["/tera/users/nchaparr/" + rundate + "/data/press"+ dump_time for dump_time in dump_time_list]
+flux_file_list = ["/tera/users/nchaparr/" + rundate + "/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
+height_file = "/tera/users/nchaparr/" + rundate + "/data/heights0000000600"
 
 AvProfLims = []
 invrinos = []
@@ -101,8 +101,8 @@ for i in range(len(theta_file_list)):
     tau = 1.0*h/wstar
     invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta])
     
-np.savetxt('/newtera/tera/phil/nchaparr/python/Plotting/' + rundate + '/data/AvProfLims', np.array(AvProfLims), delimiter=' ')
-np.savetxt('/newtera/tera/phil/nchaparr/python/Plotting/' + rundate + '/data/invrinos', np.array(invrinos), delimiter=' ')
+np.savetxt('/tera/users/nchaparr/' + rundate + '/data/AvProfLims', np.array(AvProfLims), delimiter=' ')
+np.savetxt('/tera/users/nchaparr/' + rundate + '/data/invrinos', np.array(invrinos), delimiter=' ')
 
 
 
