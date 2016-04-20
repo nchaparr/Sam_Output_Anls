@@ -20,33 +20,12 @@ rcParams.update({'font.size': 10})
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
 Times = np.array(Times)
 dump_time_list0, Times0 = Make_Timelists(1, 900, 28800)
-
+Times0 = np.array(Times0)
 #plot the heights vs time
 #print Line2D.markers
 Fig2 = plt.figure(2)
 Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
-
-#Getting w_{e} from a polyfit to the height vs time plot
-#FitFunc=np.polyfit(Times[11:], AvProfVars5[11:, 1], 2, full=False)
-#Fit = FitFunc[0]*Times[11:]**2 + FitFunc[1]*Times[11:] + FitFunc[2]
-#dhdt =1.0*(2*FitFunc[0]*Times[11:] + FitFunc[1])/3600
-
-#Fit = FitFunc[0]*Times[120:]**3 + FitFunc[1]*Times[120:]**2 + FitFunc[2]*Times[120:] + FitFunc[3]
-#dhdt =1.0*(3*FitFunc[0]*Times[120:]**2 + 2*FitFunc[1]*Times[120:] + FitFunc[2])/3600
-
-#Not sure I need this, doing it already above
-#deltah = np.subtract(AvProfVars5[:, 2], AvProfVars5[:, 0])
-#deltah = np.divide(deltah, AvProfVars5[:, 1])
-#tau = 1.0*rinovals5[:,4]/3600
-#scaled_time = np.divide(Times, tau)
-
-#This is an important step -- perhaps should be a function?
-#saving the scaled we vs invri plot points
-#scaled_dhdt = np.divide(dhdt, rinovals5[11:, 2])
-#dhdtinvriplt = np.vstack((rinovals5[11:, 1], scaled_dhdt))
-#dhdtinvriplt = np.transpose(np.vstack((dhdtinvriplt,deltah[11:])))
-#np.savetxt('/tera/phil/nchaparr/python/Plotting/Mar52014/data/dhdtinvriplt.txt', dhdtinvriplt, delimiter=' ')
 
 #Main Part -- pulling points and plotting them
 label_list = ['100/10', '100/5', '60/5', '60/2.5', '150/5', '60/10', '150/10']
@@ -61,38 +40,32 @@ for i in range(len(label_list)):
         Deltah = points.Deltah_over_h()
         HistVars = points.HistVars()
         AvProfVars = points.AvProfVars()
-    #TODO: alternative starting index for Nov302013
-        #Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 0], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
-        #Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 2], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
-        Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 3], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
-        #Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 4], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
-        #Ax3.plot(Times[11:], np.divide(AvProfVars[11:, 5], AvProfVars[11:, 1]), legend_list[i], label = label_list[i])
+        gm_vars = points.gm_vars()
 
-#Ax3.plot(np.arange(0, .1, .01)[2:10], .20833*np.arange(0, .1, .01)[2:10], 'k--')
-#Ax3.plot(np.arange(0, .1, .01)[2:10], np.arange(0, .1, .01)[2:10]**(3.0/2), 'k--')
-#Ax3.plot(Times[11:], Fit, 'b-', label="2nd Order Polyfit")
-#Ax3.text(6, 1500, r'$ \frac{dh}{dt}  =  %.3f \frac{m}{s} $' %(1.0*M/3600),  fontdict=None, withdash=False, fontsize = 15)
-#Ax3.set_ylim(0, 2500)
-Ax3.legend(loc = 'lower right', prop={'size': 10}, numpoints=1)
-#Ax3.set_title(r'$\Delta h (Flux)\ vs \ Time$', fontsize=20)
-#Ax3.set_title(r'$Scaled \ Time \ vs \ Time$', fontsize=20)
-#Ax3.set_title(r'$\frac{\Delta h}{h} \ vs \ Ri^{-1}$', fontsize=20)
-#Ax3.set_title(r'$Ri^{-1} \ vs \ Time$', fontsize=20)
-#Ax3.set_title(r'$\Delta \theta \ vs \ Time$', fontsize=20)
-#Ax3.set_title(r'$\overline{\theta} \ vs \ Time$', fontsize=20)
-#Ax3.set_xlabel(r"$\frac{Time}{\tau}$", fontsize=20)
-Ax3.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-#Ax3.set_ylabel(r"$\frac{\Delta h}{h}$", fontsize=20)
-#Ax3.set_ylabel(r"$\frac{w_{e}}{w^{*}}$", fontsize=20)
-#Ax3.set_ylabel(r"$\Delta h (m)$", fontsize=20)
-#Ax3.set_ylabel(r"$\Delta \theta (K)$", fontsize=20)
-#Ax3.set_ylabel(r"$\overline{ \theta} (K)$", fontsize=20)
-#Ax3.set_ylabel(r"$\Delta h \ (m)$", fontsize=20)
-#Ax3.set_ylabel(r"$z \ (m)$", fontsize=20)
-Ax3.set_xlabel(r"$Time (hrs)$", fontsize=20)
-#Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
-#Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
-plt.ylim(0, 1.4)
+        if Run_Date_List[i]=="Nov302013":
+            
+            #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 0], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 2], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 4], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 5], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 6], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 7], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+        else:
+            #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 0], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 2], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 4], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 5], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 7], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            
+#Ax3.legend(loc = 'lower right', prop={'size': 10}, numpoints=1)
+#Ax3.set_title(r'$$', fontsize=20)
+#Ax3.set_xlabel(r"$$", fontsize=20)
+#Ax3.set_ylabel(r"$$", fontsize=20)
+plt.ylim(0, 0.2)
 plt.show()
 
 

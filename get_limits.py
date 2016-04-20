@@ -23,9 +23,14 @@ rcParams.update({'font.size': 10})
 def Main_Fun(rundate, gamma, flux_s):
      
      #output times
-     dump_time_list, Times = Make_Timelists(1, 600, 28800)
-     Times = np.array(Times)  
-
+       
+     if rundate=="Nov302013":
+          dump_time_list, Times = Make_Timelists(1, 900, 28800)
+          Times = np.array(Times)  
+     else:
+          dump_time_list, Times = Make_Timelists(1, 600, 28800)
+          Times = np.array(Times)
+          
      #class for pulling data files
      files = For_Plots(rundate)
 
@@ -37,6 +42,7 @@ def Main_Fun(rundate, gamma, flux_s):
 
      AvProfLims = []
      invrinos = []
+     gm_vars=[]
      #loop over text files files
      for i in range(len(theta_file_list)):
          print i, theta_file_list[i]
@@ -58,7 +64,7 @@ def Main_Fun(rundate, gamma, flux_s):
 
          #function for calcuating heights
          [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
-
+         [L0,N,B0]=nc.gm_vars(flux_s,gamma)
          print elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta
          
          delta_h=eltop_dthetadz - elbot_dthetadz
@@ -68,9 +74,10 @@ def Main_Fun(rundate, gamma, flux_s):
          AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta])
          tau = 1.0*h/wstar
          invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4])
-
+         gm_vars.append([L0,N,B0])
      files.save_file(np.array(AvProfLims), "AvProfLims")
      files.save_file(np.array(invrinos), "invrinos")
+     files.save_file(np.array(gm_vars), "gm_vars")
 
 
 #to be changed for each run
