@@ -44,21 +44,21 @@ for i in range(len(label_list)):
 
         if Run_Date_List[i]=="Nov302013":
             
-            #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 0], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
-            #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
-            #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 2], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
-            Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
-            Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 4], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
-            Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 5], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 0], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 2], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 4], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 5], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 6], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 7], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
         else:
-            #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 0], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
-            #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
-            #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 2], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
-            Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
-            Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 4], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
-            Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 5], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 0], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 2], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 4], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 5], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 7], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
             
 #Ax3.legend(loc = 'lower right', prop={'size': 10}, numpoints=1)
