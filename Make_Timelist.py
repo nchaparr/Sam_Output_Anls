@@ -5,8 +5,7 @@ from scipy.interpolate import UnivariateSpline
 import matplotlib
 import matplotlib.pyplot as plt
 import site
-site.addsitedir('/tera/phil/nchaparr/python')
-from nchap_fun import *
+from . import nchap_fun
 
 """
    Get list of strings representing times of Output
