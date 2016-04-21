@@ -25,7 +25,7 @@ gamma = .005
 flux_s = 100
 
 #output times
-dump_time_list, Times = Make_Timelists(1, 600, 28800)
+dump_time_list, Times = Make_Timelists(1, 900, 28800)
 Times = np.array(Times)  
  
 theta_file_list = ["/tera/users/nchaparr/" + rundate + "/data/theta_bar"+ dump_time for dump_time in dump_time_list]
