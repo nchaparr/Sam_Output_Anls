@@ -412,25 +412,28 @@ def Flux_Quad_Slow(wpert, thetapert):
                                                
     return [avup_warm, avdown_warm, avup_cold, avdown_cold]
 
-def gm_vars(surface_flux,gamma):
+def gm_vars(t, surface_flux,gamma):
     rho=1.
     cp=1004.
     g=9.8
     flux=surface_flux/(rho*cp)  #from W/m^2 to m K/s
     theta_0=300.  #K
     B0=flux*g/theta_0
-    gamma=gamma/1000.  #K/m
+    gamma=gamma  #K/m
+    tsec=t*3600
     g=9.8  #m/s^2
     N2=g/theta_0*gamma  #s**(-2)
     N=N2**0.5
-    L0=(B0/N**3.)**0.5  #gm eqn 3
+    L0=(B0/N**3.)**0.5
+    zenc=L0*(2*tsec*N)**0.5
+    #gm eqn 3
     #Re0=(L0*B0)**(1./3.)
     # wstar=(g*h/theta_0*flux)**(1./3)
     # c_gamma=0.55
     # delta=c_gamma*wstar/N
     #thetastar=flux/wstar
     #wstar_gm=(B0*h)**(1./3.)
-    return L0,N,B0
+    return L0,N,B0,zenc
 
 def Get_Var_Arrays(ncfolder, ncfilename, dump_time, case_number):
     #TODO: make more modular, eg add option to dump txt files
@@ -547,7 +550,7 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s, top_ind
             break
         
     for m in range(len(dthetadz[0:top_index])-1):
-         print fluxes[m+1], fluxes[m], fluxes[m-1]
+         #print fluxes[m+1], fluxes[m], fluxes[m-1]
          if (abs(fluxes[m+1]) < 0.01) and (abs(fluxes[m+2]) < 0.01) and (fluxes[m] < 0) and (fluxes[m-1] < 0):
             flux_index_t = m+1
             break
