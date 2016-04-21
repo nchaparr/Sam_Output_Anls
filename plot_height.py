@@ -39,7 +39,7 @@ for i in range(len(label_list)):
         rinovals = points.rinovals()
         Deltah = points.Deltah_over_h()
         HistVars = points.HistVars()
-        AvProfVars = points.AvProfVars_old()
+        AvProfVars = points.AvProfVars() #chage to AvProfVars_old() for old limits
         gm_vars = points.gm_vars()
 
         if Run_Date_List[i]=="Nov302013":
@@ -61,9 +61,14 @@ for i in range(len(label_list)):
             #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 4], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 5], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 7], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
-            
+
+Ax3.text(33.5, 0.8, r"$h_{0}$", size=20)
+Ax3.text(33.5, .95, r"$z_{f0}$", size=20)
+Ax3.text(33.5, 1.1, r"$z_{f}$", size=20)
+Ax3.text(33.5, 1.15, r"$h$", size=20)
+                    
 #Ax3.legend(loc = 'lower right', prop={'size': 10}, numpoints=1)
-Ax3.set_title(r'GM Height vs Time Scaling', fontsize=20)
+#Ax3.set_title(r'GM Height vs Time Scaling', fontsize=20)
 Ax3.set_ylabel(r"$z / z_{enc}$", fontsize=20)
 Ax3.set_xlabel(r"$z_{enc} / L_{0}}$", fontsize=20)
 plt.ylim(0.6, 1.4)
