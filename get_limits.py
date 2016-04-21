@@ -20,9 +20,9 @@ rcParams.update({'font.size': 10})
 """
 #to be changed for each run
 #Nov302013-.005-100, Dec142013-.01-100, Dec202013-.005-60, Dec252013-.0025-60,  Jan152014_1-.005-150, Mar12014-.01-60, Mar52014-.01-150 
-rundate = 'Mar52014' 
-gamma = .01
-flux_s = 150
+rundate = 'Nov302013' 
+gamma = .005
+flux_s = 100
 
 #output times
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
@@ -101,8 +101,8 @@ for i in range(len(theta_file_list)):
     tau = 1.0*h/wstar
     invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta])
     
-np.savetxt('/tera/users/nchaparr/' + rundate + '/data/AvProfLims', np.array(AvProfLims), delimiter=' ')
-np.savetxt('/tera/users/nchaparr/' + rundate + '/data/invrinos', np.array(invrinos), delimiter=' ')
+np.savetxt('/tera/users/nchaparr/' + rundate + '/AvProfLims_old', np.array(AvProfLims), delimiter=' ') #' + rundate + '/
+np.savetxt('/tera/users/nchaparr/' + rundate + '/invrinos_old', np.array(invrinos), delimiter=' ') #' + rundate + '/
 
 
 
