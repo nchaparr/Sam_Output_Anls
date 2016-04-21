@@ -39,7 +39,7 @@ for i in range(len(label_list)):
         rinovals = points.rinovals()
         Deltah = points.Deltah_over_h()
         HistVars = points.HistVars()
-        AvProfVars = points.AvProfVars()
+        AvProfVars = points.AvProfVars_old()
         gm_vars = points.gm_vars()
 
         if Run_Date_List[i]=="Nov302013":
@@ -47,7 +47,7 @@ for i in range(len(label_list)):
             Ax3.plot(np.divide(gm_vars[11:,3],gm_vars[11:,0]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:,3],gm_vars[11:,0]), np.divide(AvProfVars[11:, 4], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:,3],gm_vars[11:,0]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
-            #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:,3],gm_vars[11:,0]), np.divide(AvProfVars[11:, 0], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 4], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 5], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 6], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
@@ -56,7 +56,7 @@ for i in range(len(label_list)):
             Ax3.plot(np.divide(gm_vars[11:,3],gm_vars[11:,0]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:,3],gm_vars[11:,0]), np.divide(AvProfVars[11:, 4], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:,3],gm_vars[11:,0]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
-            #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:,3],gm_vars[11:,0]), np.divide(AvProfVars[11:, 0], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 4], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 5], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.multiply(Times[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 7], gm_vars[11:, 0]), legend_list[i], label = label_list[i])

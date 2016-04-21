@@ -27,18 +27,25 @@ class For_Plots:
           HistVars = np.genfromtxt(self.path + "ml_height_hist_vars")
           return HistVars
 
+     def AvProfVars_old(self):
+          AvProfVars_old = np.genfromtxt(self.path + "AvProfLims_old")
+          return AvProfVars_old
+
      def AvProfVars(self):
           AvProfVars = np.genfromtxt(self.path + "AvProfLims")
           return AvProfVars
-
+ 
      def gm_vars(self):
           gm_vars = np.genfromtxt(self.path + "gm_vars")
           return gm_vars
 
+     def rinovals_old(self):
+          rinovals_old = np.genfromtxt(self.path + "invrinos_old")
+          return rinovals_old
+ 
      def rinovals(self):
           rinovals = np.genfromtxt(self.path + "invrinos")
           return rinovals
-
 
      def Deltah(self):
           AvProfVars = np.genfromtxt(self.path + "AvProfLims")
