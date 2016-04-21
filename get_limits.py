@@ -101,8 +101,8 @@ for i in range(len(theta_file_list)):
     tau = 1.0*h/wstar
     invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta])
     
-np.savetxt('/tera/users/nchaparr/' + rundate + '/AvProfLims_old', np.array(AvProfLims), delimiter=' ') #' + rundate + '/
-np.savetxt('/tera/users/nchaparr/' + rundate + '/invrinos_old', np.array(invrinos), delimiter=' ') #' + rundate + '/
+np.savetxt('/tera/users/nchaparr/' + rundate + '/data/AvProfLims_old', np.array(AvProfLims), delimiter=' ') #' + rundate + '/
+np.savetxt('/tera/users/nchaparr/' + rundate + '/data/invrinos_old', np.array(invrinos), delimiter=' ') #' + rundate + '/
 
 
 
