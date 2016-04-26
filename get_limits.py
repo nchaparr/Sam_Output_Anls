@@ -20,48 +20,48 @@ rcParams.update({'font.size': 10})
 
 def Main_Fun(rundate, gamma, flux_s):
      
-     #output times
-     dump_time_list, Times = Make_Timelists(1, 600, 28800)
-     Times = np.array(Times)  
+    #output times
+    dump_time_list, Times = Make_Timelists(1, 600, 28800)
+    Times = np.array(Times)  
 
-     #class for pulling data files
-     files = nchap_class.For_Plots(rundate)
+    #class for pulling data files
+    files = nchap_class.For_Plots(rundate)
 
-     #Create lists of variable lists
-     theta_file_list = [files.get_file(dump_time, "theta_bar") for dump_time in dump_time_list]
-     press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]     
-     flux_file_list = [files.get_file(dump_time, "wvelthetapert") for dump_time in dump_time_list]
-     height_file = files.get_file("0000000600", "heights")
+    #Create lists of variable lists
+    theta_file_list = [files.get_file(dump_time, "theta_bar") for dump_time in dump_time_list]
+    press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]     
+    flux_file_list = [files.get_file(dump_time, "wvelthetapert") for dump_time in dump_time_list]
+    height_file = files.get_file("0000000600", "heights")
 
-     AvProfLims = []
-     invrinos = []
-     #loop over text files files
-     for i in range(len(theta_file_list)):
-         theta = np.genfromtxt(theta_file_list[i])
-         height = np.genfromtxt(height_file)    
-         press = np.genfromtxt(press_file_list[i])
-         rhow = nc.calc_rhow(press, height, theta[0])
-         wvelthetapert = np.genfromtxt(flux_file_list[i])
-         #flux_quads = np.genfromtxt(flux_quads_file_list[i])
-         #only need up to 1900meters
-         if rundate == "Jan152014_1":
+    AvProfLims = []
+    invrinos = []
+    #loop over text files files
+    for i in range(len(theta_file_list)):
+        theta = np.genfromtxt(theta_file_list[i])
+        height = np.genfromtxt(height_file)    
+        press = np.genfromtxt(press_file_list[i])
+        rhow = nc.calc_rhow(press, height, theta[0])
+        wvelthetapert = np.genfromtxt(flux_file_list[i])
+        #flux_quads = np.genfromtxt(flux_quads_file_list[i])
+        #only need up to 1900meters
+        if rundate == "Jan152014_1":
              top_index = np.where(abs(2000 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
-         else:
+        else:
              top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
-                  
-         #function for calcuating heights
-         [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
 
-         h_lev = np.where(height==h)[0]         
-         delta_h=eltop_dthetadz - elbot_dthetadz
-         
-         [rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
+        #function for calcuating heights
+        [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
 
-         AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta])
+        h_lev = np.wheref(height==h)[0]         
+        delta_h=eltop_dthetadz - elbot_dthetadz
 
-         tau = 1.0*h/wstar
-         thetastar = 1.0*flux_s/(rhow[0]*1004*wstar)
-         invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4, thetastar])
+        [rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
+
+        AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta])
+
+            tau = 1.0*h/wstar
+            thetastar = 1.0*flux_s/(rhow[0]*1004*wstar)
+            invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4, thetastar])
 
      files.save_file(np.array(AvProfLims), "AvProfLims")
      files.save_file(np.array(invrinos), "invrinos")
