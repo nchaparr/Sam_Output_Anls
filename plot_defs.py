@@ -66,7 +66,7 @@ plt.ylim(500, 1100)
 Ax2 = Fig1.add_subplot(133)
 #Ax2.set_title(r"$\overline{w^{'} \theta^{'}}$", fontsize=20)
 #Ax2.set_title(r"$Scaled \ \overline{w^{'} \theta^{'}}$", fontsize=20)
-Ax2.set_xlabel(r"$\frac{\partial \overline{\theta}}{\partial z}/\gamma$", fontsize=20)
+Ax2.set_xlabel(r"$\hat{\frac{\partial \overline{\theta}}{\partial z}}$", fontsize=20)
 #Ax2.set_xlabel(r"$\frac{\overline{w^{'}\theta^{'}}}{\overline{w^{'}\theta^{'}}_{0}}$", fontsize=20)
 Ax2.set_xticks([0, 1])
 Ax2.set_xticklabels([0, 1], fontsize=15)
@@ -82,11 +82,11 @@ plt.ylim(500, 1100)
 #plt.ylim(0.1, 1.4)
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
  
-theta_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/theta_bar"+ dump_time for dump_time in dump_time_list]
-press_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/press"+ dump_time for dump_time in dump_time_list]
-flux_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
-height_file = "/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/heights0000000600"
-AvProfVars = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
+theta_file_list = ["/tera/users/nchaparr/"+date+"/data/theta_bar"+ dump_time for dump_time in dump_time_list]
+press_file_list = ["/tera/users/nchaparr/"+date+"/data/press"+ dump_time for dump_time in dump_time_list]
+flux_file_list = ["/tera/users/nchaparr/"+date+"/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
+height_file = "/tera/users/nchaparr/"+date+"/data/heights0000000600"
+AvProfVars = np.genfromtxt("/tera/users/nchaparr/"+date+"/data/AvProfLims")
 
 #loop over text files files
 for i in range(len(theta_file_list)):
@@ -146,9 +146,9 @@ for i in range(len(theta_file_list)):
         Ax2.plot([dthetadz[h0_index]-1, dthetadz[h0_index]+4], [h1, h1], 'k:')
         Ax2.axhspan(h0, h1, alpha=0.1, color='grey')
 
-        Ax2.text(dthetadz[h0_index]-.7, h1, r"$h_{1}$", size=20)
-        Ax2.text(dthetadz[h0_index]-.7, h, r"$h$", size=20)
-        Ax2.text(dthetadz[h0_index]-.7, h0, r"$h_{0}$", size=20)
+        Ax2.text(dthetadz[h0_index]-.7, h1, r"$z_{g1}$", size=20)
+        Ax2.text(dthetadz[h0_index]-.7, h, r"$z_{g}$", size=20)
+        Ax2.text(dthetadz[h0_index]-.7, h0, r"$z_{g0}$", size=20)
         Ax2.text(dthetadz[h0_index]+2, h1+10, r"(c)", size=20)
                 
         
@@ -163,7 +163,7 @@ for i in range(len(theta_file_list)):
         Ax1.text(dthetadz[z_f0_index]+.2, z_f, r"$z_{f}$", size=20)
         Ax1.text(.4, h1+10, r"(b)", size=20)         
         
-array = np.genfromtxt('/newtera/tera/phil/nchaparr/python/Pert_Files/snd')
+array = np.genfromtxt('/tera/users/nchaparr/Pert_Files/snd')
     
 height_0 = array[:, 0]
 theta_0 = array[:, 1]
