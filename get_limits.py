@@ -1,11 +1,12 @@
+from __future__ import print_function
+from __future__ import absolute_import
 import numpy as np
 from scipy.interpolate import interp1d
 import matplotlib
 import matplotlib.pyplot as plt
-from Make_Timelist import *
+from .Make_Timelist import Make_Timelists
 import sys
-#sys.path.insert(0, '/tera/phil/nchaparr/python')
-import nchap_fun as nc
+from . import nchap_fun as nc
 from matplotlib import rcParams
 rcParams.update({'font.size': 10})
 
@@ -92,8 +93,8 @@ for i in range(len(theta_file_list)):
     h_flux = height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]]
     
     #TODO: this can be tidied up, ie name valriables and pass the named variables to calc_rino    
-    print i, height[dtheta_index_b], height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], height[dtheta_index_t], height[flux_index_b], height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]], height[flux_index_t]
-    print i, height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*flux_s/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t]
+    print(i, height[dtheta_index_b], height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], height[dtheta_index_t], height[flux_index_b], height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]], height[flux_index_t])
+    print(i, height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*flux_s/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t])
     
     [rino, invrino, wstar, S] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma)
 
