@@ -42,9 +42,9 @@ Ax.set_xlim(306.5, 310.5)
 Ax1.set_xlim(306.5, 310.5)
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
  
-theta_file_list = ["/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/theta_bar"+ dump_time for dump_time in dump_time_list]
-height_file = "/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/heights0000000600"
-AvProfVars = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
+theta_file_list = ["/tera/users/nchaparr/"+date+"/data/theta_bar"+ dump_time for dump_time in dump_time_list]
+height_file = "/tera/users/nchaparr/"+date+"/data/heights0000000600"
+AvProfVars = np.genfromtxt("/tera/users/nchaparr/"+date+"/data/AvProfLims")
 
 i=37
 
@@ -54,7 +54,7 @@ height = np.genfromtxt(height_file)
 #only need up to 2500meters
 top_index = np.where(abs(2545 - height) < 40.)[0][0]
 
-array = np.genfromtxt('/newtera/tera/phil/nchaparr/python/Pert_Files/snd')
+array = np.genfromtxt('/tera/users/nchaparr/Pert_Files/snd')
     
 height_0 = array[:, 0]
 theta_0 = array[:, 1]
@@ -76,11 +76,11 @@ Ax.plot(theta, height, 'k-')
 Ax1.plot(theta, height, 'k-', label = r"$\overline{\theta}$")#
 
 Ax.annotate('', xy=(theta_0[h_index]-.1, h), xycoords = 'data', xytext=(theta[h1_index], h), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
-Ax.text(309.8, h-40, r"$\delta h \gamma$", size=30)
+Ax.text(309.6, h-50, r"$\gamma \times \delta$", size=30)
 Ax.annotate('', xy=(theta[h1_index], h), xycoords = 'data', xytext=(theta[h1_index], h1), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
-Ax.text(theta[h1_index]-.3, h+30, r"$\delta h$", size=30)
+Ax.text(theta[h1_index]-.2, h+30, r"$\delta$", size=30)
 Ax.set_yticks([h0, h, h1])
-Ax.set_yticklabels([r"$h_{0}$", r"$h$", r"$h_{1}$"])
+Ax.set_yticklabels([r"$z_{g0}$", r"$z_{g}$", r"$z_{g1}$"])
 Ax1.set_yticks([25])
 Ax1.set_yticklabels([0])
         
