@@ -2,11 +2,11 @@ import numpy as np
 from scipy.interpolate import interp1d
 import matplotlib
 import matplotlib.pyplot as plt
-from .Make_Timelist import Make_Timelists
+from Sam_Output_Anls.Make_Timelist import Make_Timelists
 #import sys
 #sys.path.insert(0, '/tera/phil/nchaparr/python')
-from . import nchap_fun as nc
-from . import nchap_class
+from Sam_Output_Anls import nchap_fun as nc
+from Sam_Output_Anls import nchap_class
 from matplotlib import rcParams
 rcParams.update({'font.size': 10})
 
@@ -52,19 +52,19 @@ def Main_Fun(rundate, gamma, flux_s):
         #function for calcuating heights
         [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
 
-        h_lev = np.wheref(height==h)[0]         
+        h_lev = np.where(height==h)[0]         
         delta_h=eltop_dthetadz - elbot_dthetadz
 
         [rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
 
         AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta])
 
-            tau = 1.0*h/wstar
-            thetastar = 1.0*flux_s/(rhow[0]*1004*wstar)
-            invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4, thetastar])
+        tau = 1.0*h/wstar
+        thetastar = 1.0*flux_s/(rhow[0]*1004*wstar)
+        invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4, thetastar])
 
-     files.save_file(np.array(AvProfLims), "AvProfLims")
-     files.save_file(np.array(invrinos), "invrinos")
+    files.save_file(np.array(AvProfLims), "AvProfLims")
+    files.save_file(np.array(invrinos), "invrinos")
 
 run_list = [["Nov302013", .005, 100], ["Dec142013", .01, 100], ["Dec202013", .005, 60], ["Dec252013", .0025, 60], ["Jan152014_1", .005, 150], ["Mar12014", .01, 60], ["Mar52014", .01, 150]]
 
