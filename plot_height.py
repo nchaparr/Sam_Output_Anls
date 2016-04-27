@@ -2,10 +2,10 @@ import numpy as np
 from scipy.interpolate import interp1d
 import matplotlib
 import matplotlib.pyplot as plt
-from Make_Timelist import *
+from Sam_Output_Anls.Make_Timelist import Make_Timelists
 #import sys
 #sys.path.insert(0, '/tera/phil/nchaparr/python')
-from nchap_class import *
+from Sam_Output_Anls.nchap_class import For_Plots
 import nchap_fun as nc
 from matplotlib.lines import Line2D
 
@@ -56,11 +56,11 @@ Run_Date_List = ["Dec142013", "Nov302013", "Dec202013", "Dec252013", "Jan152014_
 
 for i in range(len(label_list)):
     if i<99:
-        points = For_Plots(Run_Date_List[i])
+        points = For_Plots(Run_Date_List[i],read_root='./')
         rinovals = points.rinovals()
         Deltah = points.Deltah_over_h()
-        HistVars = points.HistVars()
-        AvProfVars = points.AvProfVars()
+        HistVars = points.HistVars()  #pha ??? not used
+        AvProfVars = points.AvProfVars()  #pha ???  not used
         if Run_Date_List[i] == "Nov302013":
              Deltah[13] = np.nan
              Deltah[15:17] = np.nan

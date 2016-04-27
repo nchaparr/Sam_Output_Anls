@@ -1,6 +1,6 @@
 from netCDF4 import Dataset
 import numpy as np
-from . import nchap_fun as nc
+from Sam_Output_Anls import nchap_fun as nc
 import os
 
 
@@ -27,22 +27,25 @@ class For_Plots:
         return the_file
 
     def save_file(self, array, filename):
-        np.savetxt(self.write_path + filename, array, delimiter=' ')
+        outfile = self.write_path + filename
+        print('writing to: {}'.format(outfile))
+        np.savetxt(outfile, array, delimiter=' ')
 
     def dhdtplot(self):
         dhdtplot = np.genfromtxt(self.path + "dhdtinvriplt.txt")
         return dhdtplot
 
     def HistVars(self):
-        HistVars = np.genfromtxt(self.path + "ml_height_hist_vars")
+        root_path = '/tera/users/nchaparr/' + self.Run_Date + "/data/"
+        HistVars = np.genfromtxt(root_path + "ml_height_hist_vars")
         return HistVars
 
     def AvProfVars(self):
-        AvProfVars = np.genfromtxt(self.path + "AvProfLims")
+        AvProfVars = np.genfromtxt(self.read_path + "AvProfLims")
         return AvProfVars
 
     def rinovals(self):
-        rinovals = np.genfromtxt(self.path + "invrinos")
+        rinovals = np.genfromtxt(self.read_path + "invrinos")
         return rinovals
 
     def Deltah(self):
@@ -52,7 +55,7 @@ class For_Plots:
         return Deltah
 
     def Deltah_over_h(self):
-        AvProfVars = np.genfromtxt(self.path + "AvProfLims")
+        AvProfVars = np.genfromtxt(self.read_path + "AvProfLims")
         Deltah = np.subtract(AvProfVars[:, 2], AvProfVars[:, 0])
         Deltah_over_h = np.divide(Deltah, AvProfVars[:, 1])
         return Deltah_over_h

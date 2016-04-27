@@ -5,7 +5,7 @@ from scipy.interpolate import UnivariateSpline
 import matplotlib
 import matplotlib.pyplot as plt
 import site
-from . import nchap_fun
+from Sam_Output_Anls import nchap_fun
 
 """
    Get list of strings representing times of Output
