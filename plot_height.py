@@ -52,7 +52,7 @@ Ax3 = Fig2.add_subplot(111)
 label_list = ['100/10', '100/5', '60/5', '60/2.5', '150/5', '60/10', '150/10']
 legend_list = ['kv', 'ko', 'yo', 'y*', 'ro', 'yv', 'rv']
 Run_Date_List = ["Dec142013", "Nov302013", "Dec202013", "Dec252013", "Jan152014_1", "Mar12014", "Mar52014"]
-
+#L0 [23, 39, 31,51, 48, 18, 29] 
 
 for i in range(len(label_list)):
     if i<99:
