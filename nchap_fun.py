@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 """ starting to collect commonly used functions"""
 
 
-def calc_rino(BLHeight, MLTheta, SfcFlux, Theta_jump, gamma, delta_h):
+def calc_rino(delta, BLHeight, MLTheta, SfcFlux, Theta_jump, gamma, delta_h):
     """Richardson number
 
     Arguments:
@@ -24,15 +24,18 @@ def calc_rino(BLHeight, MLTheta, SfcFlux, Theta_jump, gamma, delta_h):
     intermed1 = intermed * SfcFlux
     wstar = (9.81 * intermed1)**(1.0 / 3)
     thetastar = 1.0 * SfcFlux / wstar
+    deltatheta_GM = delta*gamma
     rino = 1.0 * Theta_jump / thetastar
 
+    c_delta = (delta*deltatheta_GM*(9.81/300))*1.0/wstar**2
+    
     S = ((1.0 * BLHeight / wstar)**2) * (gamma) * (1.0 * 9.81 / MLTheta)
 
     pi3 = gamma * 1.0 * BLHeight / Theta_jump
 
     pi4 = gamma * 1.0 * delta_h / Theta_jump
 
-    return rino, 1.0 / rino, wstar, S, pi3, pi4
+    return c_delta, rino, 1.0 / rino, wstar, S, pi3, pi4
 
 
 def get_dhdt(heights, time):
@@ -580,6 +583,7 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
     dheight = np.diff(heights)
     dtheta = np.diff(thetas)
     dthetadz = np.divide(dtheta, dheight)
+    dzdtheta = np.divide(dheight, dtheta)
     element0 = np.array([0])
     dthetadz = np.hstack((element0, dthetadz)) * 1.0 / gamma
     rhow = calc_rhow(press, heights, thetas[0])
@@ -643,5 +647,13 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
     deltatheta = thetas[dtheta_index_t] - thetas[dtheta_index_b]
     mltheta = np.mean(thetas[0:dtheta_index_b])
 
-    return [elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux,
-            deltatheta, mltheta]
+    hindex=np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index])== 0)[0][0]
+    
+    #C=((dzdtheta[hindex])*h-thetas[hindex])*1.0/dthetadz[hindex]??
+    C=h-thetas[hindex]*dzdtheta[hindex]
+    theta_z1_GM=(C*gamma+300)*1.0/(1-(dzdtheta[hindex])*gamma)
+    z1_GM=(theta_z1_GM-300)*1.0/gamma
+
+    print C, gamma, dzdtheta[hindex], h,z1_GM, thetas[hindex]           
+    
+    return [elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM]

@@ -1,6 +1,6 @@
 from netCDF4 import Dataset
 import numpy as np
-from Sam_Output_Anls import nchap_fun as nc
+import nchap_fun as nc
 import os
 
 
@@ -13,14 +13,14 @@ class For_Plots:
     def __init__(self,
                  Run_Date,
                  read_root="/tera/users/nchaparr/",
-                 write_root="./"):
+                 write_root="/tera/users/nchaparr/"):
         self.Run_Date = Run_Date
         self.read_path = read_root + Run_Date + "/data/"
         self.write_path = write_root + Run_Date + "/data/"
-        try:
-            os.makedirs(self.write_path)
-        except FileExistsError:
-            pass
+        #try:
+        #    os.makedirs(self.write_path)
+        #except FileExistsError:
+        #    pass
 
     def get_file(self, dump_time, filename):
         the_file = self.read_path + filename + dump_time
@@ -44,9 +44,17 @@ class For_Plots:
         AvProfVars = np.genfromtxt(self.read_path + "AvProfLims")
         return AvProfVars
 
+    def AvProfVars_old(self):
+        AvProfVars_old = np.genfromtxt(self.read_path + "AvProfLims_old")
+        return AvProfVars_old
+
     def rinovals(self):
         rinovals = np.genfromtxt(self.read_path + "invrinos")
         return rinovals
+
+    def rinovals_old(self):
+        rinovals_old = np.genfromtxt(self.read_path + "invrinos_old")
+        return rinovals_old
 
     def Deltah(self):
         AvProfVars = np.genfromtxt(self.path + "AvProfLims")
@@ -54,11 +62,23 @@ class For_Plots:
         #Deltah0 = np.divide(Deltah0, AvProfVars[:,1])
         return Deltah
 
+    def Deltah_old(self):
+        AvProfVars_old = np.genfromtxt(self.path + "AvProfLims_old")
+        Deltah_old = np.subtract(AvProfVars_old[:, 2], AvProfVars_old[:, 0])
+        #Deltah0 = np.divide(Deltah0, AvProfVars[:,1])
+        return Deltah_old
+
     def Deltah_over_h(self):
         AvProfVars = np.genfromtxt(self.read_path + "AvProfLims")
         Deltah = np.subtract(AvProfVars[:, 2], AvProfVars[:, 0])
         Deltah_over_h = np.divide(Deltah, AvProfVars[:, 1])
         return Deltah_over_h
+
+    def Deltah_over_h_old(self):
+        AvProfVars_old = np.genfromtxt(self.read_path + "AvProfLims_old")
+        Deltah_old = np.subtract(AvProfVars_old[:, 2], AvProfVars_old[:, 0])
+        Deltah_over_h_old = np.divide(Deltah_old, AvProfVars_old[:, 1])
+        return Deltah_over_h_old
 
 
 class Get_Var_Arrays1:

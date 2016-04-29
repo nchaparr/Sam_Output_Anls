@@ -2,11 +2,11 @@ import numpy as np
 from scipy.interpolate import interp1d
 import matplotlib
 import matplotlib.pyplot as plt
-from Sam_Output_Anls.Make_Timelist import Make_Timelists
+from Make_Timelist import Make_Timelists
 #import sys
 #sys.path.insert(0, '/tera/phil/nchaparr/python')
-from Sam_Output_Anls import nchap_fun as nc
-from Sam_Output_Anls import nchap_class
+import nchap_fun as nc
+import nchap_class
 from matplotlib import rcParams
 rcParams.update({'font.size': 10})
 
@@ -37,6 +37,7 @@ def Main_Fun(rundate, gamma, flux_s):
     invrinos = []
     #loop over text files files
     for i in range(len(theta_file_list)):
+        print dump_time_list[i]
         theta = np.genfromtxt(theta_file_list[i])
         height = np.genfromtxt(height_file)    
         press = np.genfromtxt(press_file_list[i])
@@ -50,18 +51,22 @@ def Main_Fun(rundate, gamma, flux_s):
              top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
 
         #function for calcuating heights
-        [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
+        [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
 
+                
         h_lev = np.where(height==h)[0]         
         delta_h=eltop_dthetadz - elbot_dthetadz
+        delta=z1_GM-elbot_dthetadz
+        
+        [c_delta, rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(z1_GM, h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
 
-        [rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
-
-        AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta])
+        #print c_delta, delta, z1_GM
+        
+        AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM])
 
         tau = 1.0*h/wstar
         thetastar = 1.0*flux_s/(rhow[0]*1004*wstar)
-        invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4, thetastar])
+        invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4, thetastar, c_delta])
 
     files.save_file(np.array(AvProfLims), "AvProfLims")
     files.save_file(np.array(invrinos), "invrinos")
