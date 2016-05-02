@@ -59,10 +59,10 @@ Run_Date_List = ["Dec142013", "Nov302013", "Dec202013", "Dec252013", "Jan152014_
 for i in range(len(label_list)):
     if i<99:
         points = For_Plots(Run_Date_List[i])
-        rinovals = points.rinovals_old()
-        Deltah = points.Deltah_over_h_old()
+        rinovals = points.rinovals()
+        Deltah = points.Deltah_over_h()
         HistVars = points.HistVars()  #pha ??? not used
-        AvProfVars = points.AvProfVars_old()  #pha ???  not used
+        AvProfVars = points.AvProfVars()  #pha ???  not used
         if Run_Date_List[i] == "Nov302013":
              Deltah[13] = np.nan
              Deltah[15:17] = np.nan
@@ -105,7 +105,7 @@ Ax3.text(.085, .88, r'(d)', fontsize=30)
 #Ax3.set_title(r'$\overline{\theta} \ vs \ Time$', fontsize=20)
 #Ax3.set_xlabel(r"$\frac{Time}{\tau}$", fontsize=20)
 #Ax3.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-Ax3.set_ylabel(r"$\frac{\Delta h}{h}$", fontsize=30)
+Ax3.set_ylabel(r"$\frac{\Delta z}{z_g}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{w_{e}}{w^{*}}$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h (m)$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta \theta (K)$", fontsize=20)
