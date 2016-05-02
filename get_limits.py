@@ -22,7 +22,6 @@ rcParams.update({'font.size': 10})
 
 def Main_Fun(rundate, gamma, flux_s):
      
-<<<<<<< HEAD
      #output times
        
      if rundate=="Nov302013":
