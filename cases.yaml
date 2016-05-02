@@ -3,33 +3,40 @@
   - gamma: 0.01
   - flux: 60.0
   - L0: 18.0
+  - del_t: 600
 - !!omap
   - name: Dec142013
   - gamma: 0.01
   - flux: 100.0
   - L0: 23.0
+  - del_t: 600
 - !!omap
   - name: Mar52014
   - gamma: 0.01
   - flux: 150.0
   - L0: 29.0
+  - del_t: 600
 - !!omap
   - name: Dec202013
   - gamma: 0.005
   - flux: 60.0
   - L0: 31.0
+  - del_t: 600
 - !!omap
   - name: Nov302013
   - gamma: 0.005
   - flux: 100.0
   - L0: 39.0
+  - del_t: 900
 - !!omap
   - name: Jan152014_1
   - gamma: 0.005
   - flux: 150.0
   - L0: 48.0
+  - del_t: 600
 - !!omap
   - name: Dec252013
   - gamma: 0.0025
   - flux: 60.0
   - L0: 51.0
+  - del_t: 600

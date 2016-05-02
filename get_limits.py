@@ -38,7 +38,7 @@ if write_yaml:
     ind_cases = cases.split(';')
     case_list = []
     key_list = ['name','gamma','flux','L0']
-    for case in ind_cases:
+    for index,case in enumerate(ind_cases):
         case = case.strip()
         case_tup = case.split(',')
         val_dict=od()
@@ -46,6 +46,10 @@ if write_yaml:
             if key != 'name':
                 value = float(value)
             val_dict[key] = value
+        if val_dict['name'] == 'Nov302013':
+            val_dict['del_t'] = 900
+        else:
+            val_dict['del_t'] = 600
         case_list.append(val_dict)
     case_list.sort(key = sort_L0)
 
@@ -58,13 +62,15 @@ else:
 
             
     
-for case in case_list:
+for index,case in enumerate(case_list):
+    print('case number: ',index)
     rundate = case['name']
     gamma = case['gamma']
     flux_s = case['flux']
 
     #output times
-    dump_time_list, Times = Make_Timelists(1, 900, 28800)
+    del_t = case['del_t']
+    dump_time_list, Times = Make_Timelists(1, del_t, 28800)
     Times = np.array(Times)  
 
     input_dir = "/tera/users/nchaparr/"
