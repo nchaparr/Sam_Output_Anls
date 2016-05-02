@@ -140,8 +140,8 @@ for index,case in enumerate(case_list):
         h_flux = height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]]
 
         #TODO: this can be tidied up, ie name valriables and pass the named variables to calc_rino    
-        print(i, height[dtheta_index_b], height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], height[dtheta_index_t], height[flux_index_b], height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]], height[flux_index_t])
-        print(i, height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*flux_s/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t])
+        #print(i, height[dtheta_index_b], height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], height[dtheta_index_t], height[flux_index_b], height[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]], height[flux_index_t])
+        #print(i, height[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]], np.mean(theta[0:dtheta_index_b]), 1.0*flux_s/(rhow[0]*1004), -theta[dtheta_index_b]+theta[dtheta_index_t])
 
         [rino, invrino, wstar, S] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma)
 
@@ -150,11 +150,12 @@ for index,case in enumerate(case_list):
         invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta])
 
 
-    files = ['AvProfLims_old','invrinos_old']
+    files = ['AvProfLims','invrinos']
     data_arrays = [np.array(AvProfLims),np.array(invrinos)]
     for the_file,the_array in zip(files,data_arrays):
         path = output_dir + rundate + '/data/'
         if not os.path.exists(path):
             os.makedirs(path)
         full_path = path + the_file
+        print('writing to {}'.format(full_path))
         np.savetxt(full_path,the_array, delimiter=' ') #' + rundate + '/
