@@ -21,9 +21,13 @@ rcParams.update({'font.size': 10})
 def Main_Fun(rundate, gamma, flux_s):
      
     #output times
-    dump_time_list, Times = Make_Timelists(1, 600, 28800)
-    Times = np.array(Times)  
-
+    if rundate == "Nov302015":
+        dump_time_list, Times = Make_Timelists(1, 900, 28800)
+        Times = np.array(Times)  
+    else:
+        dump_time_list, Times = Make_Timelists(1, 600, 28800)
+        Times = np.array(Times)
+    
     #class for pulling data files
     files = nchap_class.For_Plots(rundate)
 
