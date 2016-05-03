@@ -28,7 +28,7 @@ class For_Plots:
 
     def save_file(self, array, filename):
         outfile = self.write_path + filename
-        print('writing to: {}'.format(outfile))
+        #print('writing to: {}'.format(outfile))
         np.savetxt(outfile, array, delimiter=' ')
 
     def dhdtplot(self):

@@ -21,7 +21,7 @@ rcParams.update({'font.size': 10})
 def Main_Fun(rundate, gamma, flux_s):
      
     #output times
-    if rundate == "Nov302015":
+    if rundate == "Nov302013":
         dump_time_list, Times = Make_Timelists(1, 900, 28800)
         Times = np.array(Times)  
     else:
@@ -41,7 +41,7 @@ def Main_Fun(rundate, gamma, flux_s):
     invrinos = []
     #loop over text files files
     for i in range(len(theta_file_list)):
-        print dump_time_list[i]
+        
         theta = np.genfromtxt(theta_file_list[i])
         height = np.genfromtxt(height_file)    
         press = np.genfromtxt(press_file_list[i])
@@ -71,7 +71,7 @@ def Main_Fun(rundate, gamma, flux_s):
         tau = 1.0*h/wstar
         thetastar = 1.0*flux_s/(rhow[0]*1004*wstar)
         invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4, thetastar, c_delta])
-
+    print "saving" + rundate, len(AvProfLims), dump_time_list[i], len(dump_time_list)    
     files.save_file(np.array(AvProfLims), "AvProfLims")
     files.save_file(np.array(invrinos), "invrinos")
 

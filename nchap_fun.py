@@ -654,6 +654,6 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
     theta_z1_GM=(C*gamma+300)*1.0/(1-(dzdtheta[hindex])*gamma)
     z1_GM=(theta_z1_GM-300)*1.0/gamma
 
-    print C, gamma, dzdtheta[hindex], h,z1_GM, thetas[hindex]           
+    #print C, gamma, dzdtheta[hindex], h,z1_GM, thetas[hindex]           
     
     return [elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM]
