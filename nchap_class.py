@@ -9,7 +9,6 @@ class For_Plots:
         for pulling data for plot_height.py ie plots representing all runs on one ax instance
      
      """
-
     def __init__(self,
                  Run_Date,
                  read_root="/tera/users/nchaparr/",
@@ -84,7 +83,6 @@ class For_Plots:
         Deltah_old = np.subtract(AvProfVars_old[:, 2], AvProfVars_old[:, 0])
         Deltah_over_h_old = np.divide(Deltah_old, AvProfVars_old[:, 1])
         return Deltah_over_h_old
-
 
 class Get_Var_Arrays1:
     """
