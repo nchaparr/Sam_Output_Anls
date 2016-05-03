@@ -6,7 +6,7 @@ from Make_Timelist import Make_Timelists
 #import sys
 #sys.path.insert(0, '/tera/phil/nchaparr/python')
 import nchap_fun as nc
-import nchap_class
+from nchap_class import For_Plots
 from matplotlib import rcParams
 rcParams.update({'font.size': 10})
 
@@ -55,21 +55,22 @@ def Main_Fun(rundate, gamma, flux_s):
          #only need up to 1900meters
          if rundate == "Jan152014_1":
              top_index = np.where(abs(2000 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
-        else:
+         else:
              top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
              
          #function for calcuating heights
-         [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
+         [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
          [L0,N,B0,zenc]=nc.gm_vars(t,flux_s,gamma)
          print "h, elbot_flux,zenc,L0,t", h, elbot_flux,zenc,L0,t
          
          delta_h=eltop_dthetadz - elbot_dthetadz
-         
-         [rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
+         delta = z1_GM - h
 
-         AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta])
+         [c_delta, rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(delta, h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
+
+         AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM])
          tau = 1.0*h/wstar
-         invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4])
+         invrinos.append([c_delta, rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4])
          gm_vars.append([L0,N,B0,zenc])
      files.save_file(np.array(AvProfLims), "AvProfLims")
      files.save_file(np.array(invrinos), "invrinos")
