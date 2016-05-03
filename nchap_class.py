@@ -53,7 +53,7 @@ class For_Plots:
         return rinovals
 
     def gm_vars(self):
-        gm_vars = np.genfromtxt(self.path + "gm_vars")
+        gm_vars = np.genfromtxt(self.read_path + "gm_vars")
         return gm_vars
 
 
