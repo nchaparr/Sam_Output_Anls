@@ -37,6 +37,28 @@ def calc_rino(delta, BLHeight, MLTheta, SfcFlux, Theta_jump, gamma, delta_h):
 
     return c_delta, rino, 1.0 / rino, wstar, S, pi3, pi4
 
+def gm_vars(t, surface_flux,gamma):
+    rho=1.
+    cp=1004.
+    g=9.8
+    flux=surface_flux/(rho*cp)  #from W/m^2 to m K/s
+    theta_0=300.  #K
+    B0=flux*g/theta_0
+    gamma=gamma  #K/m
+    tsec=t*3600
+    g=9.8  #m/s^2
+    N2=g/theta_0*gamma  #s**(-2)
+    N=N2**0.5
+    L0=(B0/N**3.)**0.5
+    zenc=L0*(2*tsec*N)**0.5
+    #gm eqn 3
+    #Re0=(L0*B0)**(1./3.)
+    # wstar=(g*h/theta_0*flux)**(1./3)
+    # c_gamma=0.55
+    # delta=c_gamma*wstar/Nn
+    #thetastar=flux/wstar
+    #wstar_gm=(B0*h)**(1./3.)
+    return L0,N,B0,zenc
 
 def get_dhdt(heights, time):
     #TODO: see if this an fn for calc ing dthetadz can be unified
