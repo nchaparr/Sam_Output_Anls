@@ -59,7 +59,7 @@ def Main_Fun(rundate, gamma, flux_s):
         [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
         
         [L0,N,B0,zenc]=nc.gm_vars(t,flux_s,gamma)
-         print "h, elbot_flux,zenc,L0,t", h, elbot_flux,zenc,L0,t
+        print "h, elbot_flux,zenc,L0,t", h, elbot_flux,zenc,L0,t
                 
         h_lev = np.where(height==h)[0]         
         delta_h=eltop_dthetadz - elbot_dthetadz
