@@ -61,13 +61,17 @@ def Main_Fun(rundate, gamma, flux_s):
          #function for calcuating heights
          [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
          [L0,N,B0,zenc]=nc.gm_vars(t,flux_s,gamma)
-         print "h, elbot_flux,zenc,L0,t", h, elbot_flux,zenc,L0,t
+         
          
          delta_h=eltop_dthetadz - elbot_dthetadz
          delta = z1_GM - h
-
-         [c_delta, rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(delta, h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
-
+         
+         print z1_GM, delta
+         
+         [c_delta, rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(B0, N, delta, h, zenc, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
+         
+         print zenc, h, z1_GM, eltop_dthetadz, c_delta
+         
          AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM])
          tau = 1.0*h/wstar
          invrinos.append([c_delta, rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4])
