@@ -46,6 +46,7 @@ def Main_Fun(rundate, gamma, flux_s):
         theta = np.genfromtxt(theta_file_list[i])
         height = np.genfromtxt(height_file)    
         press = np.genfromtxt(press_file_list[i])
+        t = Times[i]
         rhow = nc.calc_rhow(press, height, theta[0])
         wvelthetapert = np.genfromtxt(flux_file_list[i])
         #flux_quads = np.genfromtxt(flux_quads_file_list[i])
