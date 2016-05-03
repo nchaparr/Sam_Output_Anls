@@ -39,6 +39,7 @@ def Main_Fun(rundate, gamma, flux_s):
 
     AvProfLims = []
     invrinos = []
+    gm_vars=[]
     #loop over text files files
     for i in range(len(theta_file_list)):
         
@@ -56,7 +57,9 @@ def Main_Fun(rundate, gamma, flux_s):
 
         #function for calcuating heights
         [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
-
+        
+        [L0,N,B0,zenc]=nc.gm_vars(t,flux_s,gamma)
+         print "h, elbot_flux,zenc,L0,t", h, elbot_flux,zenc,L0,t
                 
         h_lev = np.where(height==h)[0]         
         delta_h=eltop_dthetadz - elbot_dthetadz
@@ -71,9 +74,12 @@ def Main_Fun(rundate, gamma, flux_s):
         tau = 1.0*h/wstar
         thetastar = 1.0*flux_s/(rhow[0]*1004*wstar)
         invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4, thetastar, c_delta])
+        gm_vars.append([L0,N,B0,zenc])
+
     print "saving" + rundate, len(AvProfLims), dump_time_list[i], len(dump_time_list)    
     files.save_file(np.array(AvProfLims), "AvProfLims")
     files.save_file(np.array(invrinos), "invrinos")
+    files.save_file(np.array(gm_vars), "gm_vars")
 
 run_list = [["Nov302013", .005, 100], ["Dec142013", .01, 100], ["Dec202013", .005, 60], ["Dec252013", .0025, 60], ["Jan152014_1", .005, 150], ["Mar12014", .01, 60], ["Mar52014", .01, 150]]
 
