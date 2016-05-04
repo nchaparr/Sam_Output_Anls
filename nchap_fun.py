@@ -27,7 +27,7 @@ def calc_rino(delta, BLHeight, MLTheta, SfcFlux, Theta_jump, gamma, delta_h):
     deltatheta_GM = delta*gamma
     rino = 1.0 * Theta_jump / thetastar
 
-    c_delta = (delta*deltatheta_GM*(9.81/300))*1.0/wstar**2
+    c_delta = (BLHeight*deltatheta_GM*(9.81/MLTheta))*1.0/wstar**2
     
     S = ((1.0 * BLHeight / wstar)**2) * (gamma) * (1.0 * 9.81 / MLTheta)
 

@@ -28,6 +28,7 @@ def Main_Fun(rundate, gamma, flux_s):
         dump_time_list, Times = Make_Timelists(1, 600, 28800)
         Times = np.array(Times)
     
+     
     #class for pulling data files
     files = nchap_class.For_Plots(rundate)
 
@@ -39,9 +40,12 @@ def Main_Fun(rundate, gamma, flux_s):
 
     AvProfLims = []
     invrinos = []
+    gm_vars=[]
     #loop over text files files
     for i in range(len(theta_file_list)):
         
+        t = Times[i]
+
         theta = np.genfromtxt(theta_file_list[i])
         height = np.genfromtxt(height_file)    
         press = np.genfromtxt(press_file_list[i])
@@ -60,19 +64,24 @@ def Main_Fun(rundate, gamma, flux_s):
                 
         h_lev = np.where(height==h)[0]         
         delta_h=eltop_dthetadz - elbot_dthetadz
-        delta=z1_GM-elbot_dthetadz
+        delta=z1_GM-h
         
-        [c_delta, rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(z1_GM, h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
-
+        
         #print c_delta, delta, z1_GM
         [L0,N,B0,zenc]=nc.gm_vars(t,flux_s,gamma)
         
-        AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, zenc, z1_GM])
+        [c_delta, rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(delta, zenc, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
+        
 
+        AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, zenc, z1_GM])
+        
         tau = 1.0*h/wstar
         thetastar = 1.0*flux_s/(rhow[0]*1004*wstar)
         invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4, thetastar, c_delta])
-    print "saving" + rundate, len(AvProfLims), dump_time_list[i], len(dump_time_list)    
+        gm_vars.append([L0,N,B0,zenc])
+
+        print c_delta, z1_GM, zenc, h     
+    
     files.save_file(np.array(AvProfLims), "AvProfLims")
     files.save_file(np.array(invrinos), "invrinos")
     files.save_file(np.array(gm_vars), "gm_vars")

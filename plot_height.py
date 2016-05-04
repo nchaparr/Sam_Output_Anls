@@ -60,41 +60,48 @@ for i in range(len(label_list)):
     if i<99:
         points = For_Plots(Run_Date_List[i])
         rinovals = points.rinovals()
-        Deltah = points.Deltah_over_h(8, 1) #[elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM]
+        gm_vars = points.gm_vars()
+        Deltah = points.Deltah_over_h(8, 1, 7) #[elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM]
         HistVars = points.HistVars()  #pha ??? not used
         AvProfVars = points.AvProfVars()  #pha ???  not used
         if Run_Date_List[i] == "Nov302013":
              Deltah[13] = np.nan
              Deltah[15:17] = np.nan
              Deltah[24:26] = np.nan
-             Ax3.loglog(rinovals[7:, 2], Deltah[7:], legend_list[i], label = label_list[i], markersize=10)
+             Ax3.plot(Times0, rinovals[:,10], legend_list[i], label = label_list[i], markersize=10) 
+             #Ax3.plot(np.multiply(rinovals[7:, 10],np.divide(gm_vars[7:, 3], gm_vars[7:, 0])), Deltah[7:], legend_list[i], label = label_list[i], markersize=10)
         elif Run_Date_List[i] == "Jan152014_1":
     #TODO: alternative starting index for Nov302013
              Deltah[16:21] = np.nan
              #print Deltah
-             Ax3.loglog(rinovals[11:29, 2], Deltah[11:29], legend_list[i], label = label_list[i], markersize=10)
+             Ax3.plot(Times, rinovals[:,10], legend_list[i], label = label_list[i], markersize=10)
+             #Ax3.plot(np.multiply(rinovals[11:29, 10], np.divide(gm_vars[11:29,3], gm_vars[11:29,0])), Deltah[11:29], legend_list[i], label = label_list[i], markersize=10)
         elif Run_Date_List[i] == "Mar12014":
     #TODO: alternative starting index for Nov302013
              Deltah[11:17] = np.nan
              #print Deltah
-             Ax3.loglog(rinovals[11:29, 2], Deltah[11:29], legend_list[i], label = label_list[i], markersize=10)
+             #Ax3.plot(np.multiply(rinovals[11:29, 10], np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0])), Deltah[11:29], legend_list[i], label = label_list[i], markersize=10)
+             Ax3.plot(Times, rinovals[:,10], legend_list[i], label = label_list[i], markersize=10)
         else:     
-             Ax3.loglog(rinovals[11:, 2], Deltah[11:], legend_list[i], label = label_list[i], markersize=10)
+             #print  rinovals[11:, 10]
+             zenc_over_L0 = np.divide(gm_vars[11:, 3], gm_vars[11:, 0])
+             #Ax3.plot(np.multiply(rinovals[11:, 10], zenc_over_L0), Deltah[11:], legend_list[i], label = label_list[i], markersize=10)
+             Ax3.plot(Times, rinovals[:,10], legend_list[i], label = label_list[i], markersize=10)
 
-xes = np.arange(.04, .075, .0001)
-x1es = np.arange(.029, .04, .0001)
-ys = 2.5*xes**(.5)
-ys1= 12.5*x1es**(1)
-Ax3.loglog(xes, ys, 'k--')
-Ax3.loglog(x1es, ys1, 'k--')
+#xes = np.arange(.04, .075, .0001)
+#x1es = np.arange(.029, .04, .0001)
+#ys = 2.5*xes**(.5)
+#ys1= 12.5*x1es**(1)
+#Ax3.loglog(xes, ys, 'k--')
+#Ax3.loglog(x1es, ys1, 'k--')
 
 #Ax3.plot(np.arange(0, .1, .01)[2:10], np.arange(0, .1, .01)[2:10]**(3.0/2), 'k--')
 #Ax3.plot(Times[11:], Fit, 'b-', label="2nd Order Polyfit")
-Ax3.text(.028, .49, r'$b = -1$',  fontdict=None, withdash=False, fontsize = 25, rotation=35)
+#Ax3.text(.028, .49, r'$b = -1$',  fontdict=None, withdash=False, fontsize = 25, rotation=35)
 
-Ax3.text(.048, .67, r'$b = -\frac{1}{2}$',  fontdict=None, withdash=False, fontsize = 25, rotation=22)
+#Ax3.text(.048, .67, r'$b = -\frac{1}{2}$',  fontdict=None, withdash=False, fontsize = 25, rotation=22)
 
-Ax3.text(.085, .88, r'(d)', fontsize=30)
+#Ax3.text(.085, .88, r'(d)', fontsize=30)
 #Ax3.set_ylim(0, 2500)
 #Ax3.legend(loc = 'lower right', prop={'size': 14}, numpoints=1)
 #Ax3.set_title(r'$\Delta h (Flux)\ vs \ Time$', fontsize=20)
@@ -105,23 +112,23 @@ Ax3.text(.085, .88, r'(d)', fontsize=30)
 #Ax3.set_title(r'$\overline{\theta} \ vs \ Time$', fontsize=20)
 #Ax3.set_xlabel(r"$\frac{Time}{\tau}$", fontsize=20)
 #Ax3.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-Ax3.set_ylabel(r"$\frac{\Delta z}{z_g}$", fontsize=30)
+#Ax3.set_ylabel(r"$\frac{\Delta z}{z_g}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{w_{e}}{w^{*}}$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h (m)$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta \theta (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\overline{ \theta} (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h \ (m)$", fontsize=20)
 #Ax3.set_ylabel(r"$z \ (m)$", fontsize=20)
-Ax3.set_xlabel(r"$Ri_{\Delta}^{-1}$", fontsize=30)
+#Ax3.set_xlabel(r"$Ri_{\Delta}^{-1}$", fontsize=30)
 #Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
 #Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
-plt.ylim(0.2, 1)
-Ax3.set_yticks([0.2, 0.4, 0.6, 0.8, 1])
-Ax3.set_yticklabels([0.2, 0.4, 0.6, 0.8, 1])
-plt.xlim(.02, .1)
-Ax3.set_xticks([0.02, 0.04, 0.06, 0.08, .1])
-Ax3.set_xticklabels([0.02, 0.04, 0.06, 0.08, .1])
-Ax3.tick_params(axis="both", labelsize=20)
+plt.ylim(0, 10)
+#Ax3.set_yticks([0.2, 0.4, 0.6, 0.8, 1])
+#Ax3.set_yticklabels([0.2, 0.4, 0.6, 0.8, 1])
+plt.xlim(0, 8)
+#Ax3.set_xticks([0.02, 0.04, 0.06, 0.08, .1])
+#Ax3.set_xticklabels([0.02, 0.04, 0.06, 0.08, .1])
+#Ax3.tick_params(axis="both", labelsize=20)
 plt.tight_layout()
 plt.show()
 
