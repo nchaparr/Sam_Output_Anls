@@ -52,6 +52,10 @@ class For_Plots:
         rinovals = np.genfromtxt(self.read_path + "invrinos")
         return rinovals
 
+    def gm_vars(self):
+        gm_vars = np.genfromtxt(self.read_path + "gm_vars")
+        return gm_vars
+
     def rinovals_old(self):
         rinovals_old = np.genfromtxt(self.read_path + "invrinos_old")
         return rinovals_old
