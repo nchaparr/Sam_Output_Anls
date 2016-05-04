@@ -65,8 +65,9 @@ def Main_Fun(rundate, gamma, flux_s):
         [c_delta, rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(z1_GM, h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
 
         #print c_delta, delta, z1_GM
+        [L0,N,B0,zenc]=nc.gm_vars(t,flux_s,gamma)
         
-        AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM])
+        AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, zenc, z1_GM])
 
         tau = 1.0*h/wstar
         thetastar = 1.0*flux_s/(rhow[0]*1004*wstar)
@@ -74,6 +75,7 @@ def Main_Fun(rundate, gamma, flux_s):
     print "saving" + rundate, len(AvProfLims), dump_time_list[i], len(dump_time_list)    
     files.save_file(np.array(AvProfLims), "AvProfLims")
     files.save_file(np.array(invrinos), "invrinos")
+    files.save_file(np.array(gm_vars), "gm_vars")
 
 run_list = [["Nov302013", .005, 100], ["Dec142013", .01, 100], ["Dec202013", .005, 60], ["Dec252013", .0025, 60], ["Jan152014_1", .005, 150], ["Mar12014", .01, 60], ["Mar52014", .01, 150]]
 
