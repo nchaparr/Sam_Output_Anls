@@ -60,26 +60,26 @@ for i in range(len(label_list)):
     if i<99:
         points = For_Plots(Run_Date_List[i])
         rinovals = points.rinovals()
-        Deltah = points.Deltah_over_h()
+        Deltah = points.Deltah_over_h(8, 1) #[elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM]
         HistVars = points.HistVars()  #pha ??? not used
         AvProfVars = points.AvProfVars()  #pha ???  not used
         if Run_Date_List[i] == "Nov302013":
              Deltah[13] = np.nan
              Deltah[15:17] = np.nan
              Deltah[24:26] = np.nan
-             Ax3.loglog(rinovals[7:, 1], Deltah[7:], legend_list[i], label = label_list[i], markersize=10)
+             Ax3.loglog(rinovals[7:, 2], Deltah[7:], legend_list[i], label = label_list[i], markersize=10)
         elif Run_Date_List[i] == "Jan152014_1":
     #TODO: alternative starting index for Nov302013
              Deltah[16:21] = np.nan
              #print Deltah
-             Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i], markersize=10)
+             Ax3.loglog(rinovals[11:29, 2], Deltah[11:29], legend_list[i], label = label_list[i], markersize=10)
         elif Run_Date_List[i] == "Mar12014":
     #TODO: alternative starting index for Nov302013
              Deltah[11:17] = np.nan
              #print Deltah
-             Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i], markersize=10)
+             Ax3.loglog(rinovals[11:29, 2], Deltah[11:29], legend_list[i], label = label_list[i], markersize=10)
         else:     
-             Ax3.loglog(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i], markersize=10)
+             Ax3.loglog(rinovals[11:, 2], Deltah[11:], legend_list[i], label = label_list[i], markersize=10)
 
 xes = np.arange(.04, .075, .0001)
 x1es = np.arange(.029, .04, .0001)

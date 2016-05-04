@@ -68,10 +68,14 @@ class For_Plots:
         #Deltah0 = np.divide(Deltah0, AvProfVars[:,1])
         return Deltah_old
 
-    def Deltah_over_h(self):
+    def Deltah_over_h(self, upper, lower, scale):
+        #from get_limits.py 
+        #AvProfLims.append(
+        #    [elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM]
+        #   )
         AvProfVars = np.genfromtxt(self.read_path + "AvProfLims")
-        Deltah = np.subtract(AvProfVars[:, 2], AvProfVars[:, 0])
-        Deltah_over_h = np.divide(Deltah, AvProfVars[:, 1])
+        Deltah = np.subtract(AvProfVars[:, upper], AvProfVars[:, lower])
+        Deltah_over_h = np.divide(Deltah, AvProfVars[:, scale])
         return Deltah_over_h
 
     def Deltah_over_h_old(self):
