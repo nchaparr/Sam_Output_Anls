@@ -67,20 +67,26 @@ theta_0 = f(height[0:top_index])
 h0=AvProfVars[i,0]
 h=AvProfVars[i,1]
 h1=AvProfVars[i,2]
+z_1GM=AvProfVars[i,8]
         
 h0_index=np.where(height==h0)[0]
 h_index=np.where(height==h)[0]
 h1_index=np.where(height==h1)[0]
+
+xs=[theta[h0_index]+1.2, theta[h0_index]+2.2]
+ys = [h, z_1GM]
     
 Ax.plot(theta, height, 'k-')
 Ax1.plot(theta, height, 'k-', label = r"$\overline{\theta}$")#
+Ax.plot(xs, ys, 'k-')
+Ax.plot(xs, ys, 'ko')
 
-Ax.annotate('', xy=(theta_0[h_index]-.1, h), xycoords = 'data', xytext=(theta[h1_index], h), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
-Ax.text(309.6, h-50, r"$\gamma \times \delta$", size=30)
-Ax.annotate('', xy=(theta[h1_index], h), xycoords = 'data', xytext=(theta[h1_index], h1), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
-Ax.text(theta[h1_index]-.2, h+30, r"$\delta$", size=30)
-Ax.set_yticks([h0, h, h1])
-Ax.set_yticklabels([r"$z_{g0}$", r"$z_{g}$", r"$z_{g1}$"])
+#Ax.annotate('', xy=(theta_0[h_index]-.1, h), xycoords = 'data', xytext=(theta[h1_index], h), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
+#Ax.text(309.6, h-50, r"$\gamma \times \delta$", size=30)
+Ax.annotate('', xy=(theta[h1_index], h), xycoords = 'data', xytext=(theta[h1_index], z_1GM), textcoords = 'data', arrowprops=dict(arrowstyle = '<->'))
+Ax.text(theta[h1_index]-.2, h+13, r"$\delta$", size=30)
+Ax.set_yticks([h0, h, z_1GM, h1])
+Ax.set_yticklabels([r"$z_{g0}$", r"$z_{g}$", r"$z_{g1GM}$", r"$z_{g1}$"])
 Ax1.set_yticks([25])
 Ax1.set_yticklabels([0])
         

@@ -45,11 +45,11 @@ gamma_list=[.005, .01, .005, .0025, .005, .01, .01]
 dump_time = "0000010800"
 dump_time_index=35
 dump_time_index0=23
-theta_file_list = ["/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/theta_bar"+ dump_time for run_name in run_name_list]
-press_file_list = ["/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/press"+ dump_time for run_name in run_name_list]
-flux_file_list = ["/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/wvelthetapert"+ dump_time for run_name in run_name_list]
-height_file_list = ["/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/heights0000000600" for run_name in run_name_list]
-AvProfVars_list = ["/tera/phil/nchaparr/python/Plotting/"+run_name+"/data/AvProfLims" for run_name in run_name_list]
+theta_file_list = ["/tera/users/nchaparr/"+run_name+"/data/theta_bar"+ dump_time for run_name in run_name_list]
+press_file_list = ["/tera/users/nchaparr/"+run_name+"/data/press"+ dump_time for run_name in run_name_list]
+flux_file_list = ["/tera/users/nchaparr/"+run_name+"/data/wvelthetapert"+ dump_time for run_name in run_name_list]
+height_file_list = ["/tera/users/nchaparr/"+run_name+"/data/heights0000000600" for run_name in run_name_list]
+AvProfVars_list = ["/tera/users/nchaparr/"+run_name+"/data/AvProfLims" for run_name in run_name_list]
 
 #loop over text files files
 for i in range(len(theta_file_list)):
