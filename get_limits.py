@@ -67,11 +67,11 @@ def Main_Fun(rundate, gamma, flux_s):
         delta=z1_GM-h
         
         
-        #print c_delta, delta, z1_GM
+        
         [L0,N,B0,zenc]=nc.gm_vars(t,flux_s,gamma)
         
-        [c_delta, rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(delta, zenc, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
-        
+        [c_delta, rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(B0, N, zenc, delta, h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
+        print c_delta, delta, zenc, z1_GM
 
         AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, zenc, z1_GM])
         

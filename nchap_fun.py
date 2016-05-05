@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 """ starting to collect commonly used functions"""
 
 
-def calc_rino(delta, BLHeight, MLTheta, SfcFlux, Theta_jump, gamma, delta_h):
+def calc_rino(B0, N, zenc, delta, BLHeight, MLTheta, SfcFlux, Theta_jump, gamma, delta_h):
     """Richardson number
 
     Arguments:
@@ -26,8 +26,9 @@ def calc_rino(delta, BLHeight, MLTheta, SfcFlux, Theta_jump, gamma, delta_h):
     thetastar = 1.0 * SfcFlux / wstar
     deltatheta_GM = delta*gamma
     rino = 1.0 * Theta_jump / thetastar
-
-    c_delta = (BLHeight*deltatheta_GM*(9.81/MLTheta))*1.0/wstar**2
+    
+    wstar_GM = (B0*zenc)**(1.0/3)
+    c_delta = (delta*(N**2)*delta)*1.0/wstar_GM**2
     
     S = ((1.0 * BLHeight / wstar)**2) * (gamma) * (1.0 * 9.81 / MLTheta)
 
