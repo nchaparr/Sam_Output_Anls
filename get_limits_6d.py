@@ -54,7 +54,9 @@ def Main_Fun(rundate, gamma, flux_s):
 
         h_lev = np.where(height==h)[0]         
         delta_h=eltop_dthetadz - elbot_dthetadz
-
+        #
+        #  h = z_g
+        #
         [rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
 
         AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta])
