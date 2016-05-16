@@ -1,3 +1,6 @@
+#+STARTUP: showall
+#+STARTUP: hidestars
+
 * get pdfs from local heights
 
 <2015-08-05 Wed>
@@ -17,6 +20,16 @@
 ** look at Richardson numbers using 
    get_limits and plot_heights
 
+<2016-05-15 Sun>
+
+good.h5 is written by plot_dthetaflux.py
+has columns
+avprof_cols=['time', 'h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
+
+
+plot_zenc_compare.py  looks at h vs. tim
+
+gm_numbers.py write paper_table.h5
 
 
 

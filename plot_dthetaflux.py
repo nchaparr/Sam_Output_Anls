@@ -44,6 +44,7 @@ case_list = ["Nov302013","Dec142013", "Dec202013", "Dec252013", "Jan152014_1", "
 case_list.sort()
 
 root_dir="/newtera/tera/phil/nchaparr/python/Plotting"
+root_dir='/tera/users/nchaparr'
 prof_names=['heights','theta_bar','press','wvelthetapert','rootmeanwsq']
 prof_dict=od()
 #
@@ -53,7 +54,7 @@ prof_dict=od()
 # the arrays as dataframes
 # 
 #
-avprof_cols=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
+avprof_cols=['time', 'h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
 for date in case_list:
     if date == 'Nov302013':
         times=time900

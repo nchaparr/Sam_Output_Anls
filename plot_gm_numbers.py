@@ -2,32 +2,6 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from collections import OrderedDict as od
-h5new='good.h5'
-#
-# get the root attributes
-#
-
-df_dict=od()
-with pd.HDFStore(h5new,'r') as store:
-    df_overview=store.get('/df_overview')
-    varnames=list(store.get('/var_names'))
-    case_names=list(store.get('/date_names'))
-    time600=np.array(store.get('/time600'))
-    time900=np.array(store.get('/time900'))
-    for case in case_names:
-        for name in ['AvProfLims']:
-            nodename='{}/{}'.format(case,name)
-            df_dict[case,name]=store.get(nodename)
-#
-# get N and L0 for each case
-#
-Nvals=df_overview['N']
-names=df_overview['name']
-L0=df_overview['L0']
-
-run_key={}
-for item in df_overview.to_dict('records'):
-    run_key[item['name']]=dict(params=(item['fluxes'],item['gammas']))
 
 def gm_vars(surface_flux,gamma,h,theta_0):
     """
@@ -53,6 +27,34 @@ def gm_vars(surface_flux,gamma,h,theta_0):
     return L0,N,B0,wstar,wstar_gm
 
 if __name__ == "__main__":
+    h5new='good.h5'
+    #
+    # get the root attributes
+    #
+
+    df_dict=od()
+    with pd.HDFStore(h5new,'r') as store:
+        df_overview=store.get('/df_overview')
+        varnames=list(store.get('/var_names'))
+        case_names=list(store.get('/date_names'))
+        time600=np.array(store.get('/time600'))
+        time900=np.array(store.get('/time900'))
+        for case in case_names:
+            for name in ['AvProfLims']:
+                nodename='{}/{}'.format(case,name)
+                df_dict[case,name]=store.get(nodename)
+    #
+    # get N and L0 for each case
+    #
+    Nvals=df_overview['N']
+    names=df_overview['name']
+    L0=df_overview['L0']
+
+    run_key={}
+    for item in df_overview.to_dict('records'):
+        run_key[item['name']]=dict(params=(item['fluxes'],item['gammas']))
+
+    
     case_list=[]
     for case in run_key.keys():
         run_dict=run_key[case]

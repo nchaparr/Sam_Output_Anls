@@ -37,7 +37,8 @@ def find_zenc(time_sec,N,L0):
 if __name__ == "__main__":
     case_list=[]
     datadir='/newtera/tera/phil/nchaparr/python/Plotting'
-    columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
+    datadir='/tera/users/nchaparr'
+    columns=['time','h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
     keylist=list(run_key.keys())
     keylist.sort()
     for case in keylist:
@@ -50,6 +51,7 @@ if __name__ == "__main__":
         L0,N,B0=gm_vars(surface_flux,gamma)
         filename='{}/{}/data/AvProfLims'.format(datadir,case)
         out=np.genfromtxt(filename)
+        print(out.shape, out)
         print('gm: ',filename,out[0,0])
         df=pd.DataFrame.from_records(out,columns=columns)
         time_end=28800 
