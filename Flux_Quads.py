@@ -12,7 +12,7 @@ from matplotlib.colors import LinearSegmentedColormap
 import nchap_fun as nc
 from matplotlib.colors import Normalize
 from Make_Timelist import *
-from nchap_class import *
+from nchap_class import Get_Var_Arrays1
 
 
 """  
@@ -38,11 +38,15 @@ def Main_Fun(date, dump_time, height_level):
      thetaperts_list = []
 
      #get velocity perts and thetas using method from nchap_class
-     
-     Vars =  Get_Var_Arrays1("/tera/phil/nchaparr/tera2_cp/nchaparr/" \
-                             +date+"/runs/sam_case", \
-                             "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", \
-                             dump_time)
+     #sample file name for a case1
+     #/tera/phil/nchaparr/tera2_cp/nchaparr/Aug122014/runs/sam_case1/OUT_3D/NCHAPP1_testing_doscamiopdata_24_0000000060.nc
+     #
+     filepath = {'root_dir':'/tera/phil/nchaparr/tera2_cp/nchaparr',
+                 'sam_dir':'/runs/sam_case'}
+     suffix = "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_"
+     filepath['date'] = date
+     prefix = "{root_dir:}/{date:}/{sam_dir:}".format_map(filepath)
+     Vars =  Get_Var_Arrays1(prefix,suffix,dump_time)
      
      thetas_list, press_list = Vars.get_thetas()     
      
@@ -90,36 +94,44 @@ def Main_Fun(date, dump_time, height_level):
      
      return wvelperts, thetaperts
 
-go_ahead = np.int(input('have you changed the read paths for hvals and scales? (yes=1 or no=0): '))
-lev_index = np.int(input('which height level index in AvProfLims (z_f0=3, z_g0=0)?:'))
+# go_ahead = np.int(input('have you changed the read paths for hvals and scales? (yes=1 or no=0): '))
+# lev_index = np.int(input('which height level index in AvProfLims (z_f0=3, z_g0=0)?:'))
+
+go_ahead = 1
+lev_index = 0
+
+date_list = ["Mar52014", "Jan152014_1", "", "Dec142013", "Nov302013", "", "Mar12014", "Dec202013", "Dec252013"]
+lable_list = ["150/10", "150/5", "", "100/10", "100/5", "", "60/10", "60/5", "60/2.5"]
+
+nov30_dump_time_list, nov30_Times = Make_Timelists(1, 900, 28800)
+nov30_time_index=31
+
+dump_time_list, Times = Make_Timelists(1, 600, 28800)
+time_index=47
+
+avproflims_prefix = "/tera/users/nchaparr/"
+avproflims_dir = "/data/AvProfLims"
+invrinos_dir = "/data/invrinos"
 
 if go_ahead == 1:
      
-     date_list = ["Mar52014", "Jan152014_1", "", "Dec142013", "Nov302013", "", "Mar12014", "Dec202013", "Dec252013"]
-     lable_list = ["150/10", "150/5", "", "100/10", "100/5", "", "60/10", "60/5", "60/2.5"]
      theFig2, theAxes2 = plt.subplots(nrows=3, ncols=3)     
      
      #Loop over subplots for each date
      i=0
      for theAx2 in theAxes2.flat:
-         print(i)
+         print('case',i)
          if i==2 or i==5:
              theAx2.axis('off')
          else:         
              date = date_list[i]
              lable = lable_list[i]
              if date == "Nov302013":
-                 
-                 dump_time_list, Times = Make_Timelists(1, 900, 28800)
-                 time_index=31
-             else:
-                 
-                 dump_time_list, Times = Make_Timelists(1, 600, 28800)
-                 time_index=47
-             
+                 dump_time_list, Times = nov30_dump_time_list, nov30_Times
+                 time_index = nov30_time_index
              #get heights and convective scales from text files    
-             hvals = np.genfromtxt("/tera/users/nchaparr/"+date+"/data/AvProfLims")
-             scales = np.genfromtxt("/tera/users/nchaparr/"+date+"/data/invrinos")
+             hvals = np.genfromtxt("{}{}{}".format(avproflims_prefix,date,avproflims_dir))
+             scales = np.genfromtxt("{}{}{}".format(avproflims_prefix,date,invrinos_dir))
              thetastar, wstar = scales[time_index, 9], scales[time_index, 2]                
              
              #Get the perturbations using Main_Fun
