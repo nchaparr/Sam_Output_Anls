@@ -136,18 +136,20 @@ if __name__ == "__main__":
 
     #Get the perturbations using Main_Fun
 
-    do_plots = False
+    do_plots = True
     if do_plots:
 
         theFig2, theAxes2 = plt.subplots(nrows=3, ncols=3)
 
         #Loop over subplots for each date
-        i = 0
-        for theAx2 in theAxes2.flat:
-            print('case', i)
-            if i == 2 or i == 5:
+        datecount=0
+        for axcount,theAx2 in enumerate(theAxes2.flat):
+            print('case', date_list[datecount])
+            if axcount == 2 or axcount == 5:
                 theAx2.axis('off')
+                continue
             else:
+               
                 #Set up the axis spines
                 theAx2.spines['left'].set_position('zero')
                 theAx2.axvline(linewidth=2, color='k')
@@ -157,7 +159,7 @@ if __name__ == "__main__":
                 theAx2.axhline(linewidth=2, color='k')
                 theAx2.xaxis.set_ticks_position('bottom')
                 theAx2.spines['top'].set_visible(False)
-
+                (wvelperts, thetaperts, thetastar, wstar) = the_dict[date_list[datecount]]
                 #Set axis limits
                 theAx2.set_yticks([-6, -3, 3, 6])
                 theAx2.set_xticks([-2, -1, 1, 2])
@@ -221,7 +223,7 @@ if __name__ == "__main__":
                                        norm=the_norm)  #, vmin = 0, vmax = 120
 
             #next subplot
-            i = i + 1
+            datecount += 1
 
         #Format Figure with colorbar
         theFig2.subplots_adjust(right=0.8)

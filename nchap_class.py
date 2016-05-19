@@ -80,7 +80,9 @@ class Get_Var_Arrays1:
           self.path2 = path2          
           self.dump_time = dump_time
           self.nc_file_list = [path1 + str(i+1) + path2 + dump_time + ".nc" for i in range(10)]
-     
+
+     def get_filelist(self):
+          return self.nc_file_list
      
      def get_wvelperts(self):
           wvelperts_list = []
