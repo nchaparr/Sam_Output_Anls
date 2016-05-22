@@ -64,7 +64,7 @@ def Make_Timelists(dt, time_diff, stop_time):
      dump_time_list = [make_string(Time) for Time in Times]
 
      
-     return dump_time_list, Times_hrs
+     return dump_time_list, np.array(Times_hrs)
 
 if __name__ == "__main__":
      dump_time_list, Times_hrs = Make_Timelists(2, 30, 14400)
