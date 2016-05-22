@@ -5,6 +5,8 @@ from matplotlib.colors import Normalize
 from Make_Timelist import Make_Timelists
 from nchap_class import Get_Var_Arrays1
 import h5py
+from enum import Enum
+
 """  
      For plotting 2d histograms of theta and wvel perturbations    
 """
@@ -157,6 +159,7 @@ if __name__ == "__main__":
             dset[...] = scales[...]
             dset = case.create_dataset('hvals', hvals.shape, dtype=hvals.dtype)
             dset[...] = hvals[...]
+            case.attrs['time_index'] = time_index
 
             #Get the perturbations using Main_Fun
 
