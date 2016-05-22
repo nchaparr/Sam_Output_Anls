@@ -1,19 +1,10 @@
-from netCDF4 import Dataset
-import glob, os.path
 import numpy as np
-from scipy.interpolate import UnivariateSpline
-import matplotlib
-from matplotlib import cm
 import matplotlib.pyplot as plt
-import site
-from datetime import datetime
-#import seaborn as sns
-from matplotlib.colors import LinearSegmentedColormap
 import nchap_fun as nc
 from matplotlib.colors import Normalize
-from Make_Timelist import *
+from Make_Timelist import Make_Timelists
 from nchap_class import Get_Var_Arrays1
-import sys
+import h5py
 """  
      For plotting 2d histograms of theta and wvel perturbations    
 """
@@ -54,6 +45,7 @@ def Main_Fun(date, dump_time, height_level):
 
     height = Vars.get_height()
 
+    filenames = Vars.get_filelist()
     #get arrays of ensemble averaged variables, from nchap_fun
 
     ens_avthetas = nc.Ensemble1_Average(thetas_list)
@@ -61,6 +53,7 @@ def Main_Fun(date, dump_time, height_level):
 
     #now get the perturbations
     wvelthetaperts_list = []
+    full_profs_list = []
     for i in range(len(
             wvels_list)):  #TODO: this should be more modular, see nchap_class
         thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
@@ -82,6 +75,7 @@ def Main_Fun(date, dump_time, height_level):
         thetaperts_list.append(thetapert[slice_lev, :, :])
 
         wvelthetaperts_list.append(wvelthetapert)
+        full_profs_list.append((wvelpert, thetapert, wvelthetapert))
 
     #flatten the arrays, TODO: make a function or class method
     wvelperts = np.array(wvelperts_list)
@@ -94,7 +88,7 @@ def Main_Fun(date, dump_time, height_level):
     wvelperts = np.reshape(wvelperts, enum * ynum * xnum)
     thetaperts = np.reshape(thetaperts, enum * ynum * xnum)
 
-    return wvelperts, thetaperts
+    return wvelperts, thetaperts, full_profs_list, height, filenames
 
 
 if __name__ == "__main__":
@@ -119,37 +113,67 @@ if __name__ == "__main__":
     avproflims_dir = "/data/AvProfLims"
     invrinos_dir = "/data/invrinos"
 
-    the_dict = {}
-    for date, label in zip(date_list, label_list):
-        if date == "Nov302013":
-            dump_time_list, Times = nov30_dump_time_list, nov30_Times
-            time_index = nov30_time_index
-        #get heights and convective scales from text files
-        hval_file = "{}{}{}".format(avproflims_prefix, date, avproflims_dir)
-        hvals = np.genfromtxt(hval_file)
-        invrino_file = "{}{}{}".format(avproflims_prefix, date, invrinos_dir)
-        scales = np.genfromtxt(invrino_file)
-        thetastar, wstar = scales[time_index, 9], scales[time_index, 2]
-        wvelperts, thetaperts = Main_Fun(date, dump_time_list[time_index],
-                                         hvals[time_index, lev_index])
-        the_dict[date] = (wvelperts, thetaperts, thetastar, wstar)
+    h5_outfile = '/scratchSSD/datatmp/phil/profiles.h5'
+    with h5py.File(h5_outfile, 'w') as f:
+        the_dict = {}
+        for date, label in zip(date_list, label_list):
+            if date == "Nov302013":
+                dump_time_list, Times = nov30_dump_time_list, nov30_Times
+                time_index = nov30_time_index
+            #get heights and convective scales from text files
+            hval_file = "{}{}{}".format(avproflims_prefix, date,
+                                        avproflims_dir)
+            hvals = np.genfromtxt(hval_file)
+            print('hvals: ', hvals)
+            invrino_file = "{}{}{}".format(avproflims_prefix, date,
+                                           invrinos_dir)
+            scales = np.genfromtxt(invrino_file)
+            print('scales: ', scales)
+            thetastar, wstar = scales[time_index, 9], scales[time_index, 2]
+            wvelperts, thetaperts, full_profs_list, height, filelist = Main_Fun(
+                date, dump_time_list[time_index], hvals[time_index, lev_index])
+            the_dict[date] = (wvelperts, thetaperts, thetastar, wstar)
+            print(full_profs_list[0][0].shape)
+            case = f.create_group(date)
+            keys = ['wvelpert', 'thetapert', 'wvelthetapert']
+            for count, three_perts in enumerate(full_profs_list):
+                run = case.create_group("{}".format(count))
+                key_pairs = zip(keys, three_perts)
+                for key, array in key_pairs:
+                    print('writing ', date, key)
+                    dset = run.create_dataset(
+                        key, array.shape, dtype=array.dtype)
+                    dset[...] = array[...]
+            dset = case.create_dataset('height',
+                                       height.shape,
+                                       dtype=height.dtype)
+            dset[...] = height[...]
+            dt = h5py.special_dtype(vlen=str)
+            dset = case.create_dataset('filelist', (len(filelist), ), dtype=dt)
+            dset[:] = filelist[:]
+            dset = case.create_dataset('scales',
+                                       scales.shape,
+                                       dtype=scales.dtype)
+            dset[...] = scales[...]
+            dset = case.create_dataset('hvals', hvals.shape, dtype=hvals.dtype)
+            dset[...] = hvals[...]
 
-    #Get the perturbations using Main_Fun
+            #Get the perturbations using Main_Fun
 
-    do_plots = True
+    do_plots = False
     if do_plots:
 
         theFig2, theAxes2 = plt.subplots(nrows=3, ncols=3)
 
         #Loop over subplots for each date
-        datecount=0
-        for axcount,theAx2 in enumerate(theAxes2.flat):
+        datecount = 0
+        for axcount, theAx2 in enumerate(theAxes2.flat):
             print('case', date_list[datecount])
             if axcount == 2 or axcount == 5:
                 theAx2.axis('off')
                 continue
             else:
-               
+
                 #Set up the axis spines
                 theAx2.spines['left'].set_position('zero')
                 theAx2.axvline(linewidth=2, color='k')
@@ -159,7 +183,8 @@ if __name__ == "__main__":
                 theAx2.axhline(linewidth=2, color='k')
                 theAx2.xaxis.set_ticks_position('bottom')
                 theAx2.spines['top'].set_visible(False)
-                (wvelperts, thetaperts, thetastar, wstar) = the_dict[date_list[datecount]]
+                (wvelperts, thetaperts, thetastar,
+                 wstar) = the_dict[date_list[datecount]]
                 #Set axis limits
                 theAx2.set_yticks([-6, -3, 3, 6])
                 theAx2.set_xticks([-2, -1, 1, 2])
