@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+import h5py
+import json
 
 run_key={'Nov302013':{'params':(100,5)},         
          'Dec142013':{'params':(100,10)},        
@@ -35,44 +37,65 @@ def find_zenc(time_sec,N,L0):
     return zenc
 
 if __name__ == "__main__":
-    case_list=[]
-    datadir='/newtera/tera/phil/nchaparr/python/Plotting'
-    datadir='/tera/users/nchaparr'
-    columns=['time','h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
-    keylist=list(run_key.keys())
-    keylist.sort()
-    for case in keylist:
-        run_dict=run_key[case]
-        if case=='Nov302013':
-            time_int=900
-        else:
-            time_int=600
-        surface_flux,gamma=run_dict['params']
-        L0,N,B0=gm_vars(surface_flux,gamma)
-        filename='{}/{}/data/AvProfLims'.format(datadir,case)
-        out=np.genfromtxt(filename)
-        print(out.shape, out)
-        print('gm: ',filename,out[0,0])
-        df=pd.DataFrame.from_records(out,columns=columns)
-        time_end=28800 
-        num_times=len(df)
-        time_sec=np.linspace(time_int,time_end,num_times)
-        run_dict['df']=df
-        run_dict['L0']=L0
-        run_dict['N']=N
-        run_dict['df']['time_secs']=time_sec
-        run_dict['df']['time_nd']=time_sec*N
-        zenc=find_zenc(df['time_secs'],N,L0)
-        run_dict['df']['zenc']=zenc
-        run_dict['df']['h0_nd']=run_dict['df']['h0']/zenc
-        case_list.append((case,L0))
 
-    with pd.HDFStore('gm_try.h5','w') as store:
-        for case,run_dict in run_key.items():
-            nodename='/{}/AvProfLims'.format(case)
-            store.put(nodename,run_dict['df'])
+    write_df = False
+    if write_df:
+        case_list=[]
+        datadir='/newtera/tera/phil/nchaparr/python/Plotting'
+        datadir='/tera/users/nchaparr'
+        columns=['time','h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
+        keylist=list(run_key.keys())
+        keylist.sort()
+        for case in keylist:
+            run_dict=run_key[case]
+            if case=='Nov302013':
+                time_int=900
+            else:
+                time_int=600
+            surface_flux,gamma=run_dict['params']
+            L0,N,B0=gm_vars(surface_flux,gamma)
+            filename='{}/{}/data/AvProfLims'.format(datadir,case)
+            out=np.genfromtxt(filename)
+            print(out.shape, out)
+            print('gm: ',filename,out[0,0])
+            df=pd.DataFrame.from_records(out,columns=columns)
+            time_end=28800 
+            num_times=len(df)
+            time_sec=np.linspace(time_int,time_end,num_times)
+            run_dict['df']=df
+            run_dict['L0']=L0
+            run_dict['N']=N
+            run_dict['df']['time_secs']=time_sec
+            run_dict['df']['time_nd']=time_sec*N
+            zenc=find_zenc(df['time_secs'],N,L0)
+            run_dict['df']['zenc']=zenc
+            run_dict['df']['h0_nd']=run_dict['df']['h0']/zenc
+            case_list.append((case,L0))
 
-    case_list.sort(key=lambda case: case[1])
+        with pd.HDFStore('gm_try.h5','w') as store:
+            for case,run_dict in run_key.items():
+                nodename='/{}/AvProfLims'.format(case)
+                store.put(nodename,run_dict['df'])
+    else:
+        case_dict={}
+        gm_file = './data/gm_try.h5'
+        with pd.HDFStore(gm_file,'r') as store:
+            for item in store:
+                _,case,_ = item.split('/')
+                case_dict[case] = store[item]
+        with h5py.File(gm_file,'r') as store:
+            run_table = json.loads(store['/metadata'].attrs['run_table'])
+
+        case_list=[]
+        for case, df in case_dict.items():
+            surface_flux,gamma=run_table[case]['params']
+            L0,N,B0=gm_vars(surface_flux,gamma)
+            run_key[case]['L0'] = L0
+            run_key[case]['N'] = N
+            run_key[case]['B0'] = B0
+            case_list.append((case,L0))
+            run_key[case]['df'] =  df
+        case_list.sort(key=lambda case: case[1])
     plt.close('all')
     plotlist=['h','h1','h0','delhtop','delhbot','delhtot','delgm',
               'delhtot_rt','zf','zf0','zf1','delzfbot']
@@ -142,14 +165,11 @@ if __name__ == "__main__":
     with pd.HDFStore('paper_table.h5','w') as store:
         store.put('cases',df_cases,format='table')
         store.get_storer('cases').attrs.history = 'written 2015/8/5'
+    
         
-
-
-
-#Files = /newtera/tera/phil/nchaparr/python/Plotting/rundate/data/AvProfLims
-#indices of h0, h, h1 = 0, 1, 2
-#rundate = [Dec142013, Nov302013, Dec202013, Dec252013, Jan152014_1, Mar12014, Mar52014]
-#sfcflx/gamma = [100/10, 100/5, 60/5, 60/2.5, 150/5, 60/10, 150/10]
-#time increments for all except Nov302013 = 600, for Nov302013 = 900
-#end time = 28800
-
+# #Files = /newtera/tera/phil/nchaparr/python/Plotting/rundate/data/AvProfLims
+# #indices of h0, h, h1 = 0, 1, 2
+# #rundate = [Dec142013, Nov302013, Dec202013, Dec252013, Jan152014_1, Mar12014, Mar52014]
+# #sfcflx/gamma = [100/10, 100/5, 60/5, 60/2.5, 150/5, 60/10, 150/10]
+# #time increments for all except Nov302013 = 600, for Nov302013 = 900
+# #end time = 28800
