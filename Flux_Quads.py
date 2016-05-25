@@ -1,3 +1,6 @@
+"""
+  doc here
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 import nchap_fun as nc
@@ -8,8 +11,6 @@ import h5py
 from collections import OrderedDict
 import json
 from make_tuple import make_tuple
-
-
 """  
      For plotting 2d histograms of theta and wvel perturbations    
 """
@@ -98,51 +99,69 @@ def Main_Fun(date, dump_time, height_level):
 
 if __name__ == "__main__":
 
+    import argparse, textwrap
+    linebreaks = argparse.RawTextHelpFormatter
+    descrip = textwrap.dedent(globals()['__doc__'])
+    parser = argparse.ArgumentParser(formatter_class=linebreaks,
+                                     description=descrip)
+    parser.add_argument(
+        '-t', '--time',
+        type=int, help='time index',
+        required=True)
+    parser.add_argument('-c', '--case', help='case name', required=True)
+    parser.add_argument('-o',
+                        '--h5out',
+                        help='name of output hdf5',
+                        required=True)
+    args = parser.parse_args()
+
     #hvals order:
     #defined in nchap_fun.Get_CBLHeight
 
     hvals_names = ['zg0', 'h', 'eltop_dthetadz', 'zf0', 'elbot_flux', 'h_flux',
                    'eltop_flux', 'deltatheta', 'mltheta', 'z1_GMa']
-    hvals_columns = OrderedDict(zip(hvals_names, list(range(len(hvals_names)))))
+    hvals_columns = OrderedDict(zip(hvals_names, list(range(len(
+        hvals_names)))))
     hvals_tup = make_tuple(hvals_columns)
     #scale order
     #defined in get_limits.py
     scale_names = ['rino', 'invrino', 'wstar', 'S', 'tau', 'mltheta',
                    'deltatheta', 'pi3', 'pi4', 'thetastar', 'c_delta']
-    scale_columns = OrderedDict(zip(scale_names, list(range(len(hvals_names)))))
+    scale_columns = OrderedDict(zip(scale_names, list(range(len(
+        hvals_names)))))
     scale_tup = make_tuple(scale_columns)
     # go_ahead = np.int(input('have you changed the read paths for hvals and scales? (yes=1 or no=0): '))
     # lev_index = np.int(input('which height level index in AvProfLims (z_f0=3, z_g0=0)?:'))
-
 
     date_list = ["Mar52014", "Jan152014_1", "Dec142013", "Nov302013",
                  "Mar12014", "Dec202013", "Dec252013"]
     label_list = ["150/10", "150/5", "100/10", "100/5", "60/10", "60/5",
                   "60/2.5"]
 
+    label_dict = dict(zip(date_list, label_list))
+
     nov30_dump_time_list, nov30_Times = Make_Timelists(1, 900, 28800)
-    nov30_time_index = 31
 
     other_dump_time_list, other_Times = Make_Timelists(1, 600, 28800)
-    other_time_index = 47
 
     avproflims_prefix = "/tera/users/nchaparr/"
     avproflims_dir = "/data/AvProfLims"
     invrinos_dir = "/data/invrinos"
 
-    h5_outfile = '/scratchSSD/datatmp/phil/profiles.h5'
+    h5_outfile = args.h5out
     with h5py.File(h5_outfile, 'w') as f:
         the_dict = {}
-        pairs = list(zip(date_list, label_list))
+        print(args)
+        pairs = zip([args.case], [label_dict[args.case]])
         for date, label in pairs:
+            time_index = args.time
             if date == "Nov302013":
                 dump_time_list, Times = nov30_dump_time_list, nov30_Times
-                time_index = nov30_time_index
                 Times = nov30_Times
             else:
                 dump_time_list, Times = other_dump_time_list, nov30_Times
                 Times = other_Times
-                time_index = other_time_index
+            print('here are times: ', Times)
             #get heights and convective scales from text files
             hval_file = "{}{}{}".format(avproflims_prefix, date,
                                         avproflims_dir)
@@ -152,9 +171,11 @@ if __name__ == "__main__":
                                            invrinos_dir)
             scales = np.genfromtxt(invrino_file)
             print('scales: ', scales)
-            thetastar, wstar = scales[time_index, scale_tup.thetastar], scales[time_index, scale_tup.wstar]
+            thetastar, wstar = scales[time_index, scale_tup.thetastar], scales[
+                time_index, scale_tup.wstar]
             wvelperts, thetaperts, full_profs_list, height, sam_filelist = Main_Fun(
-                date, dump_time_list[time_index], hvals[time_index, hvals_tup.zg0])
+                date, dump_time_list[time_index],
+                hvals[time_index, hvals_tup.zg0])
             the_dict[date] = (wvelperts, thetaperts, thetastar, wstar)
             print(full_profs_list[0][0].shape)
             case = f.create_group(date)
@@ -186,6 +207,7 @@ if __name__ == "__main__":
                                        Times.shape,
                                        dtype=Times.dtype)
             dset.attrs['time_index'] = time_index
+            dset[...] = Times[...]
 
             #Get the perturbations using Main_Fun
 
