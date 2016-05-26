@@ -11,17 +11,14 @@ import h5py
 from collections import OrderedDict
 import json
 from make_tuple import make_tuple
-"""  
-     For plotting 2d histograms of theta and wvel perturbations    
-"""
 
 
-def Main_Fun(date, dump_time, height_level):
+def get_ensemble(date, dump_time_label, height_level=0):
     """Pulls output from an ensemble cases, gets ensemble averages and perturbations
 
     Arguments:
     date -- run date eg "Nov302013"
-    dump_time -- time of output eg '0000000720'
+    dump_time_label -- time of output eg '0000000720'
     height_level -- height at which to take slice of perturbations, eg z_g0
 
     Returns:
@@ -37,12 +34,15 @@ def Main_Fun(date, dump_time, height_level):
     #sample file name for a case1
     #/tera/phil/nchaparr/tera2_cp/nchaparr/Aug122014/runs/sam_case1/OUT_3D/NCHAPP1_testing_doscamiopdata_24_0000000060.nc
     #
+    #hvals order:
+    #defined in nchap_fun.Get_CBLHeight
+
     filepath = {'root_dir': '/tera/phil/nchaparr/tera2_cp/nchaparr',
                 'sam_dir': 'runs/sam_case'}
     suffix = "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_"
     filepath['date'] = date
     prefix = "{root_dir:}/{date:}/{sam_dir:}".format_map(filepath)
-    Vars = Get_Var_Arrays1(prefix, suffix, dump_time)
+    Vars = Get_Var_Arrays1(prefix, suffix, dump_time_label)
     file_list = Vars.get_filelist()
     print(file_list)
     thetas_list, press_list = Vars.get_thetas()
@@ -97,27 +97,7 @@ def Main_Fun(date, dump_time, height_level):
     return wvelperts, thetaperts, full_profs_list, height, filenames
 
 
-if __name__ == "__main__":
-
-    import argparse, textwrap
-    linebreaks = argparse.RawTextHelpFormatter
-    descrip = textwrap.dedent(globals()['__doc__'])
-    parser = argparse.ArgumentParser(formatter_class=linebreaks,
-                                     description=descrip)
-    parser.add_argument(
-        '-t', '--time',
-        type=int, help='time index',
-        required=True)
-    parser.add_argument('-c', '--case', help='case name', required=True)
-    parser.add_argument('-o',
-                        '--h5out',
-                        help='name of output hdf5',
-                        required=True)
-    args = parser.parse_args()
-
-    #hvals order:
-    #defined in nchap_fun.Get_CBLHeight
-
+def write_h5(case_dict,h5_outfile='test.h5'):
     hvals_names = ['zg0', 'h', 'eltop_dthetadz', 'zf0', 'elbot_flux', 'h_flux',
                    'eltop_flux', 'deltatheta', 'mltheta', 'z1_GMa']
     hvals_columns = OrderedDict(zip(hvals_names, list(range(len(
@@ -130,61 +110,46 @@ if __name__ == "__main__":
     scale_columns = OrderedDict(zip(scale_names, list(range(len(
         hvals_names)))))
     scale_tup = make_tuple(scale_columns)
-    # go_ahead = np.int(input('have you changed the read paths for hvals and scales? (yes=1 or no=0): '))
-    # lev_index = np.int(input('which height level index in AvProfLims (z_f0=3, z_g0=0)?:'))
 
-    date_list = ["Mar52014", "Jan152014_1", "Dec142013", "Nov302013",
-                 "Mar12014", "Dec202013", "Dec252013"]
-    label_list = ["150/10", "150/5", "100/10", "100/5", "60/10", "60/5",
-                  "60/2.5"]
-
-    label_dict = dict(zip(date_list, label_list))
-
-    nov30_dump_time_list, nov30_Times = Make_Timelists(1, 900, 28800)
-
-    other_dump_time_list, other_Times = Make_Timelists(1, 600, 28800)
 
     avproflims_prefix = "/tera/users/nchaparr/"
     avproflims_dir = "/data/AvProfLims"
     invrinos_dir = "/data/invrinos"
 
-    h5_outfile = args.h5out
     with h5py.File(h5_outfile, 'w') as f:
         the_dict = {}
-        print(args)
-        pairs = zip([args.case], [label_dict[args.case]])
-        for date, label in pairs:
-            time_index = args.time
-            if date == "Nov302013":
-                dump_time_list, Times = nov30_dump_time_list, nov30_Times
-                Times = nov30_Times
-            else:
-                dump_time_list, Times = other_dump_time_list, nov30_Times
-                Times = other_Times
+        for casename,the_dict in case_dict.items():
+            time_index = the_dict['time_index']
+            start,step,stop = the_dict['time_list']
+            dump_time_list, Times = Make_Timelists(start,step,stop)
             print('here are times: ', Times)
             #get heights and convective scales from text files
-            hval_file = "{}{}{}".format(avproflims_prefix, date,
+            hval_file = "{}{}{}".format(avproflims_prefix, casename,
                                         avproflims_dir)
             hvals = np.genfromtxt(hval_file)
             print('hvals: ', hvals)
-            invrino_file = "{}{}{}".format(avproflims_prefix, date,
+            invrino_file = "{}{}{}".format(avproflims_prefix, casename,
                                            invrinos_dir)
             scales = np.genfromtxt(invrino_file)
             print('scales: ', scales)
-            thetastar, wstar = scales[time_index, scale_tup.thetastar], scales[
-                time_index, scale_tup.wstar]
-            wvelperts, thetaperts, full_profs_list, height, sam_filelist = Main_Fun(
-                date, dump_time_list[time_index],
+            try:
+                thetastar, wstar = scales[time_index, scale_tup.thetastar], scales[
+                    time_index, scale_tup.wstar]
+            except IndexError:
+                print('skipping case {}: requested time index {}, total run is length {}'.format(
+                    casename,time_index,scales.shape[0]))
+                continue
+            wvelperts, thetaperts, full_profs_list, height, sam_filelist = get_ensemble(
+                casename, dump_time_list[time_index],
                 hvals[time_index, hvals_tup.zg0])
-            the_dict[date] = (wvelperts, thetaperts, thetastar, wstar)
             print(full_profs_list[0][0].shape)
-            case = f.create_group(date)
+            case = f.create_group(casename)
             keys = ['wvelpert', 'thetapert', 'wvelthetapert']
             for count, three_perts in enumerate(full_profs_list):
                 run = case.create_group("{}".format(count))
                 key_pairs = zip(keys, three_perts)
                 for key, array in key_pairs:
-                    print('writing ', date, key)
+                    print('writing ', case, key)
                     dset = run.create_dataset(
                         key, array.shape, dtype=array.dtype)
                     dset[...] = array[...]
@@ -208,106 +173,27 @@ if __name__ == "__main__":
                                        dtype=Times.dtype)
             dset.attrs['time_index'] = time_index
             dset[...] = Times[...]
+        f['/'].attrs['case_dict']=json.dumps(case_dict,indent=4)
+    return None
 
-            #Get the perturbations using Main_Fun
 
-    do_plots = False
-    if do_plots:
+if __name__ == "__main__":
 
-        theFig2, theAxes2 = plt.subplots(nrows=3, ncols=3)
+    import argparse, textwrap
+    linebreaks = argparse.RawTextHelpFormatter
+    descrip = textwrap.dedent(globals()['__doc__'])
+    parser = argparse.ArgumentParser(formatter_class=linebreaks,
+                                     description=descrip)
+    parser.add_argument('-j', '--jfile', help='json file with run info', required=True)
+    parser.add_argument('-r',
+                        '--root',
+                        help='root name of output hdf5',
+                        required=True)
+    args = parser.parse_args()
 
-        #Loop over subplots for each date
-        datecount = 0
-        for axcount, theAx2 in enumerate(theAxes2.flat):
-            print('case', date_list[datecount])
-            if axcount == 2 or axcount == 5:
-                theAx2.axis('off')
-                continue
-            else:
 
-                #Set up the axis spines
-                theAx2.spines['left'].set_position('zero')
-                theAx2.axvline(linewidth=2, color='k')
-                theAx2.spines['right'].set_visible(False)
-                theAx2.yaxis.set_ticks_position('left')
-                theAx2.spines['bottom'].set_position('zero')
-                theAx2.axhline(linewidth=2, color='k')
-                theAx2.xaxis.set_ticks_position('bottom')
-                theAx2.spines['top'].set_visible(False)
-                (wvelperts, thetaperts, thetastar,
-                 wstar) = the_dict[date_list[datecount]]
-                #Set axis limits
-                theAx2.set_yticks([-6, -3, 3, 6])
-                theAx2.set_xticks([-2, -1, 1, 2])
-                theAx2.tick_params(axis="both",
-                                   length=10,
-                                   width=2,
-                                   direction='in')
-                theAx2.tick_params(axis="x", pad=15)
+    with open(args.jfile,'r') as f:
+        case_dict = json.load(f)
+        write_h5(case_dict)
 
-                #Annotate
-                theAx2.text(-2.4,
-                            2,
-                            r"$ \frac{w^{\prime}}{w^{*}} $ ",
-                            fontdict=None,
-                            withdash=False,
-                            fontsize=16)
-                theAx2.text(0.4,
-                            -4,
-                            label,
-                            fontdict=None,
-                            withdash=False,
-                            fontsize=12)
-                theAx2.text(.4,
-                            4,
-                            r"$ \frac{\theta^{\prime}}{\theta^{*}} $ ",
-                            fontdict=None,
-                            withdash=False,
-                            fontsize=16)
-                theAx2.set_ylim(-6, 6)
-                theAx2.set_xlim(-3, 3)
-                theAx2.set_axis_bgcolor('white')
 
-                #Estimate the 2D histogram
-                nbins = 100
-                H, xedges, yedges = np.histogram2d(1.0 * wvelperts / wstar,
-                                                   1.0 * thetaperts /
-                                                   thetastar,
-                                                   bins=nbins,
-                                                   normed=True)
-
-                #H needs to be rotated and flipped
-                H = np.rot90(H)
-                H = np.flipud(H)
-
-                # Mask zeros
-                Hmasked = np.ma.masked_where(
-                    H == 0, H)  # Mask pixels with a value of zero
-
-                # Plot 2D histogram
-                xmin, xmax = np.amin(Hmasked), np.amax(Hmasked)
-                vmin = 0
-                vmax = .3
-                the_norm = Normalize(vmin=vmin, vmax=vmax, clip=False)
-
-                #Plot
-                im = theAx2.pcolormesh(xedges,
-                                       yedges,
-                                       Hmasked,
-                                       cmap='bone',
-                                       alpha=0.5,
-                                       norm=the_norm)  #, vmin = 0, vmax = 120
-
-            #next subplot
-            datecount += 1
-
-        #Format Figure with colorbar
-        theFig2.subplots_adjust(right=0.8)
-        cbar_ax = theFig2.add_axes([0.85, 0.15, 0.025, 0.7])
-        cbar_ax.set_xlabel(r"P($w^{\prime}, \theta^{\prime}$)/Bin Area",
-                           fontsize=14)
-        cbar_ax.xaxis.labelpad = 20
-        cbar_ax.set_yticks([0, .1])
-        cbar_ax.set_yticklabels([0, .1], fontsize=16)
-        theFig2.colorbar(im, cax=cbar_ax)
-        plt.show()
