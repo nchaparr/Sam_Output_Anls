@@ -1,3 +1,11 @@
+"""
+  Given a set of profiles produces by Flux_Quads.py  oputput conditionally sampled vertical
+  quadrant profiles
+
+  Example:  python quad_profiles.py -p profiles_may26_300.h5 -o flux_out_300.h5
+
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 import h5py
@@ -13,8 +21,21 @@ runs = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 if __name__ == "__main__":
 
-    h5_profiles = 'profiles_300.h5'
-    flux_profiles = 'flux_out_300.h5'
+    import argparse, textwrap
+    linebreaks = argparse.RawTextHelpFormatter
+    descrip = textwrap.dedent(globals()['__doc__'])
+    parser = argparse.ArgumentParser(formatter_class=linebreaks,
+                                     description=descrip)
+    parser.add_argument('-p', '--prof', help='h5 file produced by Flux_Quads.py', required=True)
+    parser.add_argument('-o',
+                        '--out',
+                        help='h5 file containing the quadrant output',
+                        required=True)
+    args = parser.parse_args()
+
+    
+    h5_profiles = args.prof
+    flux_profiles = args.out
     case_dict={}
     zeros = np.zeros([4])
     keys=['wn_tp', 'wn_tn','wp_tp','wp_tn']
@@ -48,7 +69,6 @@ if __name__ == "__main__":
                 firstpass = False
             for lev in range(nz):
                 store_sum = dict(zip(keys,zeros))
-                print('checking zeros: ',store_sum)
                 for run in runs:
                     thetapert[...] = infile[case][run]['thetapert'][lev,...]
                     wvelpert[...] = infile[case][run]['wvelpert'][lev,...]

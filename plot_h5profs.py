@@ -1,18 +1,30 @@
+"""
+ Given a set of conditionally sampled profiles produced by quad_profiles.py
+produce a profile plot for each case as a png file
+
+example:  python plot_h5profs.py -q flux_out_300.h5
+
+"""
+
 import h5py
 from matplotlib import pyplot as plt
 from collections import defaultdict
 import json
 import numpy as np
-import pandas as pd
 from gm_numbers import find_zenc
 
 
 if __name__ == "__main__":
-    paper_table_file = './data/paper_table.h5'
-    with pd.HDFStore(paper_table_file,'r') as store:
-        df_table = store['cases']
+
+    import argparse, textwrap
+    linebreaks = argparse.RawTextHelpFormatter
+    descrip = textwrap.dedent(globals()['__doc__'])
+    parser = argparse.ArgumentParser(formatter_class=linebreaks,
+                                     description=descrip)
+    parser.add_argument('-q', '--quad', help='h5 file produced by quad_quad_profiles.py', required=True)
+    args = parser.parse_args()
     
-    flux_profiles = 'flux_out_300.h5'
+    flux_profiles = args.quad
 
     attr_dict = dict(hvals='height_columns',scales='scale_columns')
     with h5py.File(flux_profiles,'r') as infile:

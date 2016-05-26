@@ -1,5 +1,10 @@
 """
-  doc here
+  input: json file produced by calc_index.py
+  output:  h5 containing all ensemble arrays of wvert and theta perturbations
+
+  example: python Flux_Quads.py -j index_list_time_nd_300.json  -r may26_300
+
+  which produces profiles_may26_300.h5
 """
 import numpy as np
 import matplotlib.pyplot as plt

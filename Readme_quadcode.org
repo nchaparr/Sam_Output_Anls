@@ -1,0 +1,41 @@
+workflow for running a quadrant analysis:
+
+1) pick a non-dimensional target time and edit the variable
+time_nd_target in calc_index.py.  Run this with
+
+python calc_index.py to produce a json file with the run dictionary
+
+for example:  if time_nd_target = 300  the output file will be called
+
+index_list_time_nd_300.json
+
+2) Run Flux_Quads.py to get an hdf5 file with all ensembles for every case that
+has that time index:
+
+python Flux_Quads.py -j index_list_time_nd_300.json  -r may26_300
+
+produces the file:
+
+profiles_may26_300.h5
+
+The file structure can be examined by doing:
+
+./h5dump.py profiles_may26_300.h5 
+
+3) to do the quadrant conditional averages, run
+
+python quad_profiles.py -p profiles_may26_300.h5 -o flux_out_300.h5
+
+4) to make the plots, run
+
+
+python plot_h5profs.py -q flux_out_300.h5
+
+for any of the scripts  do
+
+python script_name.py --help to get help
+
+
+
+
+
