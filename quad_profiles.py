@@ -48,6 +48,7 @@ if __name__ == "__main__":
                 firstpass = False
             for lev in range(nz):
                 store_sum = dict(zip(keys,zeros))
+                print('checking zeros: ',store_sum)
                 for run in runs:
                     thetapert[...] = infile[case][run]['thetapert'][lev,...]
                     wvelpert[...] = infile[case][run]['wvelpert'][lev,...]

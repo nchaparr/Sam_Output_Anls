@@ -194,6 +194,7 @@ if __name__ == "__main__":
 
     with open(args.jfile,'r') as f:
         case_dict = json.load(f)
-        write_h5(case_dict)
+        outfile = 'profiles_{}.h5'.format(args.root)
+        write_h5(case_dict,h5_outfile=outfile)
 
 
