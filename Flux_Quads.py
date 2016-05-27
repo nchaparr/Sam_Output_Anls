@@ -7,9 +7,7 @@
   which produces profiles_may26_300.h5
 """
 import numpy as np
-import matplotlib.pyplot as plt
 import nchap_fun as nc
-from matplotlib.colors import Normalize
 from Make_Timelist import Make_Timelists
 from nchap_class import Get_Var_Arrays1
 import h5py
