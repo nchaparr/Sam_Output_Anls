@@ -11,6 +11,7 @@ import json
 import datetime
 import copy
 import collections
+import sys
 
 run_key={'Nov302013':{'params':(100,5)},         
          'Dec142013':{'params':(100,10)},        
@@ -51,7 +52,6 @@ if __name__ == "__main__":
     filelist= []
     if write_df:
         case_list=[]
-        datadir='/newtera/tera/phil/nchaparr/python/Plotting'
         datadir='/tera/users/nchaparr'
         columns=['time','h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
         all_cases = copy.deepcopy(run_key)
@@ -69,9 +69,9 @@ if __name__ == "__main__":
             filename='{}/{}/data/AvProfLims'.format(datadir,case)
             filelist.append(filename)
             out=np.genfromtxt(filename)
-            print('gm: ',filename,out[0,0])
             df=pd.DataFrame.from_records(out,columns=columns)
-            print('debug: ',df['zf1'])
+            print('debug: dump df:\n {}'.format(df.head()))
+            sys.exit(0)
             time_end=28800 
             num_times=len(df)
             time_sec=np.linspace(time_int,time_end,num_times)

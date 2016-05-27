@@ -1,3 +1,7 @@
+#+STARTUP: showall
+#+STARTUP: hidestars
+
+
 workflow for running a quadrant analysis:
 
 * 1) pick a non-dimensional target time and edit the variable
