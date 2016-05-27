@@ -1,0 +1,26 @@
+To use this code you need to use
+/home/phil/mini35/bin/python
+
+* 1) What are the correct column heads for AvProfLims?
+
+https://github.com/nchaparr/Sam_Output_Anls/blob/phil/gm_numbers.py#L56  
+
+don't seem to be correct for the cases in /tera/users/nchaparr/Dec142013  because these lines:
+
+https://github.com/nchaparr/Sam_Output_Anls/blob/phil/gm_numbers.py#L69-L74 
+
+print this:
+
+~/repos/Sam_Output_Anls phil@node08% python gm_numbers.py
+start
+working on: Dec142013
+debug: dump df:
+     time     h0      h     h1    zf0     zf       zf1  deltatheta     mltheta
+0  100.0  175.0  200.0  150.0  175.0  200.0  0.923584  109.326078   43.181818
+1  150.0  225.0  250.0  175.0  200.0  225.0  0.964600  154.610422  274.166667
+2  150.0  250.0  300.0  200.0  225.0  250.0  1.203827  189.358321  286.017382
+3  175.0  300.0  350.0  225.0  275.0  325.0  1.413513  218.652155  362.213740
+4  200.0  325.0  375.0  250.0  300.0  350.0  1.409088  244.460541  370.422149
+
+(and related is this the best set of avproflims, or are newer files with more columns?)
+
