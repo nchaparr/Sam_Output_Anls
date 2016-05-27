@@ -16,6 +16,7 @@ def print_attrs(name, obj):
             print("    %s: %s" % (key, val))
     except IOError:
         print('this is an HDFStore pandas dataframe')
+        print(name,obj)
         print('-'*20)
 
 def dumph5(filename):
