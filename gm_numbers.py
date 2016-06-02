@@ -53,7 +53,7 @@ if __name__ == "__main__":
     if write_df:
         case_list=[]
         datadir='/tera/users/nchaparr'
-        columns=['time','h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
+        columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta','z1_GM']
         all_cases = copy.deepcopy(run_key)
         keylist=list(all_cases.keys())
         keylist.sort()
@@ -71,7 +71,6 @@ if __name__ == "__main__":
             out=np.genfromtxt(filename)
             df=pd.DataFrame.from_records(out,columns=columns)
             print('debug: dump df:\n {}'.format(df.head()))
-            sys.exit(0)
             time_end=28800 
             num_times=len(df)
             time_sec=np.linspace(time_int,time_end,num_times)
