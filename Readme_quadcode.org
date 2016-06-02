@@ -18,7 +18,7 @@ python script_name.py --help to get help
 2   Mar52014  28.750974  0.922139  0.018074     150    10.0
 3  Dec202013  30.581238  1.304101  0.012780      60     5.0
 4  Nov302013  39.480208  1.304101  0.012780     100     5.0
-
+6  Dec252013  51.431307  1.844278  0.009037      60     2.5
 
 * 1) pick a non-dimensional target time  and get the timesteps closest
   to that target for each case using calc_index.py like this:
@@ -65,8 +65,3 @@ The file structure can be examined by doing:
 * 4) to make the plots, run
 
   python plot_h5profs.py -q flux_out_300.h5
-
-
-
-
-
