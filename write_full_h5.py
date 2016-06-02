@@ -120,6 +120,7 @@ for case in run_name_list:
 layervars=['invrinos','AvProfLims']
 
 thickness_columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta']
+[elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM]
 rino_columns=['rino', 'invrino', 'wstar', 'S', 'tau', 'mltheta', 'deltatheta', 
               'pi3', 'pi4', 'thetastar']
 layer_columns=dict(invrinos=rino_columns,AvProfLims=thickness_columns)

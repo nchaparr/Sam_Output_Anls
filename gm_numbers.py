@@ -53,7 +53,7 @@ if __name__ == "__main__":
     if write_df:
         case_list=[]
         datadir='/tera/users/nchaparr'
-        columns=['h0','h','h1','zf0','zf','zf1','deltatheta','mltheta','z1_GM']
+        columns=['zg0','h','zg1','zf0','zf','zf1','deltatheta','mltheta','z1_GM']
         all_cases = copy.deepcopy(run_key)
         keylist=list(all_cases.keys())
         keylist.sort()
@@ -82,7 +82,7 @@ if __name__ == "__main__":
             run_dict['df']['time_nd']=time_sec*N
             zenc=find_zenc(df['time_secs'].values,N,L0)
             run_dict['df']['zenc']=zenc
-            run_dict['df']['h0_nd']=run_dict['df']['h0']/zenc
+            run_dict['df']['zg0_nd']=run_dict['df']['zg0']/zenc
             print('here: ',run_dict['df'])
             case_list.append((case,L0))
 
@@ -127,15 +127,15 @@ if __name__ == "__main__":
         df=run_dict[casename]['df']
         zenc=find_zenc(df['time_secs'].values,N,L0)
         print('debug2: ',N, L0, zenc,df['time_secs'])
-        for key in ['h','h0','h1','zf','zf0','zf1']:
+        for key in ['h','zg0','zg1','zf','zf0','zf1']:
             nd_key='{}_nd'.format(key)
             df[nd_key]=df[key]/zenc
-        df['delhtop']=(df['h1'] - df['h'])/df['h']
-        df['delhbot']=(df['h'] - df['h0'])/df['h']
-        df['delhtot']=(df['h1'] - df['h0'])/df['h']
+        df['delhtop']=(df['zg1'] - df['h'])/zenc
+        df['delhbot']=(df['h'] - df['zg0'])/zenc
+        df['delhtot']=(df['zg1'] - df['zg0'])/zenc
         df['delgm']=0.55*(zenc/L0)**(-2/3.)  #eq. 26
-        df['delhtot_rt']=(df['h1'] - df['h0'])/df['h']
-        df['delzfbot']=(df['zf'] - df['zf0'])/df['zf']
+        df['delhtot_rt']=(df['zg1'] - df['zg0'])/zenc
+        df['delzfbot']=(df['zf'] - df['zf0'])/zenc
         df['zenc']=zenc
         print('debug: ',df['zf1'])
     cases=[name[0] for name in case_list]
@@ -158,9 +158,10 @@ if __name__ == "__main__":
     new_table = 'paper_table.h5'
     with pd.HDFStore(new_table,'w') as store:
         store.put('cases',df_cases,format='table')
+        print('wrote df_cases:\n{}',df_cases)
+    with h5py.File(new_table,'a') as store:
         out = datetime.datetime.today()
         dateString=out.strftime("%b %d, %Y %H:%M %Z")
-    with h5py.File(new_table,'a') as store:
         meta = store.create_group('metadata')
         out = datetime.datetime.today()
         datestring=out.strftime("%b %d, %Y %H:%M %Z")
@@ -172,23 +173,24 @@ if __name__ == "__main__":
     if do_plot:
         
         plt.close('all')
-        plotlist=['h','h1','h0','delhtop','delhbot','delhtot','delgm',
-                  'delhtot_rt','zf','zf0','zf1','delzfbot']
-        xy_dict={'h':('time_nd','h_nd'),'h1':('time_nd','h1_nd'),'h0':('time_nd','h0_nd'),'delhtop':('time_nd','delhtop'),
+        plotlist=['zg','zg1','zg0','delhtop','delhbot','delhtot','delgm',
+                    'delhtot_rt','zf','zf0','zf1','delzfbot']
+        xy_dict={'zg':('time_nd','h_nd'),'zg1':('time_nd','zg1_nd'),'zg0':('time_nd','zg0_nd'),'delhtop':('time_nd','delhtop'),
                  'delhbot':('time_nd','delhbot'),'delhtot':('time_nd','delhtot'),'delgm':('time_nd','delgm'),
                  'delhtot_rt':('time_secs','delhtot_rt'),'zf':('time_nd','zf_nd'),
                  'zf0':('time_nd','zf0_nd'),'zf1':('time_nd','zf1_nd'),'delzfbot':('time_nd','delzfbot')}
-        titles=dict(h='non-dimensional h',h1='non-dimensional h1',h0='non-dimensional h0',
-                    delhtop='(h1 - h)/h',delhbot='(h - h0)/h',delhtot='(h1 - h0)/h',
-                    delgm='$\delta/z_{enc}$',delhtot_rt='(h1 - h0)/h vs. dimensional time',
+        titles=dict(zg='non-dimensional zg',zg1='non-dimensional zg1',zg0='non-dimensional zg0',
+                    delhtop='(zg1 - zg)/zenc',delhbot='(zg - zg0)/zenc',delhtot='(zg1 - zg0)/zenc',
+                    delgm='$\delta/z_{enc}$',delhtot_rt='(zg1 - zg0)/zenc vs. dimensional time',
                     zf='non-dimensional zf',zf0='non-dimensional zf0',zf1='non-dimensional zf1',
-                    delzfbot='(zf - zf0)/zf')
-        ylims=dict(h=(0.6,1.5),h1=(0.6,1.5),h0=(0.6,1.5),zf=(0.6,1.5),zf1=(0.6,1.5),zf0=(0.6,1.5),
+                    delzfbot='(zf - zf0)/zenc')
+        ylims=dict(zg=(0.6,1.5),zg1=(0.6,1.5),zg0=(0.6,1.5),zf=(0.6,1.5),zf1=(0.6,1.5),zf0=(0.6,1.5),
                    delgm=(0.0,0.7),delhtop=(0.0,0.7),delhbot=(0.0,0.7),
-                   delhtot=(0.0,0.7),delhtot_rt=(0.0,0.7),delzfbot=(0,0.7))
+                   delhtot=(0.0,0.7),delhtot_rt=(0.2,0.8),delzfbot=(0,0.4))
     
         plot_dict={}
         for plot in plotlist:
+            print('creating axis for {}'.format(plot))
             fig,ax=plt.subplots(1,1)
             plot_dict[plot]=ax
 
