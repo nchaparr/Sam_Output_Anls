@@ -37,7 +37,7 @@ def calc_rino(B0, N, delta, BLHeight, zenc, MLTheta, SfcFlux, Theta_jump, gamma,
 
     pi4 = gamma * 1.0 * delta_h / Theta_jump
 
-    print c_delta, wstar_GM, delta           
+    #print c_delta, wstar_GM, delta           
 
     return c_delta, rino, 1.0 / rino, wstar, S, pi3, pi4
 

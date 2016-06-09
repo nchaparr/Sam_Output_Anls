@@ -43,7 +43,7 @@ for i in range(len(label_list)):
         gm_vars = points.gm_vars()
 
         if Run_Date_List[i]=="Nov302013":
-            print "Nov302013", gm_vars[11:,3].shape, AvProfVars[11:,8].shape, AvProfVars[11:, 3].shape
+            #print "Nov302013", gm_vars[11:,3].shape, AvProfVars[11:,8].shape, AvProfVars[11:, 3].shape
             Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 8], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 2], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
@@ -55,7 +55,7 @@ for i in range(len(label_list)):
             #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 6], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.multiply(Times0[11:],gm_vars[11:,1]), np.divide(AvProfVars[11:, 7], gm_vars[11:, 0]), legend_list[i], label = label_list[i])
         else:
-            print gm_vars[11:,3].shape, AvProfVars[11:,8].shape, AvProfVars[11:, 3].shape
+            #print gm_vars[11:,3].shape, AvProfVars[11:,8].shape, AvProfVars[11:, 3].shape
             Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 8], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 2], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
