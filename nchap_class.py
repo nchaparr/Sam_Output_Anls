@@ -68,7 +68,7 @@ class For_Plots:
 
     def Deltah_old(self):
         AvProfVars_old = np.genfromtxt(self.path + "AvProfLims_old")
-        Deltah_old = np.subtract(AvProfVars_old[:, 2], AvProfVars_old[:, 0])
+        Deltah_old = np.subtract(AvProfVars_old[:,2], AvProfVars_old[:, 0])
         #Deltah0 = np.divide(Deltah0, AvProfVars[:,1])
         return Deltah_old
 
@@ -82,10 +82,10 @@ class For_Plots:
         Deltah_over_h = np.divide(Deltah, AvProfVars[:, scale])
         return Deltah_over_h
 
-    def Deltah_over_h_old(self):
+    def Deltah_over_h_old(self, upper, lower, scale):
         AvProfVars_old = np.genfromtxt(self.read_path + "AvProfLims_old")
-        Deltah_old = np.subtract(AvProfVars_old[:, 2], AvProfVars_old[:, 0])
-        Deltah_over_h_old = np.divide(Deltah_old, AvProfVars_old[:, 1])
+        Deltah_old = np.subtract(AvProfVars_old[:, upper], AvProfVars_old[:, lower])
+        Deltah_over_h_old = np.divide(Deltah_old, AvProfVars_old[:, scale])
         return Deltah_over_h_old
 
 
