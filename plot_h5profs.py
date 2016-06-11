@@ -50,29 +50,31 @@ if __name__ == "__main__":
     if plot:
         plt.close('all')
         #TODO: 
-        for case in cases:
-            height_columns = data_dict[case]['hvals']['height_columns']
-            height = data_dict[case]['height']['data'][...]
-            zg0_index = data_dict[case]['hvals']['height_columns']['zg0']
-            zf0_index = data_dict[case]['hvals']['height_columns']['zf0']
-            time_index = data_dict[case]['time_index']
-            scales = data_dict[case]['scales']['data']
-            hvals = data_dict[case]['hvals']['data']
-            #scales = data.dict[case]['scales']
-	    #print(scales) 
-            time_sec = data_dict[case]['time_seconds']
-            N = case_numbers[case]['N']
-            L0 = case_numbers[case]['L0']
-            surface_flux=case_numbers[case]['fluxes']/1004
-	    #surface_flux = case_numbers[case]['fluxes']
-	    #surface_flux = (surface_flux1)/(1*1004.0)
-            zenc = find_zenc(time_sec,N,L0)
-            height_nd = height/zenc
-            print('found zenc: ',zenc, scales[time_index, 2])
-	    
+        
+            
+            
+        
+        for key in keys:
             fig,ax = plt.subplots(1,1)
-            total_flux=np.zeros_like(height)
-            for key in keys:
+            for case in cases:
+                total_flux=np.zeros_like(height)
+                height_columns = data_dict[case]['hvals']['height_columns']
+                height = data_dict[case]['height']['data'][...]
+                zg0_index = data_dict[case]['hvals']['height_columns']['zg0']
+                zf0_index = data_dict[case]['hvals']['height_columns']['zf0']
+                time_index = data_dict[case]['time_index']
+                scales = data_dict[case]['scales']['data']
+                hvals = data_dict[case]['hvals']['data']
+                time_sec = data_dict[case]['time_seconds']
+                N = case_numbers[case]['N']
+                L0 = case_numbers[case]['L0']
+                surface_flux=case_numbers[case]['fluxes']/1004
+	    
+	    
+                zenc = find_zenc(time_sec,N,L0)
+                height_nd = height/zenc
+                print('found zenc: ',zenc, scales[time_index, 2])
+	    
                 flux = data_dict[case][key]['data']
                 ax.plot(flux/surface_flux,height_nd,label=key)
                 total_flux = total_flux + flux
