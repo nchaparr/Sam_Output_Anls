@@ -49,30 +49,38 @@ if __name__ == "__main__":
     plot = True
     if plot:
         plt.close('all')
+        #TODO: 
         for case in cases:
             height_columns = data_dict[case]['hvals']['height_columns']
             height = data_dict[case]['height']['data'][...]
             zg0_index = data_dict[case]['hvals']['height_columns']['zg0']
             zf0_index = data_dict[case]['hvals']['height_columns']['zf0']
             time_index = data_dict[case]['time_index']
+            scales = data_dict[case]['scales']['data']
             hvals = data_dict[case]['hvals']['data']
+            #scales = data.dict[case]['scales']
+	    #print(scales) 
             time_sec = data_dict[case]['time_seconds']
             N = case_numbers[case]['N']
             L0 = case_numbers[case]['L0']
+            surface_flux=case_numbers[case]['fluxes']/1004
+	    #surface_flux = case_numbers[case]['fluxes']
+	    #surface_flux = (surface_flux1)/(1*1004.0)
             zenc = find_zenc(time_sec,N,L0)
             height_nd = height/zenc
-            print('found zenc: ',zenc)
+            print('found zenc: ',zenc, scales[time_index, 2])
+	    
             fig,ax = plt.subplots(1,1)
             total_flux=np.zeros_like(height)
             for key in keys:
                 flux = data_dict[case][key]['data']
-                ax.plot(flux,height_nd,label=key)
+                ax.plot(flux/surface_flux,height_nd,label=key)
                 total_flux = total_flux + flux
-            ax.plot(total_flux,height_nd,label='total_flux')
+            ax.plot(total_flux/surface_flux,height_nd,label='total_flux')
             ax.axhline(hvals[time_index,zg0_index]/zenc)
             ax.axhline(hvals[time_index,zf0_index]/zenc)
             title = "time step {time_periods:5.2f} (periods), L0={L0:6.3f} m, Nperiod = {Nperiod:4.2f} min".format_map(case_numbers[case])
-            ax.set(title=title,ylim=(0.,1.5))
+            ax.set(title=title,ylim=(0.,1.5), xlim=(-1.2, 2))
             figname = '{}_300.png'.format(case)
             ax.legend()
             fig.savefig(figname)
