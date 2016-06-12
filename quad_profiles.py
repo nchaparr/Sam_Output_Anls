@@ -37,8 +37,8 @@ if __name__ == "__main__":
     h5_profiles = args.prof
     flux_profiles = args.out
     case_dict={}
-    zeros = np.zeros([4]) #chang to 5
-    keys=['wn_tp', 'wn_tn','wp_tp','wp_tn'] #add total_flux 'w_t'
+    zeros = np.zeros([5]) #chang to 5
+    keys=['wn_tp', 'wn_tn','wp_tp','wp_tn', 'w_t'] #add total_flux 'w_t'
     with h5py.File(h5_profiles,'r') as infile, h5py.File(flux_profiles,'w') as outfile:
         firstpass = True
         for case in list(infile.keys()):
@@ -66,15 +66,15 @@ if __name__ == "__main__":
                 nz,ny,nx = infile[case]['0']['thetapert'].shape
                 thetapert = np.empty_like(infile[case]['0']['thetapert'][0,...])
                 wvelpert = np.empty_like(infile[case]['0']['thetapert'][0,...])
-	        #wvelthetapert = np.empty_like(infile[case]['0']['wvelthetapert'][0,...])
-	        #print(wvelthetapert)
+                wvelthetapert = np.empty_like(infile[case]['0']['thetapert'][0,...])                	        
                 firstpass = False
             for lev in range(nz):
                 store_sum = dict(zip(keys,zeros))
                 for run in runs:
                     thetapert[...] = infile[case][run]['thetapert'][lev,...]
                     wvelpert[...] = infile[case][run]['wvelpert'][lev,...]
-	            #wvelthetapert[...]=infile[case][run]['wvelthetapert'][lev,...] 
+                    wvelthetapert[...]=infile[case][run]['wvelthetapert'][lev,...] 
+                    
                     hit = np.logical_and(wvelpert < 0.,thetapert > 0.)
                     flux = (wvelpert[hit]*thetapert[hit]).mean()
                     store_sum['wn_tp'] += flux
@@ -91,8 +91,8 @@ if __name__ == "__main__":
                     flux = (wvelpert[hit]*thetapert[hit]).mean()
                     store_sum['wp_tp'] += flux
 
-	            #flux=wvelthetapert.mean()
-	            #store_sum['w_t'] += flux
+                    flux=wvelthetapert.mean()
+                    store_sum['w_t'] += flux
 
                 for key in keys:
                     store_sum[key] = store_sum[key]/len(runs)

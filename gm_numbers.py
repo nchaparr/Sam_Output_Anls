@@ -13,14 +13,14 @@ import copy
 import collections
 import sys
 
-run_key={'Nov302013':{'params':(100,5)},         
-         'Dec142013':{'params':(100,10)},        
-         'Dec202013':{'params':(60,5)},          
-         'Dec252013':{'params':(60,2.5)},        
-         'Jan152014_1':{'params':(150,5)},         
-         'Mar12014':{'params':(60,10)},         
-         'Mar52014':{'params':(150,10)}}        
-
+run_key={'Nov302013':{'params':(100,5,'ko')},         
+         'Dec142013':{'params':(100,10,'kv')},        
+         'Dec202013':{'params':(60,5,'yo')},          
+         'Dec252013':{'params':(60,2.5,'y*')},        
+         'Jan152014_1':{'params':(150,5,'ro')},         
+         'Mar12014':{'params':(60,10,'yv')},
+}
+         
 def gm_vars(surface_flux,gamma):
     rho=1.
     cp=1004.
@@ -43,7 +43,7 @@ def gm_vars(surface_flux,gamma):
 
 def find_zenc(time_sec,N,L0):
     zenc=L0*(2*time_sec*N)**0.5
-    print('inside2: ',N,L0,time_sec,'zenc: !!!',type(zenc))
+    #print('inside2: ',N,L0,time_sec,'zenc: !!!',type(zenc))
     return zenc
 
 if __name__ == "__main__":
@@ -58,23 +58,26 @@ if __name__ == "__main__":
         keylist=list(all_cases.keys())
         keylist.sort()
         for case in keylist:
-            print('working on: {}'.format(case))
+            #print('working on: {}'.format(case))
             run_dict=all_cases[case]
             if case=='Nov302013':
                 time_int=900
             else:
                 time_int=600
-            surface_flux,gamma=run_dict['params']
+            surface_flux,gamma,legend=run_dict['params']
+	    #legend=run_dict['params']['legend']
+            print(legend)
             L0,N,B0=gm_vars(surface_flux,gamma)
             filename='{}/{}/data/AvProfLims'.format(datadir,case)
             filelist.append(filename)
             out=np.genfromtxt(filename)
             df=pd.DataFrame.from_records(out,columns=columns)
-            print('debug: dump df:\n {}'.format(df.head()))
+            #print('debug: dump df:\n {}'.format(df.head()))
             time_end=28800 
             num_times=len(df)
             time_sec=np.linspace(time_int,time_end,num_times)
-            print(time_sec)
+            #print(time_sec)
+	    #run_dict['legend']=legend
             run_dict['df']=df
             run_dict['L0']=L0
             run_dict['N']=N
@@ -112,7 +115,7 @@ if __name__ == "__main__":
     run_dict = collections.defaultdict(dict)
     run_dict.update(run_key)
     for case, df in case_dict.items():
-        surface_flux,gamma=run_table[case]['params']
+        surface_flux,gamma, legend=run_table[case]['params']
         L0,N,B0=gm_vars(surface_flux,gamma)
         run_dict[case]['L0'] = L0
         run_dict[case]['N'] = N
@@ -126,7 +129,7 @@ if __name__ == "__main__":
         L0,N=run_dict[casename]['L0'],run_dict[casename]['N']
         df=run_dict[casename]['df']
         zenc=find_zenc(df['time_secs'].values,N,L0)
-        print('debug2: ',N, L0, zenc,df['time_secs'])
+        #print('debug2: ',N, L0, zenc,df['time_secs'])
         for key in ['h','zg0','zg1','zf','zf0','zf1']:
             nd_key='{}_nd'.format(key)
             df[nd_key]=df[key]/zenc
@@ -137,7 +140,7 @@ if __name__ == "__main__":
         df['delhtot_rt']=(df['zg1'] - df['zg0'])/zenc
         df['delzfbot']=(df['zf'] - df['zf0'])/zenc
         df['zenc']=zenc
-        print('debug: ',df['zf1'])
+        #print('debug: ',df['zf1'])
     cases=[name[0] for name in case_list]
         
     df_cases=pd.DataFrame(cases,columns=['name'])
@@ -145,7 +148,8 @@ if __name__ == "__main__":
     #  params keyword is (flux,gamma) tuple
     #
     gammas=[run_dict[case]['params'][1] for case in cases]
-    fluxes=[run_dict[case]['params'][0] for case in cases]
+    fluxes=[run_dict[case]['params'][0] for case in cases]    
+    legend=[run_dict[case]['params'][2] for case in cases]	
     l0=[run_dict[case]['L0'] for case in cases]
     N=[run_dict[case]['N'] for case in cases]
     period=[1./Nval/60. for Nval in N]   #minutes
@@ -158,7 +162,7 @@ if __name__ == "__main__":
     new_table = 'paper_table.h5'
     with pd.HDFStore(new_table,'w') as store:
         store.put('cases',df_cases,format='table')
-        print('wrote df_cases:\n{}',df_cases)
+        #print('wrote df_cases:\n{}',df_cases)
     with h5py.File(new_table,'a') as store:
         out = datetime.datetime.today()
         dateString=out.strftime("%b %d, %Y %H:%M %Z")
@@ -190,12 +194,13 @@ if __name__ == "__main__":
     
         plot_dict={}
         for plot in plotlist:
-            print('creating axis for {}'.format(plot))
+            #print('creating axis for {}'.format(plot))
             fig,ax=plt.subplots(1,1)
             plot_dict[plot]=ax
 
         for casename,L0 in case_list:
             label='{:3.1f}'.format(L0)
+            legend=legend
             df = run_dict[casename]['df']
 
             for plot in plotlist:
@@ -206,7 +211,7 @@ if __name__ == "__main__":
         for plot,the_ax in plot_dict.items():
             the_ax.set_ylim(ylims[plot])
             the_ax.set_title(titles[plot])
-            the_ax.legend(loc='best')
+            the_ax.legend(legend, label=label, loc='best')
             if plot == 'delhtot_rt':
                 the_ax.set_xlabel('time (sec)')
             else:

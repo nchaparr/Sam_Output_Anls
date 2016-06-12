@@ -45,19 +45,14 @@ if __name__ == "__main__":
                     attrname = attr_dict[dset]
                     data_dict[case][dset][attrname] = json.loads(infile[case][dset].attrs[attrname])
 
-    keys=['wn_tp', 'wn_tn','wp_tp','wp_tn']
+    keys=['wn_tp', 'wn_tn','wp_tp','wp_tn', 'w_t']
     plot = True
     if plot:
-        plt.close('all')
-        #TODO: 
-        
-            
-            
-        
+        plt.close('all')        
         for key in keys:
             fig,ax = plt.subplots(1,1)
             for case in cases:
-                total_flux=np.zeros_like(height)
+                #total_flux=np.zeros_like(height)
                 height_columns = data_dict[case]['hvals']['height_columns']
                 height = data_dict[case]['height']['data'][...]
                 zg0_index = data_dict[case]['hvals']['height_columns']['zg0']
@@ -68,17 +63,12 @@ if __name__ == "__main__":
                 time_sec = data_dict[case]['time_seconds']
                 N = case_numbers[case]['N']
                 L0 = case_numbers[case]['L0']
-                surface_flux=case_numbers[case]['fluxes']/1004
-	    
-	    
+                surface_flux=case_numbers[case]['fluxes']/1004	    
                 zenc = find_zenc(time_sec,N,L0)
                 height_nd = height/zenc
-                print('found zenc: ',zenc, scales[time_index, 2])
-	    
+                print('found zenc: ',zenc, scales[time_index, 2])	    
                 flux = data_dict[case][key]['data']
                 ax.plot(flux/surface_flux,height_nd,label=key)
-                total_flux = total_flux + flux
-            ax.plot(total_flux/surface_flux,height_nd,label='total_flux')
             ax.axhline(hvals[time_index,zg0_index]/zenc)
             ax.axhline(hvals[time_index,zf0_index]/zenc)
             title = "time step {time_periods:5.2f} (periods), L0={L0:6.3f} m, Nperiod = {Nperiod:4.2f} min".format_map(case_numbers[case])
