@@ -59,6 +59,8 @@ if __name__ == "__main__":
                 zf0_index = data_dict[case]['hvals']['height_columns']['zf0']
                 time_index = data_dict[case]['time_index']
                 scales = data_dict[case]['scales']['data']
+                print(scales.shape)
+                wstar=scales[time_index, 9]
                 hvals = data_dict[case]['hvals']['data']
                 time_sec = data_dict[case]['time_seconds']
                 N = case_numbers[case]['N']
@@ -70,11 +72,11 @@ if __name__ == "__main__":
                 print(legend, case, L0)
                 #print('found zenc: ',zenc, scales[time_index, 2])	    
                 flux = data_dict[case][key]['data']
-                ax.plot(flux/surface_flux,height_nd,legend, markersize=10, label=int(L0))
+                ax.plot(1.0*flux/wstar,height_nd,legend, markersize=10, label=int(L0))
                 #ax.axhline(hvals[time_index,zg0_index]/zenc)
                 #ax.axhline(hvals[time_index,zf0_index]/zenc)
             title = "scaled" + key + " at scaled time approx 150 "
-            ax.set(title=title,ylim=(0.6,1.5), xlim=(-1, 1))
+            ax.set(title=title,ylim=(0,1.5), xlim=(-3, 3))
             figname = '{}_250.png'.format(case)
             ax.legend(numpoints=1)
             fig.savefig(figname)

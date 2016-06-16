@@ -76,19 +76,19 @@ if __name__ == "__main__":
                     wvelthetapert[...]=infile[case][run]['wvelthetapert'][lev,...] 
                     
                     hit = np.logical_and(wvelpert < 0.,thetapert > 0.)
-                    flux = (wvelpert[hit]*thetapert[hit]).mean()
+                    flux = (thetapert[hit]).mean() #*thetapert[hit]
                     store_sum['wn_tp'] += flux
 
                     hit = np.logical_and(wvelpert < 0.,thetapert < 0.)
-                    flux = (wvelpert[hit]*thetapert[hit]).mean()
+                    flux = (thetapert[hit]).mean() #*thetapert[hit]
                     store_sum['wn_tn'] += flux
 
                     hit = np.logical_and(wvelpert > 0.,thetapert < 0.)
-                    flux = (wvelpert[hit]*thetapert[hit]).mean()
+                    flux = (thetapert[hit]).mean() #*thetapert[hit]
                     store_sum['wp_tn'] += flux
 
                     hit = np.logical_and(wvelpert > 0.,thetapert > 0.)
-                    flux = (wvelpert[hit]*thetapert[hit]).mean()
+                    flux = (thetapert[hit]).mean() #*thetapert[hit]
                     store_sum['wp_tp'] += flux
 
                     flux=wvelthetapert.mean()
