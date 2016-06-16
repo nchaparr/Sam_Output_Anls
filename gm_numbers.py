@@ -19,6 +19,7 @@ run_key={'Nov302013':{'params':(100,5,'ko')},
          'Dec252013':{'params':(60,2.5,'y*')},        
          'Jan152014_1':{'params':(150,5,'ro')},         
          'Mar12014':{'params':(60,10,'yv')},
+         'Mar52014':{'params':(150,10,'rv')}
 }
          
 def gm_vars(surface_flux,gamma):
@@ -116,6 +117,7 @@ if __name__ == "__main__":
     run_dict.update(run_key)
     for case, df in case_dict.items():
         surface_flux,gamma, legend=run_table[case]['params']
+        print(surface_flux,gamma, legend)
         L0,N,B0=gm_vars(surface_flux,gamma)
         run_dict[case]['L0'] = L0
         run_dict[case]['N'] = N
@@ -149,7 +151,8 @@ if __name__ == "__main__":
     #
     gammas=[run_dict[case]['params'][1] for case in cases]
     fluxes=[run_dict[case]['params'][0] for case in cases]    
-    legend=[run_dict[case]['params'][2] for case in cases]	
+    legends=[run_dict[case]['params'][2] for case in cases]
+    print(legends)
     l0=[run_dict[case]['L0'] for case in cases]
     N=[run_dict[case]['N'] for case in cases]
     period=[1./Nval/60. for Nval in N]   #minutes
@@ -158,6 +161,7 @@ if __name__ == "__main__":
     df_cases['N']=N
     df_cases['fluxes']=fluxes
     df_cases['gammas']=gammas
+    df_cases['legends']=legends
         
     new_table = 'paper_table.h5'
     with pd.HDFStore(new_table,'w') as store:
@@ -200,18 +204,20 @@ if __name__ == "__main__":
 
         for casename,L0 in case_list:
             label='{:3.1f}'.format(L0)
-            legend=legend
+            legend=run_dict[casename]['params'][2]
+            #legend='{:3.1f}'.format(legend)
+            print(legend)
             df = run_dict[casename]['df']
 
             for plot in plotlist:
                 xvals=df[xy_dict[plot][0]]
                 yvals=df[xy_dict[plot][1]]
-                plot_dict[plot].plot(xvals,yvals,label=label)
+                plot_dict[plot].plot(xvals,yvals,legend, markersize=12, label=label)
 
         for plot,the_ax in plot_dict.items():
             the_ax.set_ylim(ylims[plot])
             the_ax.set_title(titles[plot])
-            the_ax.legend(legend, label=label, loc='best')
+            the_ax.legend(loc='best', numpoints=1)
             if plot == 'delhtot_rt':
                 the_ax.set_xlabel('time (sec)')
             else:

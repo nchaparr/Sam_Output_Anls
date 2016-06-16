@@ -48,13 +48,13 @@ if __name__ == "__main__":
     keys=['wn_tp', 'wn_tn','wp_tp','wp_tn', 'w_t']
     plot = True
     if plot:
-        plt.close('all')        
+        plt.close('all')
         for key in keys:
             fig,ax = plt.subplots(1,1)
             for case in cases:
                 #total_flux=np.zeros_like(height)
                 height_columns = data_dict[case]['hvals']['height_columns']
-                height = data_dict[case]['height']['data'][...]
+                height = data_dict[case]['height']['data'][...]                
                 zg0_index = data_dict[case]['hvals']['height_columns']['zg0']
                 zf0_index = data_dict[case]['hvals']['height_columns']['zf0']
                 time_index = data_dict[case]['time_index']
@@ -63,18 +63,20 @@ if __name__ == "__main__":
                 time_sec = data_dict[case]['time_seconds']
                 N = case_numbers[case]['N']
                 L0 = case_numbers[case]['L0']
-                surface_flux=case_numbers[case]['fluxes']/1004	    
+                surface_flux=case_numbers[case]['fluxes']/(1004)	    
                 zenc = find_zenc(time_sec,N,L0)
                 height_nd = height/zenc
-                print('found zenc: ',zenc, scales[time_index, 2])	    
+                legend=case_numbers[case]['legends']
+                print(legend, case, L0)
+                #print('found zenc: ',zenc, scales[time_index, 2])	    
                 flux = data_dict[case][key]['data']
-                ax.plot(flux/surface_flux,height_nd,label=key)
-            ax.axhline(hvals[time_index,zg0_index]/zenc)
-            ax.axhline(hvals[time_index,zf0_index]/zenc)
-            title = "time step {time_periods:5.2f} (periods), L0={L0:6.3f} m, Nperiod = {Nperiod:4.2f} min".format_map(case_numbers[case])
-            ax.set(title=title,ylim=(0.,1.5), xlim=(-1.2, 2))
-            figname = '{}_300.png'.format(case)
-            ax.legend()
+                ax.plot(flux/surface_flux,height_nd,legend, markersize=10, label=int(L0))
+                #ax.axhline(hvals[time_index,zg0_index]/zenc)
+                #ax.axhline(hvals[time_index,zf0_index]/zenc)
+            title = "scaled" + key + " at scaled time approx 150 "
+            ax.set(title=title,ylim=(0.6,1.5), xlim=(-1, 1))
+            figname = '{}_250.png'.format(case)
+            ax.legend(numpoints=1)
             fig.savefig(figname)
 
         plt.show()
