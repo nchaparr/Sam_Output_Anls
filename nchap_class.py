@@ -13,7 +13,7 @@ class For_Plots:
     def __init__(self,
                  Run_Date,
                  read_root="/tera/users/nchaparr/",
-                 write_root="./"):
+                 write_root="./fig6d/"):
         self.Run_Date = Run_Date
         self.read_path = read_root + Run_Date + "/data/"
         self.write_path = write_root + Run_Date + "/data/"
@@ -41,15 +41,21 @@ class For_Plots:
         return HistVars
 
     def AvProfVars(self):
-        AvProfVars = np.genfromtxt(self.read_path + "AvProfLims")
+        filepath = self.write_path + "AvProfLims"
+        AvProfVars = np.genfromtxt(filepath)
+        print('reading from: {}'.format(filepath))
         return AvProfVars
 
     def rinovals(self):
-        rinovals = np.genfromtxt(self.read_path + "invrinos")
+        filepath = self.write_path + "invrinos"
+        print('reading from: {}'.format(filepath))
+        rinovals = np.genfromtxt(filepath)
         return rinovals
 
     def Deltah(self):
-        AvProfVars = np.genfromtxt(self.path + "AvProfLims")
+        filepath = self.write_path + "AvProfLims"
+        AvProfVars = np.genfromtxt(filepath)
+        print('reading from: {}'.format(filepath))
         Deltah = np.subtract(AvProfVars[:, 2], AvProfVars[:, 0])
         #Deltah0 = np.divide(Deltah0, AvProfVars[:,1])
         return Deltah
