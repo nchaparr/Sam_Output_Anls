@@ -618,7 +618,7 @@ def Flux_Quad_Wvels(wpert, thetapert):
 
 
 def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
-                   top_index):
+                   top_index, old_new_key):
     """
     Gets heights based on dthetdz and flux
     
@@ -630,31 +630,44 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
     [up_warm, down_warm, up_cold, down_cold] -- arrays, np.nans are fillers  
 
     """
-
+    
+    thresh_dict={}
+    thresh_dict['old']={'dtheta_dz_b1':.0002,'dtheta_dz_b2':0, 'dtheta_dz_t1':.0002,'dtheta_dz_t2':.0002, 'dtheta_dz_t3':gamma, 'flux_b':0, 'flux_t1':0.5,'flux_t2':0}
+    thresh_dict['new']={'dtheta_dz_b1':.03,'dtheta_dz_b2':0, 'dtheta_dz_t1':.03,'dtheta_dz_t2':.04, 'dtheta_dz_t3':1,'flux_b':0 ,'flux_t1':0.01,'flux_t2':0}
+    
     dheight = np.diff(heights)
     dtheta = np.diff(thetas)
     dthetadz = np.divide(dtheta, dheight)
     dzdtheta = np.divide(dheight, dtheta)
     element0 = np.array([0])
-    dthetadz = np.hstack((element0, dthetadz)) * 1.0 / gamma
+
+    if old_new_key=='old':
+        thresholds=thresh_dict['old']
+        dthetadz = np.hstack((element0, dthetadz))
+
+    else:
+        thresholds=thresh_dict['new']  
+        dthetadz = np.hstack((element0, dthetadz)) * 1.0 / gamma
+            
     rhow = calc_rhow(press, heights, thetas[0])
 
     fluxes = np.multiply(wvelthetapert, rhow) * 1004.0 / flux_s
 
     #where gradient is greater than zero
     for j in range(len(dthetadz[:top_index]) - 1):
-        if (dthetadz[j + 1] > .03) and (dthetadz[j] >= 0):
+        print('starting first loop')
+        if (dthetadz[j + 1] > thresholds['dtheta_dz_b1']) and (dthetadz[j] >= thresholds['dtheta_dz_b2']):
             dtheta_index_b = j + 1
+            print('ending first loop')
             break
 
     #where gradient resumes as gamma
     dtheta_index_t = 999
     for k in range(len(dthetadz[:top_index]) - 1):
-        ##print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
-        ##print ""
-        ##print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
-        if np.abs(dthetadz[k + 2] - 1) < .03 and np.abs(dthetadz[
-                k + 1] - 1) < .03 and dthetadz[k - 1] > 1:
+        print(np.abs(dthetadz[k + 2] - thresholds['dtheta_dz_t3']), thresholds['dtheta_dz_t1'])
+        print("")
+        print(np.abs(dthetadz[k + 1] - thresholds['dtheta_dz_t3']), thresholds['dtheta_dz_t3'])  
+        if np.abs(dthetadz[k + 2] - thresholds['dtheta_dz_t3']) < thresholds['dtheta_dz_t1'] and np.abs(dthetadz[k + 1] - thresholds['dtheta_dz_t3']) < thresholds['dtheta_dz_t1'] and dthetadz[k - 1] > thresholds['dtheta_dz_t3']:
             dtheta_index_t = k + 1
             break
 
@@ -664,22 +677,21 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
             #   #print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
             #   #print ""
             #   #print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
-            if np.abs(dthetadz[k + 2] - 1) < .04 and np.abs(dthetadz[
-                    k + 1] - 1) < .04 and dthetadz[k - 1] > 1:
+            if np.abs(dthetadz[k + 2] - thresholds['dtheta_dz_t3']) < thresholds['dtheta_dz_t2'] and np.abs(dthetadz[k + 1] - thresholds['dtheta_dz_t3']) < thresholds['dtheta_dz_t2'] and dthetadz[k - 1] > thresholds['dtheta_dz_t3']:
                 dtheta_index_t = k + 1
                 break
 
         #now fluxes
 
     for l in range(len(dthetadz) - 1):
-        if (fluxes[l + 1] <= .0) and (fluxes[l] > 0):
+        if (fluxes[l + 1] <= thresholds['flux_b']) and (fluxes[l] > thresholds['flux_b']):
             flux_index_b = l + 1
             break
 
        
     for m in range(len(dthetadz[0:top_index])-1):
          #print fluxes[m+1], fluxes[m], fluxes[m-1]
-         if (abs(fluxes[m+1]) < 0.01) and (abs(fluxes[m+2]) < 0.01) and (fluxes[m] < 0) and (fluxes[m-1] < 0):
+         if (abs(fluxes[m+1]) < thresholds['flux_t1']) and (abs(fluxes[m+2]) < thresholds['flux_t1']) and (fluxes[m] < thresholds['flux_t2']) and (fluxes[m-1] < thresholds['flux_t2']):
             flux_index_t = m+1
             break
     #print flux_index_t
