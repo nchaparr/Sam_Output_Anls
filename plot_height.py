@@ -36,10 +36,10 @@ Run_Date_List = ["Dec142013", "Nov302013", "Dec202013", "Dec252013", "Jan152014_
 for i in range(len(label_list)):
     if i<99:
         points = For_Plots(Run_Date_List[i])
-        rinovals = points.rinovals_old()
+        rinovals = points.rinovals()
         Deltah = points.Deltah_over_h()
         HistVars = points.HistVars()
-        AvProfVars = points.AvProfVars_old() #chage to AvProfVars_old() for old limits
+        AvProfVars = points.AvProfVars() #chage to AvProfVars_old() for old limits
         gm_vars = points.gm_vars()
 
 
@@ -127,6 +127,7 @@ Ax3.text(32.5, 1.2, r"$z_{g1GM}$", size=20)
 #Ax3.text(33.5, .95, r"$z_{f0}$", size=20)
 #Ax3.text(33.5, 1.1, r"$z_{f}$", size=20)
 Ax3.text(32.5, 1.15, r"$z_{g}$", size=20)
+Ax3.text(32.5, 0.9, r"$z_{g0}$", size=20)
                     
 #Ax3.legend(loc = 'lower right', prop={'size': 10}, numpoints=1)
 #Ax3.set_title(r'GM Height vs Time Scaling', fontsize=20)
