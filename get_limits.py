@@ -66,11 +66,11 @@ def Main_Fun(rundate, gamma, flux_s):
          delta_h=eltop_dthetadz - elbot_dthetadz
          delta = z1_GM - h
          
-         print(z1_GM, delta)
+         #print(z1_GM, delta)
          
          [c_delta, rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(B0, N, delta, h, zenc, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
          
-         print(zenc, h, z1_GM, eltop_dthetadz, c_delta)
+         #print(zenc, h, z1_GM, eltop_dthetadz, c_delta)
          
          AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM])
          tau = 1.0*h/wstar
