@@ -39,7 +39,7 @@ if __name__ == "__main__":
     case_dict={}
     zeros = np.zeros([21]) #chang to 5
     
-    keys=['wntp','wntn','wptp','wptn','wt','wn_tp','wn_tn','wp_tn','wp_tp','tp_wn', 'tp_wp','tn_wn','tp_wp','dwn_tpdz','dwn_tndz','dwp_tndz','dwp_tpdz','dtp_wndz','dtp_wpdz','dtn_wndz','tdp_wpdz']
+    keys=['wntp','wntn','wptp','wptn','wt','wn_tp','wn_tn','wp_tn','wp_tp','tp_wn', 'tp_wp','tn_wn','tn_wp','dwn_tpdz','dwn_tndz','dwp_tndz','dwp_tpdz','dtp_wndz','dtp_wpdz','dtn_wndz','dtn_wpdz']
 
     with h5py.File(h5_profiles,'r') as infile, h5py.File(flux_profiles,'w') as outfile:
         firstpass = True
@@ -73,65 +73,89 @@ if __name__ == "__main__":
                 # reuse these arrays so memory doesn't grow 
 		
                 nz,ny,nx = infile[case]['0']['thetapert'].shape
-                thetapert = np.empty_like(infile[case]['0']['thetapert'][0,...])
-                wvelpert = np.empty_like(infile[case]['0']['thetapert'][0,...])
-                wvelthetapert = np.empty_like(infile[case]['0']['thetapert'][0,...])
+                thetapertslice = np.empty_like(infile[case]['0']['thetapert'][0,...])
+                wvelpertslice = np.empty_like(infile[case]['0']['thetapert'][0,...])
+                wvelthetapertslice = np.empty_like(infile[case]['0']['thetapert'][0,...])
 		              	        
                 firstpass = False
-            for run in runs:                
-                thetapert = infile[case][run]['thetapert'][...]
-                print(thetapert.shape())
-                dthetapert=np.diff(thetapert)
-                print(dthetapert.shape())
-                element0 = np.zeros_like(thetapert[0,:,:])
-                dthetapert=np.hstack((element0, dthetapert))
-                print(dthetapert.shape())
-            
-                wvelpert = infile[case][run]['wvelpert'][...]
-                dwvelpert=np.diff(thetapert)
-                element0 = np.zeros_like(thetapert[0,:,:])
-                dthetapert=np.hstack((element0, dthetapert)) 
+            for run in runs:
+                thetapert=np.empty_like(infile[case][run]['thetapert'][...])
+                thetapert[...] = infile[case][run]['thetapert'][...]
+                print(thetapert.shape)
+                dthetapert=np.diff(thetapert,axis=0)
+                print(dthetapert.shape)
+                element0 = np.zeros_like(thetapert[0:1,:,:])
+                print(element0.shape, element0)
+                dthetapert=np.concatenate((element0, dthetapert),axis=0)
+                print(dthetapert.shape)
+                
+                wvelpert=np.empty_like(infile[case][run]['wvelpert'][...])
+                wvelpert[...] = infile[case][run]['wvelpert'][...]
+                dwvelpert=np.diff(wvelpert,axis=0)
+                dwvelpert=np.concatenate((element0, dwvelpert), axis=0) 
             
                 store_sum = dict(zip(keys,zeros))
                 print(store_sum)
                 for lev in range(nz):
-                    thetapert[...] = infile[case][run]['thetapert'][lev,...]
-                    wvelpert[...] = infile[case][run]['wvelpert'][lev,...]
-                    wvelthetapert[...]=infile[case][run]['wvelthetapert'][lev,...] 
-    
-                    hit = np.logical_and(wvelpert < 0.,thetapert > 0.)
-                    flux = (thetapert[hit]).mean()*(wvelpert[hit]).mean()
+                    thetapertslice[...] = infile[case][run]['thetapert'][lev,...]
+                    wvelpertslice[...] = infile[case][run]['wvelpert'][lev,...]
+                    wvelthetapertslice[...]=infile[case][run]['wvelthetapert'][lev,...] 
+                    dthetapertslice=dthetapert[lev,:,:]
+                    dwvelpertslice=dwvelpert[lev,:,:]
+                    
+                    hit = np.logical_and(wvelpertslice < 0.,thetapertslice > 0.)
+                    flux = (thetapertslice[hit]).mean()*(wvelpertslice[hit]).mean()
                     store_sum['wntp'] += flux
-                    flux = (wvelpert[hit]).mean()
+                    flux = (wvelpertslice[hit]).mean()
                     store_sum['wn_tp'] += flux
-                    flux=(dthetapert[lev,:,:][hit]).mean()
+                    flux=(dwvelpertslice[hit]).mean()
                     store_sum['dwn_tpdz']+=flux
+                    flux = (thetapertslice[hit]).mean()
+                    store_sum['tp_wn'] += flux
+                    flux=(dthetapertslice[hit]).mean()
+                    store_sum['dtp_wndz']+=flux
 
-                    hit = np.logical_and(wvelpert < 0.,thetapert < 0.)
-                    flux = (thetapert[hit]).mean()*(wvelpert[hit]).mean()
+
+                    hit = np.logical_and(wvelpertslice < 0.,thetapertslice < 0.)
+                    flux = (thetapertslice[hit]).mean()*(wvelpertslice[hit]).mean()
                     store_sum['wntn'] += flux
-                    flux = (thetapert[hit]).mean()
+                    flux = (wvelpertslice[hit]).mean()
                     store_sum['wn_tn'] += flux
-                    flux=(dwelpert[hit]).mean()
-                    store_sum['dwn_tndz'] += dwn_tndz  
+                    flux=(dwvelpertslice[hit]).mean()
+                    store_sum['dwn_tndz'] += flux  
+                    flux = (thetapertslice[hit]).mean()
+                    store_sum['tn_wn'] += flux
+                    flux=(dthetapertslice[hit]).mean()
+                    store_sum['dtn_wndz'] += flux  
 
-                    hit = np.logical_and(wvelpert > 0.,thetapert < 0.)
-                    flux = (thetapert[hit]).mean()*(wvelpert[hit]).mean()
+
+                    hit = np.logical_and(wvelpertslice > 0.,thetapertslice < 0.)
+                    flux = (thetapertslice[hit]).mean()*(wvelpertslice[hit]).mean()
                     store_sum['wptn'] += flux                    
-                    flux = (wvelpert[hit]).mean()
+                    flux = (wvelpertslice[hit]).mean()
                     store_sum['wp_tn'] += flux
-                    flux=(dwelpert[hit]).mean()
+                    flux=(dwvelpertslice[hit]).mean()
                     store_sum['dwp_tndz'] += flux  
+                    flux = (thetapertslice[hit]).mean()
+                    store_sum['tn_wp'] += flux
+                    flux=(dthetapertslice[hit]).mean()
+                    store_sum['dtn_wpdz'] += flux  
 
-                    hit = np.logical_and(wvelpert > 0.,thetapert > 0.)
-                    flux = (thetapert[hit]).mean()*(wvelpert[hit]).mean()
+
+                    hit = np.logical_and(wvelpertslice > 0.,thetapertslice > 0.)
+                    flux = (thetapertslice[hit]).mean()*(wvelpertslice[hit]).mean()
                     store_sum['wptp'] += flux
-                    flux = (thetapert[hit]).mean()
+                    flux = (wvelpertslice[hit]).mean()
                     store_sum['wp_tp'] += flux
-                    flux=(dthetapert[hit]).mean()
+                    flux=(dwvelpertslice[hit]).mean()
                     store_sum['dwp_tpdz']+=flux 
-                    flux=wvelthetapert.mean()
-                    store_sum['w_t'] += flux #
+                    flux = (wvelpertslice[hit]).mean()
+                    store_sum['tp_wp'] += flux
+                    flux=(dwvelpertslice[hit]).mean()
+                    store_sum['dtp_wpdz']+=flux 
+                    
+                    flux=wvelthetapertslice.mean()
+                    store_sum['wt'] += flux #
 
                 for key in keys:
                     store_sum[key] = store_sum[key]/len(runs)
