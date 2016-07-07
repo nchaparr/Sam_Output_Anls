@@ -37,9 +37,9 @@ if __name__ == "__main__":
     h5_profiles = args.prof
     flux_profiles = args.out
     case_dict={}
-    zeros = np.zeros([21]) #chang to 5
+    zeros = np.zeros([22]) #chang to 5
     
-    keys=['wntp','wntn','wptp','wptn','wt','wn_tp','wn_tn','wp_tn','wp_tp','tp_wn', 'tp_wp','tn_wn','tn_wp','dwn_tpdz','dwn_tndz','dwp_tndz','dwp_tpdz','dtp_wndz','dtp_wpdz','dtn_wndz','dtn_wpdz']
+    keys=['wntp','wntn','wptp','wptn','wt','dwtdz', 'wn_tp','wn_tn','wp_tn','wp_tp','tp_wn', 'tp_wp','tn_wn','tn_wp','dwn_tpdz','dwn_tndz','dwp_tndz','dwp_tpdz','dtp_wndz','dtp_wpdz','dtn_wndz','dtn_wpdz']
 
     with h5py.File(h5_profiles,'r') as infile, h5py.File(flux_profiles,'w') as outfile:
         firstpass = True
@@ -58,7 +58,6 @@ if __name__ == "__main__":
             hvals = infile[case]['hvals'][...]
             print(infile[case]['time_list'].attrs['time_index'])
             time_index = int(infile[case]['time_list'].attrs['time_index'])
-            print('here is time_index: ',time_index)
             zg0 = hvals[time_index,int(Heights.zg0)]
             zf0 = hvals[time_index,int(Heights.zf0)]
             case_dict[case]['zg0'] = zg0
@@ -78,30 +77,37 @@ if __name__ == "__main__":
                 wvelthetapertslice = np.empty_like(infile[case]['0']['thetapert'][0,...])
 		              	        
                 firstpass = False
-            for run in runs:
-                thetapert=np.empty_like(infile[case][run]['thetapert'][...])
-                thetapert[...] = infile[case][run]['thetapert'][...]
-                print(thetapert.shape)
-                dthetapert=np.diff(thetapert,axis=0)
-                print(dthetapert.shape)
-                element0 = np.zeros_like(thetapert[0:1,:,:])
-                print(element0.shape, element0)
-                dthetapert=np.concatenate((element0, dthetapert),axis=0)
-                print(dthetapert.shape)
-                
-                wvelpert=np.empty_like(infile[case][run]['wvelpert'][...])
-                wvelpert[...] = infile[case][run]['wvelpert'][...]
-                dwvelpert=np.diff(wvelpert,axis=0)
-                dwvelpert=np.concatenate((element0, dwvelpert), axis=0) 
-            
+            #for run in runs:
+            for lev in range(nz):  
+                #print(keys)
                 store_sum = dict(zip(keys,zeros))
-                print(store_sum)
-                for lev in range(nz):
+                #print(store_sum)
+
+                for run in runs:
+                    thetapert=np.empty_like(infile[case][run]['thetapert'][...])
+                    thetapert[...] = infile[case][run]['thetapert'][...]                    
+                    dthetapert=np.diff(thetapert,axis=0)                    
+                    element0 = np.zeros_like(thetapert[0:1,:,:])                    
+                    dthetapert=np.concatenate((element0, dthetapert),axis=0)
+                    
+                
+                    wvelpert=np.empty_like(infile[case][run]['wvelpert'][...])
+                    wvelpert[...] = infile[case][run]['wvelpert'][...]
+                    dwvelpert=np.diff(wvelpert,axis=0)
+                    dwvelpert=np.concatenate((element0, dwvelpert), axis=0) 
+                    
+                    wvelthetapert=np.empty_like(infile[case][run]['wvelthetapert'][...])
+                    wvelthetapert[...] = infile[case][run]['wvelthetapert'][...]
+                    dwvelthetapert=np.diff(wvelthetapert,axis=0)
+                    dwvelthetapert=np.concatenate((element0, dwvelthetapert), axis=0) 
+            
+                
                     thetapertslice[...] = infile[case][run]['thetapert'][lev,...]
                     wvelpertslice[...] = infile[case][run]['wvelpert'][lev,...]
                     wvelthetapertslice[...]=infile[case][run]['wvelthetapert'][lev,...] 
                     dthetapertslice=dthetapert[lev,:,:]
                     dwvelpertslice=dwvelpert[lev,:,:]
+                    dwvelthetapertslice=dwvelthetapert[lev,:,:]
                     
                     hit = np.logical_and(wvelpertslice < 0.,thetapertslice > 0.)
                     flux = (thetapertslice[hit]).mean()*(wvelpertslice[hit]).mean()
@@ -156,10 +162,14 @@ if __name__ == "__main__":
                     
                     flux=wvelthetapertslice.mean()
                     store_sum['wt'] += flux #
+                    flux=dwvelthetapertslice.mean()
+                    store_sum['dwtdz'] += flux #
+
 
                 for key in keys:
                     store_sum[key] = store_sum[key]/len(runs)
                     case_dict[case][key].append(store_sum[key])
+
             for key in keys:
                 flux_prof = np.array(case_dict[case][key]) #expand to include wperts and theta perts
                 dset = top_group.create_dataset(key,flux_prof.shape,dtype=flux_prof.dtype)
