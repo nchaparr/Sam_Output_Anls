@@ -16,6 +16,9 @@ class For_Plots:
         self.Run_Date = Run_Date
         self.read_path = read_root + Run_Date + "/data/"
         self.write_path = write_root + Run_Date + "/data/"
+        if not os.path.exists(self.write_path):
+            os.makedirs(self.write_path)
+
         #try:
         #    os.makedirs(self.write_path)
         #except FileExistsError:

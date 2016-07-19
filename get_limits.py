@@ -30,7 +30,7 @@ def Main_Fun(rundate, gamma, flux_s):
           Times = np.array(Times)
           
      #class for pulling data files
-     files = For_Plots(rundate)
+     files = For_Plots(rundate,write_root='./phil_data/')
 
      #Create lists of variable lists
      theta_file_list = [files.get_file(dump_time, "theta_bar") for dump_time in dump_time_list]
@@ -59,7 +59,7 @@ def Main_Fun(rundate, gamma, flux_s):
              top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
              
          #function for calcuating heights
-         [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index, 'old')
+         [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index, 'new')
          [L0,N,B0,zenc]=nc.gm_vars(t,flux_s,gamma)
          
          
@@ -76,9 +76,9 @@ def Main_Fun(rundate, gamma, flux_s):
          tau = 1.0*h/wstar
          invrinos.append([c_delta, rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4])
          gm_vars.append([L0,N,B0,zenc])
-     files.save_file(np.array(AvProfLims), "AvProfLims_old")
-     files.save_file(np.array(invrinos), "invrinos_old")
-     #files.save_file(np.array(gm_vars), "gm_vars")
+     files.save_file(np.array(AvProfLims), "AvProfLims")
+     files.save_file(np.array(invrinos), "invrinos")
+     files.save_file(np.array(gm_vars), "gm_vars")
 
 run_list = [["Nov302013", .005, 100], ["Dec142013", .01, 100], ["Dec202013", .005, 60], ["Dec252013", .0025, 60], ["Jan152014_1", .005, 150], ["Mar12014", .01, 60], ["Mar52014", .01, 150]]
 
