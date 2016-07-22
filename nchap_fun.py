@@ -641,7 +641,7 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
     dzdtheta = np.divide(dheight, dtheta)
     element0 = np.array([0])
 
-    if old_new_key=='old':
+   if old_new_key=='old':
         thresholds=thresh_dict['old']
         dthetadz = np.hstack((element0, dthetadz))
 

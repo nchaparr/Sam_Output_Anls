@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from Make_Timelist import *
 #import sys
 #sys.path.insert(0, '/tera/phil/nchaparr/python')
-from nchap_class import *
+from nchap_class import For_Plots
 import nchap_fun as nc
 from matplotlib.lines import Line2D
 

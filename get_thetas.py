@@ -29,134 +29,33 @@ def get_ensemble(date,dump_time_label):
     Vars = Get_Var_Arrays1(prefix, suffix, dump_time_label)
     file_list = Vars.get_filelist()
     print(file_list)
-    thetas_list, press_list = Vars.get_thetas()
-
+    thetas_list, press_list = Vars.get_thetas(calc_mean=True)
     height = Vars.get_height()
-
     filenames = Vars.get_filelist()
-    pdb.set_trace()
-    # #get arrays of ensemble averaged variables, from nchap_fun
-
-    # ens_avthetas = nc.Ensemble1_Average(thetas_list)
-    # ens_press = nc.Ensemble1_Average(press_list)
-
-    # #now get the perturbations
-    # wvelthetaperts_list = []
-    # full_profs_list = []
-    # for i in range(len(
-    #         wvels_list)):  #TODO: this should be more modular, see nchap_class
-    #     thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
-    #     thetapert = np.zeros_like(thetapert_rough)
-    #     [znum, ynum, xnum] = wvels_list[i].shape
-    #     for j in range(
-    #             znum):  #something like this is done in statistics.f90, staggered grid!
-    #         if j == 0:
-    #             thetapert[j, :, :] = thetapert_rough[j, :, :]
-    #         else:
-    #             thetapert[j, :, :] = 0.5 * np.add(thetapert_rough[j, :, :],
-    #                                               thetapert_rough[j - 1, :, :])
-    #     wvelpert = wvels_list[i]
-
-    #     slice_lev = np.where(np.abs(height - height_level) < 26)[0][0]
-
-    #     wvelthetapert = np.multiply(wvelpert, thetapert)
-    #     wvelperts_list.append(wvelpert[slice_lev, :, :])
-    #     thetaperts_list.append(thetapert[slice_lev, :, :])
-
-    #     wvelthetaperts_list.append(wvelthetapert)
-    #     full_profs_list.append((wvelpert, thetapert, wvelthetapert))
-
-    # #flatten the arrays, TODO: make a function or class method
-    # wvelperts = np.array(wvelperts_list)
-    # thetaperts = np.array(thetaperts_list)
-    # [enum, ynum, xnum] = wvelperts.shape
-
-    # #wvelperts_slice = wvelperts[0]
-    # #thetaperts_slice = thetaperts[0]
-
-    # wvelperts = np.reshape(wvelperts, enum * ynum * xnum)
-    # thetaperts = np.reshape(thetaperts, enum * ynum * xnum)
-
-    return wvelperts, thetaperts, full_profs_list, height, filenames
+    theta_accum = thetas_list[0]
+    for count,theta in enumerate(thetas_list[1:]):
+        print('theta ensemble: {}'.format(count))
+        theta_accum += theta
+    theta_accum = theta_accum/len(thetas_list)
+    flux_list = Vars.get_wvelthetaperts(calc_mean=True)
+    flux_accum = flux_list[0]
+    for count,flux in enumerate(flux_list[1:]):
+        print('flux ensemble: {}'.format(count))
+        flux_accum += flux
+    flux_accum += flux
+    return height, theta_accum, flux_accum
 
 
-def write_h5(case_dict,h5_outfile='test.h5'):
-    hvals_names = ['zg0', 'h', 'eltop_dthetadz', 'zf0', 'elbot_flux', 'h_flux',
-                   'eltop_flux', 'deltatheta', 'mltheta', 'z1_GMa']
-    hvals_columns = OrderedDict(zip(hvals_names, list(range(len(
-        hvals_names)))))
-    hvals_tup = make_tuple(hvals_columns)
-    #scale order
-    #defined in get_limits.py
-    scale_names = ['rino', 'invrino', 'wstar', 'S', 'tau', 'mltheta',
-                   'deltatheta', 'pi3', 'pi4', 'thetastar', 'c_delta']
-    scale_columns = OrderedDict(zip(scale_names, list(range(len(
-        hvals_names)))))
-    scale_tup = make_tuple(scale_columns)
-
-
-    avproflims_prefix = "/tera/users/nchaparr/"
-    avproflims_dir = "/data/AvProfLims"
-    invrinos_dir = "/data/invrinos"
-
+def write_h5(case_dict,theta_array,flux_array,heights,h5_outfile='test.h5'):
     with h5py.File(h5_outfile, 'w') as f:
-        the_dict = {}
-        for casename,the_dict in case_dict.items():
-            time_index = the_dict['time_index']
-            start,step,stop = the_dict['time_list']
-            dump_time_list, Times = Make_Timelists(start,step,stop)
-            print('here are times: ', Times)
-            #get heights and convective scales from text files
-            hval_file = "{}{}{}".format(avproflims_prefix, casename,
-                                        avproflims_dir)
-            hvals = np.genfromtxt(hval_file)
-            print('hvals: ', hvals)
-            invrino_file = "{}{}{}".format(avproflims_prefix, casename,
-                                           invrinos_dir)
-            scales = np.genfromtxt(invrino_file)
-            print('scales: ', scales)
-            try:
-                thetastar, wstar = scales[time_index, scale_tup.thetastar], scales[
-                    time_index, scale_tup.wstar]
-            except IndexError:
-                print('skipping case {}: requested time index {}, total run is length {}'.format(
-                    casename,time_index,scales.shape[0]))
-                continue
-            wvelperts, thetaperts, full_profs_list, height, sam_filelist = get_ensemble(
-                casename, dump_time_list[time_index],
-                hvals[time_index, hvals_tup.zg0])
-            print(full_profs_list[0][0].shape)
-            case = f.create_group(casename)
-            keys = ['wvelpert', 'thetapert', 'wvelthetapert']
-            for count, three_perts in enumerate(full_profs_list):
-                run = case.create_group("{}".format(count))
-                key_pairs = zip(keys, three_perts)
-                for key, array in key_pairs:
-                    print('writing ', case, key)
-                    dset = run.create_dataset(
-                        key, array.shape, dtype=array.dtype)
-                    dset[...] = array[...]
-            dset = case.create_dataset('height',
-                                       height.shape,
-                                       dtype=height.dtype)
-            dset[...] = height[...]
-            case.attrs['sam_filelist'] = json.dumps(sam_filelist)
-            dset = case.create_dataset('scales',
-                                       scales.shape,
-                                       dtype=scales.dtype)
-            dset[...] = scales[...]
-            dset.attrs['scale_columns'] = json.dumps(scale_columns)
-            dset.attrs['scale_file'] = invrino_file
-            dset = case.create_dataset('hvals', hvals.shape, dtype=hvals.dtype)
-            dset[...] = hvals[...]
-            dset.attrs['height_columns'] = json.dumps(hvals_columns)
-            dset.attrs['hval_file'] = hval_file
-            dset = case.create_dataset('time_list',
-                                       Times.shape,
-                                       dtype=Times.dtype)
-            dset.attrs['time_index'] = time_index
-            dset[...] = Times[...]
-        f['/'].attrs['case_dict']=json.dumps(case_dict,indent=4)
+        case = f['/']
+        dset = case.create_dataset('thetas',theta_array.shape, dtype=theta_array.dtype)
+        dset[...] = theta_array[...]
+        dset = case.create_dataset('fluxes',flux_array.shape, dtype=flux_array.dtype)
+        dset[...] = flux_array[...]
+        dset = case.create_dataset('heights',heights.shape, dtype=heights.dtype)
+        dset[...]=height[...]
+        case.attrs['case_dict'] = json.dumps(case_dict,indent=4)
     return None
 
 
@@ -188,7 +87,20 @@ if __name__ == "__main__":
             outfile = 'profiles_{}.h5'.format(args.root)
             #write_h5(case_dict,h5_outfile=outfile)
     time_tup, dump_time_list, Times = list_times(args.case)
-    get_ensemble(args.case,dump_time_list[0])
+    theta_list=[]
+    flux_list = []
+    for time_stamp in dump_time_list:
+        print('timestamp {}'.format(time_stamp))
+        height,thetas, fluxes = get_ensemble(args.case,time_stamp)
+        theta_list.append(thetas)
+        flux_list.append(fluxes)
 
+    theta_array = np.array(theta_list)
+    flux_array = np.array(flux_list)
+    the_case = case_dict[args.case]
+    the_case['time_strings'] = dump_time_list
+    the_case['float_hours'] = list(Times)
+    outfile ='thetaprofs_{}.h5'.format( args.case)
+    write_h5(the_case,theta_array,flux_array,height,h5_outfile=outfile)
 
 
