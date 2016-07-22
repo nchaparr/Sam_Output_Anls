@@ -2,9 +2,9 @@
   input: json file produced by calc_index.py
   output:  h5 containing all ensemble arrays of wvert and theta perturbations
 
-  example: python Flux_Quads.py -j index_list_time_nd_300.json  -r may26_300
+  python get_thetas.py -j case_details.json -c Dec142013
 
-  which produces profiles_may26_300.h5
+  which produces thetas_case_name.h5
 """
 import numpy as np
 import nchap_fun as nc
@@ -15,10 +15,10 @@ from collections import OrderedDict
 import json
 from make_tuple import make_tuple
 import pdb
+from calc_times import list_times
 
-
-def get_ensemble(date):
-    """Pull all 10 enssemble theta profiles for a particular date
+def get_ensemble(date,dump_time_label):
+    """Pull all 10 enssemble theta profiles for all times for a particular date
     """
 
     filepath = {'root_dir': '/tera/phil/nchaparr/tera2_cp/nchaparr',
@@ -168,16 +168,27 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=linebreaks,
                                      description=descrip)
     parser.add_argument('-j', '--jfile', help='json file with run info', required=True)
-    parser.add_argument('-r',
-                        '--root',
-                        help='root name of output hdf5',
+    parser.add_argument('-c',
+                        '--case',
+                        help='case name',
                         required=True)
+    parser.add_argument('-l',
+                    '--case_list',
+                    help='boolean dump case names',
+                        action = 'store_true',
+                        required=False)
+
     args = parser.parse_args()
 
-
+    
     with open(args.jfile,'r') as f:
         case_dict = json.load(f)
-        outfile = 'profiles_{}.h5'.format(args.root)
-        #write_h5(case_dict,h5_outfile=outfile)
+        if args.case_list:
+            print(case_dict.keys())
+            outfile = 'profiles_{}.h5'.format(args.root)
+            #write_h5(case_dict,h5_outfile=outfile)
+    time_tup, dump_time_list, Times = list_times(args.case)
+    get_ensemble(args.case,dump_time_list[0])
+
 
 

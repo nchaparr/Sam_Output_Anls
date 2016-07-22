@@ -4,7 +4,7 @@ run characteristics and a target non-dimensional time, write
 a json file with the time idices of each case that produce a timestep closest
 to that non-dimnesional time
 
-example:  python calc_index.py -i 'data/paper_table.h5' -t 300
+example:  python calc_index.py -i 'data/paper_table.h5' -t 100
 
 """
 
@@ -12,6 +12,15 @@ import json
 import pandas as pd
 from Make_Timelist import Make_Timelists
 import numpy as np
+
+
+def list_times(case):
+    start, step, stop = 1, 600, 28800
+    if case == 'Nov302013':
+        step = 900
+    dump_time_list, Times = Make_Timelists(start, step, stop)
+    return (start,step,stop), dump_time_list, np.array(Times)
+    
 
 if __name__ == "__main__":
 
@@ -34,10 +43,7 @@ if __name__ == "__main__":
     for index, row in df_table.iterrows():
         line_dict = row.to_dict()
         case = line_dict['name']
-        start, step, stop = 1, 600, 28800
-        if case == 'Nov302013':
-            step = 900
-        dump_time_list, Times = Make_Timelists(start, step, stop)
+        time_tup, dump_time_list, Times = list_times(case)
         nd_times = Times*3600.*line_dict['N']
         time_index=int(np.searchsorted(nd_times,time_nd_target))
         try:
@@ -46,7 +52,7 @@ if __name__ == "__main__":
             print('Dropping case: {}, target: {}, last nd_time: {}, L0: {}'.format(case,time_nd_target,nd_times[-1],line_dict['L0']))
             continue
         run_dict[case] = line_dict
-        run_dict[case]['time_list'] = (start,step,stop)
+        run_dict[case]['time_list'] = time_tup
         time_index = int(time_index)
         run_dict[case]['time_index']=time_index
         run_dict[case]['nd_time'] = nd_times[time_index]
