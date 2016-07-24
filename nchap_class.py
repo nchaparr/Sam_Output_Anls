@@ -135,6 +135,16 @@ class Get_Var_Arrays1:
                     press_list.append(press)
           return thetas_list, press_list
 
+     def get_press(self):
+        """
+          return horizontal mean pressure in Pa from first ensemble member
+        """
+        thefile = self.nc_file_list[0]
+        #print thefile
+        with Dataset(thefile, 'r') as ncdata:
+            press = np.squeeze(ncdata.variables['p'][...])
+        return press*100.
+
      def get_height(self):
           thefile = self.nc_file_list[0]
           #print thefile
