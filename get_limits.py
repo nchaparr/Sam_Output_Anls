@@ -8,6 +8,7 @@ from Make_Timelist import Make_Timelists
 import nchap_fun as nc
 from nchap_class import For_Plots
 from matplotlib import rcParams
+import pdb
 rcParams.update({'font.size': 10})
 
 """calculates temperature gradients (discrete) from txt files inturn from ensemble run 3D files
@@ -59,6 +60,7 @@ def Main_Fun(rundate, gamma, flux_s):
              top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
              
          #function for calcuating heights
+         pdb.set_trace()
          [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index, 'old')
          [L0,N,B0,zenc]=nc.gm_vars(t,flux_s,gamma)
          
