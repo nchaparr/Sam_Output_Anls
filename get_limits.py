@@ -6,7 +6,7 @@ from Make_Timelist import Make_Timelists
 #import sys
 #sys.path.insert(0, '/tera/phil/nchaparr/python')
 import nchap_fun as nc
-from nchap_class import For_Plots
+from nchap_2 import For_Plots
 from matplotlib import rcParams
 rcParams.update({'font.size': 10})
 

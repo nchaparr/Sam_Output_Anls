@@ -14,6 +14,8 @@ from matplotlib.colors import Normalize
 import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap
 import argparse
+from nchap_fun import Get_CBLHeights
+import numpy as np
 
 linebreaks=argparse.RawTextHelpFormatter
 descrip = __doc__.lstrip()
@@ -25,9 +27,20 @@ args=parser.parse_args()
 with h5py.File(args.h5_file,'r') as f:
     case_dict=json.loads(f.attrs['case_dict'],object_pairs_hook=OrderedDict)
     thetas = f['thetas'][...]
-    fluxes = f['fluxes'][...]
-    height = f['heights'][...]
+    heat_flux = f['fluxes'][...]
+    height = f['height'][...]
+    press = f['press'][...]*0.01  #convert to pascals
 
+rundate = case_dict['name']
+gammas = case_dict['gammas']
+flux_s = case_dict['fluxes']
+
+if rundate == "Jan152014_1":
+    top_index = np.where(abs(2000 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
+else:
+    top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
+
+    
 the_times = case_dict['float_hours']
 
 plt.close('all')
@@ -40,10 +53,12 @@ pal.set_over('r')
 pal.set_under('k')
 vmin= 299.
 vmax= 310.
-# the_norm=Normalize(vmin=vmin,vmax=vmax,clip=False)
-# image = ax.pcolormesh(the_times,height,thetas.T,cmap=pal,norm=the_norm)
-# cax=fig.colorbar(image)
-# ax.set(ylim=(0,1000))
+the_norm=Normalize(vmin=vmin,vmax=vmax,clip=False)
+image = ax.pcolormesh(the_times,height,thetas.T,cmap=pal,norm=the_norm)
+cax=fig.colorbar(image)
+ax.set(ylim=(0,1000))
+[elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= \
+            Get_CBLHeights(height, press, thetas, heat_flux, gammas, flux_s, top_index, 'new')
 
 fig, ax = plt.subplots(1,1)
 ntimes,nheights = thetas.shape
@@ -54,9 +69,9 @@ ax.set(xlim=(300,308),ylim=(0,1000))
 
 
 fig, ax = plt.subplots(1,1)
-ntimes,nheights = fluxes.shape
+ntimes,nheights = heat_flux.shape
 for row in range(ntimes):
-    flux = fluxes[row,:]
+    flux = heat_flux[row,:]
     ax.plot(flux,height)
 ax.set(ylim=(0,1000))
 
