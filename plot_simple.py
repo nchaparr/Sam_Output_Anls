@@ -3,7 +3,7 @@
 
  example:
 
- python plot_simple.py thetaprofs_Dec142013.h5
+ python plot_simple.py thetaprofs_Nov302013.h5
 """
 
 from matplotlib import pyplot as plt
@@ -50,7 +50,7 @@ for timestep in range(ntimes):
     theta_prof = thetas[timestep,:]
     flux_prof = heat_flux[timestep,:]
     #[elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= \
-    ez_heights =  Get_CBLHeights(height, press, theta_prof, flux_prof, gammas, flux_s, top_index, 'new')
+    ez_heights =  Get_CBLHeights(height, press, theta_prof, flux_prof, gammas, flux_s, top_index, 'old')
 
 
 plt.close('all')
