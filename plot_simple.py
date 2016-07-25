@@ -16,6 +16,7 @@ from matplotlib.colors import LinearSegmentedColormap
 import argparse
 from nchap_fun import Get_CBLHeights
 import numpy as np
+import pdb
 
 linebreaks=argparse.RawTextHelpFormatter
 descrip = __doc__.lstrip()
@@ -43,6 +44,16 @@ else:
     
 the_times = case_dict['float_hours']
 
+ntimes,nheights = thetas.shape
+
+pdb.set_trace()
+for timestep in range(ntimes):
+    theta_prof = thetas[timestep,:]
+    flux_prof = heat_flux[timestep,:]
+    #[elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= \
+    ez_heights =  Get_CBLHeights(height, press, theta_prof, flux_prof, gammas, flux_s, top_index, 'new')
+
+
 plt.close('all')
 fig, ax = plt.subplots(1,1)
 
@@ -57,11 +68,11 @@ the_norm=Normalize(vmin=vmin,vmax=vmax,clip=False)
 image = ax.pcolormesh(the_times,height,thetas.T,cmap=pal,norm=the_norm)
 cax=fig.colorbar(image)
 ax.set(ylim=(0,1000))
-[elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= \
-            Get_CBLHeights(height, press, thetas, heat_flux, gammas, flux_s, top_index, 'new')
+
+ntimes,nheights = thetas.shape
+
 
 fig, ax = plt.subplots(1,1)
-ntimes,nheights = thetas.shape
 for row in range(ntimes):
     theta = thetas[row,:]
     ax.plot(theta,height)

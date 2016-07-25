@@ -4,6 +4,8 @@ import numpy as np
 from scipy.interpolate import interp1d
 import matplotlib
 import matplotlib.pyplot as plt
+import pdb
+
 """ starting to collect commonly used functions"""
 
 
@@ -640,7 +642,7 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
     dthetadz = np.divide(dtheta, dheight)
     dzdtheta = np.divide(dheight, dtheta)
     element0 = np.array([0])
-
+    pdb.set_trace()
     if old_new_key=='old':
         thresholds=thresh_dict['old']
         dthetadz = np.hstack((element0, dthetadz))
