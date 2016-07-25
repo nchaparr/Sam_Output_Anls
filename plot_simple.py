@@ -24,7 +24,6 @@ parser = argparse.ArgumentParser(formatter_class=linebreaks,description=descrip)
 parser.add_argument('h5_file', type=str,help='h5 file to plot')
 args=parser.parse_args()
 
-
 with h5py.File(args.h5_file,'r') as f:
     case_dict=json.loads(f.attrs['case_dict'],object_pairs_hook=OrderedDict)
     thetas = f['thetas'][...]
