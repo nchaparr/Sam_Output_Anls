@@ -153,28 +153,55 @@ class Get_Var_Arrays1:
           ncdata.close()
           return height
 
-     def get_wvelthetaperts(self,calc_mean=False):
+     def get_wvelthetaperts(self,calc_mean=False,quadrants=False):
           wvels_list = self.get_wvelperts()
           thetas_list, press_list = self.get_thetas()
           ##print 'checking thetas_list', len(thetas_list), thetas_list[0].shape
           ens_avthetas = nc.Ensemble1_Average(thetas_list)
           wvelthetaperts_list = []
-          for i in range(len(wvels_list)):  
+          quad_list = []
+          for i in range(len(wvels_list)):
                [znum, ynum, xnum] = wvels_list[i].shape
+               if quadrants:
+                    quad_array = np.array([4,znum],dtype=wvels_list[i].dtype)
                thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
                thetapert = np.zeros_like(thetapert_rough)
+               wvelpert = wvels_list[i]
                for j in range(znum):#something like this is done in statistics.f90, staggered grid!
                     if j == 0:
                          thetapert[j,:,:] = thetapert_rough[j,:,:]
                     else:
                          thetapert[j,:,:] = 0.5*np.add(thetapert_rough[j,:,:], thetapert_rough[j-1,:,:])
-               wvelpert = wvels_list[i]     
+                    if quadrants:
+                         #wp_tp
+                         wvel_lev = wvelpert[j,:,:]
+                         theta_lev = thetapert[j,:,:]
+                         hit = np.logical_and(wvel_lev  > 0,theta_lev[j,:,:] > 0,0)
+                         flux = (wvel_lev[hit]*theta_lev[hit]).mean()
+                         quad_array[0,j] = flux
+                         #wp_tn
+                         hit = np.logical_and(wvel_lev  > 0,theta_lev[j,:,:] < 0,0)
+                         flux = (wvel_lev[hit]*theta_lev[hit]).mean()
+                         quad_array[1,j] = flux
+                         #wn_tp
+                         hit = np.logical_and(wvel_lev  < 0,theta_lev[j,:,:] > 0,0)
+                         flux = (wvel_lev[hit]*theta_lev[hit]).mean()
+                         quad_array[2,j] = flux
+                         #wn_tn
+                         hit = np.logical_and(wvel_lev  < 0,theta_lev[j,:,:] < 0,0)
+                         flux = (wvel_lev[hit]*theta_lev[hit]).mean()
+                         quad_array[3,j] = flux
                wvelthetapert = np.multiply(wvelpert, thetapert)
                if calc_mean:
                     wvelthetapert = wvelthetapert.mean(axis=(1,2))
                wvelthetaperts_list.append(wvelthetapert)
-
-          return wvelthetaperts_list
+               if quadrants:
+                    quad_list.append(quad_array)
+          if quadrants: 
+               out = (wvelthetaperts_list, quad_list)
+          else:
+               out = wvelthetaperts_list
+          return out
 
      def get_thetaperts(self):
           #wvels_list = self.get_wvelperts()

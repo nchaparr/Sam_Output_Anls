@@ -17,6 +17,7 @@ import argparse
 from nchap_fun import Get_CBLHeights
 import numpy as np
 import pdb
+import pandas as pd
 
 linebreaks=argparse.RawTextHelpFormatter
 descrip = __doc__.lstrip()
@@ -32,7 +33,7 @@ with h5py.File(args.h5_file,'r') as f:
     press = f['press'][...]*0.01  #convert to pascals
 
 rundate = case_dict['name']
-gammas = case_dict['gammas']
+gammas = case_dict['gammas']*1.e-3  #K/m
 flux_s = case_dict['fluxes']
 
 if rundate == "Jan152014_1":
@@ -45,13 +46,18 @@ the_times = case_dict['float_hours']
 
 ntimes,nheights = thetas.shape
 
-pdb.set_trace()
+#pdb.set_trace()
+height_vec = []
 for timestep in range(ntimes):
     theta_prof = thetas[timestep,:]
     flux_prof = heat_flux[timestep,:]
     #[elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= \
     ez_heights =  Get_CBLHeights(height, press, theta_prof, flux_prof, gammas, flux_s, top_index, 'old')
+    height_vec.append(ez_heights)
 
+columns=['zg0','zg','zg1','zf0','zf','zf1','deltatheta','mltheta','z1_GM']        
+df=pd.DataFrame.from_records(height_vec,columns=columns)
+print(df)
 
 plt.close('all')
 fig, ax = plt.subplots(1,1)

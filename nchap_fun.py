@@ -642,7 +642,7 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
     dthetadz = np.divide(dtheta, dheight)
     dzdtheta = np.divide(dheight, dtheta)
     element0 = np.array([0])
-    pdb.set_trace()
+
     if old_new_key=='old':
         thresholds=thresh_dict['old']
         dthetadz = np.hstack((element0, dthetadz))
@@ -663,18 +663,16 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
             print('ending first loop: dtheta_index_b: ',dtheta_index_b)
             break
 
-    pdb.set_trace()
     #where gradient resumes as gamma
     dtheta_index_t = 999
+    #pdb.set_trace()
     for k in range(len(dthetadz[:top_index]) - 1):
         print('dthetadz and threshold: {}, {}'.format(np.abs(dthetadz[k + 2] - thresholds['dtheta_dz_t3']),
                                                       thresholds['dtheta_dz_t1']))
         print("")
         print("take 2: {} {}".format(np.abs(dthetadz[k + 1] - thresholds['dtheta_dz_t3']),
                                   thresholds['dtheta_dz_t3']))
-        if np.abs(dthetadz[k + 2] - thresholds['dtheta_dz_t3']) < thresholds['dtheta_dz_t1'] \
-             and np.abs(dthetadz[k + 1] - thresholds['dtheta_dz_t3']) < thresholds['dtheta_dz_t1']  \
-             and dthetadz[k - 1] > thresholds['dtheta_dz_t3']:
+        if np.abs(dthetadz[k + 2] - thresholds['dtheta_dz_t3']) < thresholds['dtheta_dz_t1'] and np.abs(dthetadz[k + 1] - thresholds['dtheta_dz_t3']) < thresholds['dtheta_dz_t1'] and dthetadz[k - 1] > thresholds['dtheta_dz_t3']:
             dtheta_index_t = k + 1
             break
 
