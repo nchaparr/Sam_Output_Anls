@@ -19,8 +19,8 @@ label_list = ['100/10', '100/5', '60/5', '60/2.5', '150/5', '60/10', '150/10']
 legend_list = ['kv', 'ko', 'yo', 'y*', 'ro', 'yv', 'rv']
 Run_Date_List = ["Dec142013", "Nov302013", "Dec202013", "Dec252013", "Jan152014_1", "Mar12014", "Mar52014"]
 
-date = "Mar52014"
-sfc_flx = 150
+date = "Mar12014"
+sfc_flx = 60
 gamma = .01
 
 Fig1 = plt.figure(1)
@@ -89,6 +89,7 @@ for i in range(len(theta_file_list)):
     height = np.genfromtxt(height_file)
     press = np.genfromtxt(press_file_list[i])
     rhow = nc.calc_rhow(press, height, theta[0])
+    print(rhow[0])
     flux_quads = np.genfromtxt(flux_file_list[i])
     #flux = np.genfromtxt(flux_file_list1[i])
     upwarm=flux_quads[:,0]
