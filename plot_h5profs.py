@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     
     #all_keys=['wntp','wntn','wptp','wptn','wt','wn_tp','wn_tn','wp_tn','wp_tp','tp_wn', 'tp_wp','tn_wn','tn_wp','dwn_tpdz','dwn_tndz','dwp_tndz','dwp_tpdz','dtp_wndz','dtp_wpdz','dtn_wndz','dtn_wpdz']
-    keys=['tp_wn', 'tp_wp','tn_wn','tn_wp']
+    keys=['wntp','wptp']
     plot = True
     if plot:
         plt.close('all')
@@ -103,7 +103,7 @@ if __name__ == "__main__":
                 time_sec = data_dict[case]['time_seconds']
                 N = case_numbers[case]['N']
                 L0 = case_numbers[case]['L0']                
-                surface_flux=case_numbers[case]['fluxes']/(1004)
+                surface_flux=case_numbers[case]['fluxes']/(1004*1.14)
                 zenc = find_zenc(time_sec,N,L0)
                 print(time_sec, time_index, zg, zg/zenc)
                 height_nd = height/zg
@@ -111,14 +111,14 @@ if __name__ == "__main__":
                 #print('found zenc: ',zenc, scales[time_index, 2])	    
                 flux = data_dict[case][key]['data']
                 #print(flux.shape)
-                ax.plot(1.0*flux/thetastar,height_nd,legend, markersize=10, label=int(L0))
+                ax.plot(1.0*flux/surface_flux,height_nd,legend, markersize=10, label=int(L0))
                 #ax.axhline(hvals[time_index,zg0_index]/zg)
                 
             title = key
-            plt.xlabel("scaled potential temperature perturbation", size=20)
+            plt.xlabel("scaled warm flux quadrant", size=20)
             plt.ylabel("scaled height",size=20)
-            ax.set(title="",ylim=(0,1.2), xlim=(-10, 30))
-            figname = '{}_100.png'.format(key)
+            ax.set(title="",ylim=(0,1.2), xlim=(-2, 2))
+            #figname = '{}_100.png'.format(key)
             #ax.legend(numpoints=1, loc='best')
             
 
@@ -133,7 +133,7 @@ if __name__ == "__main__":
             #ax.axhline(zgdist['avg']/zgdist['avg'])
             #ax.axhline(zg0dist['avg']/zgdist['avg'])
             #ax.axhline(zf0dist['avg']/zgdist['avg'])
-            fig.savefig(figname)
+            #fig.savefig(figname)
                 
                
             
