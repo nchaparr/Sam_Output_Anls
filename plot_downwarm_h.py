@@ -19,7 +19,7 @@ rcParams.update({'font.size': 10})
    for plotting the downward warm moving air at h
 """
 
-def Main_Fun(rundate, gamma, flux_s, the_label, the_legend,df_coeffs,the_ax):
+def Main_Fun(rundate, gamma, flux_s):
      
      #output times
      dump_time_list, Times = Make_Timelists(1, 1800, 28800)
@@ -41,7 +41,10 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend,df_coeffs,the_ax):
      AvProfVars = files.AvProfVars()
      rinovals = files.rinovals()
      #print AvProfVars.shape, rinovals.shape
-     downwarm_h = []
+     upwarm_h0 = []
+     downwarm_h0=[]
+     upcold_h0=[]
+     downcold_h0=[]
      #loop over text files files
      for i in range(len(flux_quads_file_list)):
          #print i, theta_file_list[i]
@@ -62,56 +65,60 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend,df_coeffs,the_ax):
          deltatheta = gamma*deltah
          thetastar = rinovals[j, 9]
          wstar = rinovals[j, 2]
-         h_lev = np.where(height == h)
+         h0_lev = np.where(height == h0)
          flux_quads = np.genfromtxt(flux_quads_file_list[i])
          flux_s1 = 1.0*flux_s/(rhow[0]*1004)
          #flux_quads: 
-         downwarm = flux_quads[h_lev, 1][0][0]
+         upwarm = flux_quads[h0_lev, 0][0][0]
+         downwarm = flux_quads[h0_lev, 1][0][0]
+         upcold = flux_quads[h0_lev, 2][0][0]
+         downcold = flux_quads[h0_lev, 3][0][0]
          #print flux_s1, flux_s
-         downwarm_h.append(1.0*downwarm/(wstar))# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
+         upwarm_h0.append(1.0*upwarm/(flux_s1))# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
+         downwarm_h0.append(1.0*downwarm/(flux_s1))
+         upcold_h0.append(1.0*upcold/(flux_s1))
+         downcold_h0.append(1.0*upcold/(flux_s1))
 
-     downwarm_h = np.array(downwarm_h)    
+     upwarm_h0 = np.array(upwarm_h0)
+     upcold_h0 = np.array(upcold_h0)
+     downcold_h0 = np.array(downcold_h0)
+     downwarm_h0 = np.array(downwarm_h0)
+
      if rundate=="Jan152014_1":
-         Times, downwarm_h = Times[0:11], downwarm_h[0:11] 
-
-     N=df_coeffs[rundate]['N']
-     the_ax.plot(Times*N*3600, 1.0*downwarm_h, the_legend, label = the_label, markersize=12)
+         Times, upwarm_h0, downwarm_h0, upcold_h0, downcold_h0 = Times[0:11], upwarm_h0[0:11], downwarm_h0[0:11], upcold_h0[0:11], downcold_h0[0:11] 
+     
+     return upwarm_h0, downwarm_h0, upcold_h0, downcold_h0, Times    
 
 run_list = [["Dec142013", .01, 100, '100/10', 'kv'], ["Nov302013", .005, 100, '100/5','ko'], ["Dec202013", .005, 60,'60/5','yo'], ["Dec252013", .0025, 60,'60/2.5','y*'], ["Jan152014_1", .005, 150, '150/5','ro'], ["Mar12014", .01, 60,'60/10','yv'], ["Mar52014", .01, 150,'150/10','rv']]
 
 Fig2 = plt.figure(2)
 Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
-Ax3.set_xlabel(r"$Time \times N$", fontsize=30)
+Ax3.set_xlabel(r"$Time", fontsize=30)
 Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h}}{\gamma ( h_{1}-h)} \ (where \ w^{\prime}<0)$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{ \overline{w^{\prime-}\theta^{\prime+}}_{h}}{\overline{w^{\prime}\theta^{\prime}}_{s}}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h} (where \ w^{\prime}<0) }{\theta^{*}}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{\overline{w^{\prime-}_{h}}(where \ \theta^{\prime}>0) }{w^{*}}$ ", fontsize=30)
 
-Ax3.set_ylabel(r"$(\overline{\theta^{\prime+}})_{h}(where \ w^{\prime}<0)/(0.2\theta^{*})$", fontsize=30)
+#Ax3.set_ylabel(r"$$", fontsize=30)
 
 #Ax3.set_ylabel( r"$\overline{w^{\prime -}}_{h}} \ (where \ \theta^{\prime}>0)", fontsize=30)
 
 #Ax3.set_ylabel(r"$\overline{w^{\prime-}\theta^{\prime+}}_{h}$ (ms$^{-1}$K)", fontsize=30)
 
 #Ax3.set_ylim(-.14, 0)
-#Ax3.set_ylim(0, 0.5)
+Ax3.set_ylim(-0.5, 1)
 #Ax3.set_ylim(-.5, 0)
 #Ax3.set_xlim(2, 8.2)
 
-with pd.HDFStore('paper_table.h5','r') as store:
-     print(store.keys())
-     cases=store.get('cases')
-
-out={}
-df_coeffs={row['name']:row for row in cases.to_dict('records')}
-
-
 for run in run_list:
     #print run[0]
-    Main_Fun(run[0], run[1], run[2], run[3], run[4],df_coeffs,Ax3)
-
+    upwarm_h0, downwarm_h0, upcold_h0, downcold_h0, Times = Main_Fun(run[0], run[1], run[2])
+    Ax3.plot(Times, 1.0*upwarm_h0, run[4])
+    Ax3.plot(Times, 1.0*downwarm_h0, run[4])
+    #Ax3.plot(Times, 1.0*upcold_h0, 'b-')
+    #Ax3.plot(Times, 1.0*downcold_h0, 'b-')
 #Ax3.legend(bbox_to_anchor=(1.49, 1.03), prop={'size':20}, numpoints = 1)
 #box = Ax3.get_position()
 #Ax3.set_position([box.x0, box.y0, box.width*1.33, box.height])
