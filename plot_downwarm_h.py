@@ -33,7 +33,7 @@ def Main_Fun(rundate, gamma, flux_s, the_label, the_legend,df_coeffs,the_ax):
 
      press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]
     
-     flux_quads_file_list = [files.get_file(dump_time, "flux_quads_wvel1") for dump_time in dump_time_list] #"flux_quads_theta1":[upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar] 
+     flux_quads_file_list = [files.get_file(dump_time, "flux_quads_test") for dump_time in dump_time_list] #"flux_quads_theta1":[upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar] 
      
      height_file = files.get_file("0000000600", "heights")
 

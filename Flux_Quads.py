@@ -33,8 +33,9 @@ def Main_Fun(date, dump_time, hflux):
     var_bar -- 64 array of horizontally averaged, ensemble averages or perturbations (covariances)
     
     """
-     #create list of filenames for given dump_time     
-     ncfile_list = ["/newtera/tera/phil/nchaparr/tera2_cp/nchaparr/"+date+"/runs/sam_case" + str(i+1) + "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_" + dump_time + ".nc" for i in range(10)]
+     #create list of filenames for given dump_time
+     #Change     
+     ncfile_list = ["/tera/phil/nchaparr/tera2_cp/nchaparr/"+date+"/runs/sam_case" + str(i+1) + "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_" + dump_time + ".nc" for i in range(10)]
 
      #create lists for variable arrays from each case
      upwarm_list = []
@@ -46,7 +47,8 @@ def Main_Fun(date, dump_time, hflux):
      wvelthetaperts_list = []
 
      #get velocity perts and thetas
-     Vars =  Get_Var_Arrays1("/newtera/tera/phil/nchaparr/tera2_cp/nchaparr/"+date+"/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time)         
+     #Change
+     Vars =  Get_Var_Arrays1("/tera/phil/nchaparr/tera2_cp/nchaparr/"+date+"/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time)         
      thetas_list, press_list = Vars.get_thetas()     
      wvels_list = Vars.get_wvelperts()          
      height = Vars.get_height()
@@ -54,7 +56,7 @@ def Main_Fun(date, dump_time, hflux):
      #get arrays of enseble averaged variables
      ens_avthetas = nc.Ensemble1_Average(thetas_list)
      ens_press = nc.Ensemble1_Average(press_list)
-               
+     #calc rhow: rhow= nc.calc_rhow()          
      #now get the perturbations
      #wvelthetaperts_list = []
      theta_pert_sq_list = []
@@ -74,7 +76,7 @@ def Main_Fun(date, dump_time, hflux):
          wvelperts_list.append(wvelpert[slice_lev, :, :])       
          thetaperts_list.append(thetapert[slice_lev, :, :])          
 
-         [upwarm, downwarm, upcold, downcold]=nc.Flux_Quad_Wvels(wvelpert, thetapert) #TODO: expand clas Get_Vars.. to include this          
+         [upwarm, downwarm, upcold, downcold]=nc.Flux_Quad(wvelpert, thetapert) #TODO: expand clas Get_Vars.. to include this          
 
          upwarm_list.append(upwarm) 
          downwarm_list.append(downwarm)
@@ -104,7 +106,7 @@ def Main_Fun(date, dump_time, hflux):
      #print "SAVING", "/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads_theta1" + dump_time 
      #np.savetxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
      #print upwarm_bar.shape, downwarm_bar.shape, upcold_bar.shape, downcold_bar.shape, wvelthetapert_bar.shape
-     np.savetxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads_wvel1" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
+     np.savetxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads_test" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
      
      #flatten the arrays, TODO: make a function or class method
      wvelperts = np.array(wvelperts_list)
@@ -131,6 +133,8 @@ go_ahead = np.int(input('have you changed the write out folder paths? 1 or 0: ')
 
 if go_ahead == 1:
      
+     #edit to plot flux quadrant profiles at a time
+
      date_list = ["Mar52014", "Jan152014_1", "Dec142013", "Nov302013", "Mar12014", "Dec202013", "Dec252013"] #"","", 
      
      #theFig2, theAxes2 = plt.subplots(nrows=3, ncols=3)     
@@ -144,7 +148,7 @@ if go_ahead == 1:
          #else:         
          date = date_list[i]
          dump_time_list, Times = Make_Timelists(1, 1800, 28800)
-         hvals = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
+         hvals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
          #    scales = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/invrinos")
          #    thetastar, wstar = scales[29, 9], scales[29, 2]
          #    lev_index = np.int(raw_input('which height level, 0, 1 or 2 (h0, h or h1)?:'))             
