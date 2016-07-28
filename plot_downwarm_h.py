@@ -46,6 +46,7 @@ def Main_Fun(rundate, gamma, flux_s):
      downwarm_h0=[]
      upcold_h0=[]
      downcold_h0=[]
+     flux_h0=[]
      scaled_times=[]
      #loop over text files files
      for i in range(len(flux_quads_file_list)):
@@ -61,7 +62,7 @@ def Main_Fun(rundate, gamma, flux_s):
          press = np.genfromtxt(press_file_list[i])
          rhow = nc.calc_rhow(press, height, theta[0])
          h = AvProfVars[j, 4]
-         h0=AvProfVars[j, 3]
+         h0=AvProfVars[j, 0]
          h1 = AvProfVars[j, 2]
          scaled_time=np.divide(gm_vars[j, 3], gm_vars[j, 0])
          deltah = h1-h
@@ -76,21 +77,24 @@ def Main_Fun(rundate, gamma, flux_s):
          downwarm = flux_quads[h0_lev, 1][0][0]
          upcold = flux_quads[h0_lev, 2][0][0]
          downcold = flux_quads[h0_lev, 3][0][0]
+         flux = flux_quads[h0_lev, 4][0][0]
          #print flux_s1, flux_s
          upwarm_h0.append(1.0*upwarm/(flux_s1))# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
          downwarm_h0.append(1.0*downwarm/(flux_s1))
          upcold_h0.append(1.0*upcold/(flux_s1))
          downcold_h0.append(1.0*downcold/(flux_s1))
+         flux_h0.append(1.0*flux/(flux_s1))
          scaled_times.append(scaled_time)
      upwarm_h0 = np.array(upwarm_h0)
      upcold_h0 = np.array(upcold_h0)
      downcold_h0 = np.array(downcold_h0)
      downwarm_h0 = np.array(downwarm_h0)
+     flux_h0 = np.array(flux_h0)
 
      if rundate=="Jan152014_1":
-         scaled_times, upwarm_h0, downwarm_h0, upcold_h0, downcold_h0 = scaled_times[0:11], upwarm_h0[0:11], downwarm_h0[0:11], upcold_h0[0:11], downcold_h0[0:11] 
+         scaled_times, flux_h0, upwarm_h0, downwarm_h0, upcold_h0, downcold_h0 = scaled_times[0:11], flux_h0[0:11], upwarm_h0[0:11], downwarm_h0[0:11], upcold_h0[0:11], downcold_h0[0:11] 
      
-     return upwarm_h0, downwarm_h0, upcold_h0, downcold_h0, scaled_times    
+     return upwarm_h0, downwarm_h0, upcold_h0, downcold_h0, scaled_times, flux_h0    
 
 run_list = [["Dec142013", .01, 100, '100/10', 'kv'], ["Nov302013", .005, 100, '100/5','ko'], ["Dec202013", .005, 60,'60/5','yo'], ["Dec252013", .0025, 60,'60/2.5','y*'], ["Jan152014_1", .005, 150, '150/5','ro'], ["Mar12014", .01, 60,'60/10','yv'], ["Mar52014", .01, 150,'150/10','rv']]
 
@@ -100,7 +104,7 @@ Ax3 = Fig2.add_subplot(111)
 #Ax3.set_xlabel(r"$Time", fontsize=30)
 Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h}}{\gamma ( h_{1}-h)} \ (where \ w^{\prime}<0)$", fontsize=30)
-Ax3.set_ylabel(r"$\overline{w^{\prime-/+}\theta^{\prime+}}_{z_{f0}}/\overline{w^{\prime}\theta^{\prime}}_{s}$", fontsize=30)
+Ax3.set_ylabel(r"$\overline{w^{\prime}\theta^{\prime}}_{z_{g0}}/\overline{w^{\prime}\theta^{\prime}}_{s}$", fontsize=30)
 Ax3.set_xlabel(r"$z_{enc}/L_{0}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{\overline{w^{\prime-}_{h}}(where \ \theta^{\prime}>0) }{w^{*}}$ ", fontsize=30)
 
@@ -111,17 +115,18 @@ Ax3.set_xlabel(r"$z_{enc}/L_{0}$", fontsize=30)
 #Ax3.set_ylabel(r"$\overline{w^{\prime-}\theta^{\prime+}}_{h}$ (ms$^{-1}$K)", fontsize=30)
 
 #Ax3.set_ylim(-.14, 0)
-Ax3.set_ylim(-.6, 1.1)
+Ax3.set_ylim(-1.1, 1.1)
 #Ax3.set_ylim(-.5, 0)
 #Ax3.set_xlim(2, 8.2)
 
 for run in run_list:
     #print run[0]
-    upwarm_h0, downwarm_h0, upcold_h0, downcold_h0, scaled_times = Main_Fun(run[0], run[1], run[2])
-    Ax3.plot(scaled_times, 1.0*upwarm_h0, run[4], markersize=10)
-    Ax3.plot(scaled_times, 1.0*downwarm_h0, run[4], markersize=10)
-    #Ax3.plot(scaled_times, 1.0*upcold_h0, run[4])
-    #Ax3.plot(scaled_times, 1.0*downcold_h0, run[4])
+    upwarm_h0, downwarm_h0, upcold_h0, downcold_h0, scaled_times, flux_h0 = Main_Fun(run[0], run[1], run[2])
+    Ax3.plot(scaled_times, 1.0*upwarm_h0, 'r+') #, markersize=10
+    Ax3.plot(scaled_times, 1.0*downwarm_h0, 'r--')
+    Ax3.plot(scaled_times, 1.0*upcold_h0, 'b+')
+    Ax3.plot(scaled_times, 1.0*downcold_h0, 'b--')
+    Ax3.plot(scaled_times, 1.0*flux_h0, 'k-')
 #Ax3.legend(bbox_to_anchor=(1.49, 1.03), prop={'size':20}, numpoints = 1)
 #box = Ax3.get_position()
 #Ax3.set_position([box.x0, box.y0, box.width*1.33, box.height])
