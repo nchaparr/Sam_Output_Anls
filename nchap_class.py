@@ -163,7 +163,7 @@ class Get_Var_Arrays1:
           for i in range(len(wvels_list)):
                [znum, ynum, xnum] = wvels_list[i].shape
                if quadrants:
-                    quad_array = np.array([4,znum],dtype=wvels_list[i].dtype)
+                    quad_array = np.empty([4,znum],dtype=wvels_list[i].dtype)
                thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
                thetapert = np.zeros_like(thetapert_rough)
                wvelpert = wvels_list[i]
@@ -176,19 +176,19 @@ class Get_Var_Arrays1:
                          #wp_tp
                          wvel_lev = wvelpert[j,:,:]
                          theta_lev = thetapert[j,:,:]
-                         hit = np.logical_and(wvel_lev  > 0,theta_lev[j,:,:] > 0,0)
+                         hit = np.logical_and(wvel_lev  > 0,theta_lev > 0)
                          flux = (wvel_lev[hit]*theta_lev[hit]).mean()
                          quad_array[0,j] = flux
                          #wp_tn
-                         hit = np.logical_and(wvel_lev  > 0,theta_lev[j,:,:] < 0,0)
+                         hit = np.logical_and(wvel_lev  > 0,theta_lev < 0)
                          flux = (wvel_lev[hit]*theta_lev[hit]).mean()
                          quad_array[1,j] = flux
                          #wn_tp
-                         hit = np.logical_and(wvel_lev  < 0,theta_lev[j,:,:] > 0,0)
+                         hit = np.logical_and(wvel_lev  < 0,theta_lev > 0)
                          flux = (wvel_lev[hit]*theta_lev[hit]).mean()
                          quad_array[2,j] = flux
                          #wn_tn
-                         hit = np.logical_and(wvel_lev  < 0,theta_lev[j,:,:] < 0,0)
+                         hit = np.logical_and(wvel_lev  < 0,theta_lev < 0)
                          flux = (wvel_lev[hit]*theta_lev[hit]).mean()
                          quad_array[3,j] = flux
                wvelthetapert = np.multiply(wvelpert, thetapert)

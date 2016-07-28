@@ -41,7 +41,7 @@ def get_ensemble(date,dump_time_label):
     theta_avg = theta_accum/nensembles
     meanflux_list, quad_list = Vars.get_wvelthetaperts(calc_mean=True,quadrants=True)
     ensemble_list = list(zip(meanflux_list, quad_list))
-    mean_accum = flux_list[0]
+    mean_accum = meanflux_list[0]
     quad_accum = quad_list[0]
     for mean_flux, quad_flux in ensemble_list:
         print('flux ensemble: {}'.format(count))
@@ -53,13 +53,15 @@ def get_ensemble(date,dump_time_label):
     return filelist, press, height, theta_avg, mean_flux_avg, quad_flux_avg
 
 
-def write_h5(case_dict,theta_array,flux_array,press,height,h5_outfile='test.h5'):
+def write_h5(case_dict,theta_array,mean_flux_array,quad_flux_array,press,height,h5_outfile='test.h5'):
     with h5py.File(h5_outfile, 'w') as f:
         case = f['/']
         dset = case.create_dataset('thetas',theta_array.shape, dtype=theta_array.dtype)
         dset[...] = theta_array[...]
-        dset = case.create_dataset('fluxes',flux_array.shape, dtype=flux_array.dtype)
-        dset[...] = flux_array[...]
+        dset = case.create_dataset('mean_fluxes',mean_flux_array.shape, dtype=mean_flux_array.dtype)
+        dset[...] = mean_flux_array[...]
+        dset = case.create_dataset('quad_fluxes',quad_flux_array.shape, dtype=quad_flux_array.dtype)
+        dset[...] = quad_flux_array[...]
         dset = case.create_dataset('height',height.shape, dtype=height.dtype)
         dset[...]=height[...]
         dset = case.create_dataset('press',press.shape, dtype=press.dtype)
@@ -93,7 +95,7 @@ if __name__ == "__main__":
         if args.case_list:
             print(case_dict.keys())
             sys.exit(1)
-    case_list = ['Nov302013','Mar52014', 'Dec252013', 'Dec202013', 'Mar12014', 'Jan152014_1']
+    case_list = ['Mar12014','Nov302013','Mar52014', 'Dec142013','Dec252013', 'Dec202013',  'Jan152014_1']
     for case_name in case_list[:1]:    
         time_tup, dump_time_list, Times = list_times(case_name)
         theta_list=[]
@@ -108,13 +110,13 @@ if __name__ == "__main__":
 
         theta_array = np.array(theta_list)
         mean_flux_array = np.array(mean_flux_list)
-        qaud_flux_array = np.arrays(mean_flux_list)
+        quad_flux_array = np.array(quad_flux_list)
         
         the_case = case_dict[case_name]
         the_case['time_strings'] = dump_time_list
         the_case['filelist'] = filelist
         the_case['float_hours'] = list(Times)
         outfile ='thetaprofs_{}.h5'.format( case_name)
-        write_h5(the_case,theta_array,mean_fluxes, quad_fluxs,press,height,h5_outfile=outfile)
+        write_h5(the_case,theta_array,mean_flux_array, quad_flux_array,press,height,h5_outfile=outfile)
 
 

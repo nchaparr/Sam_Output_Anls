@@ -482,7 +482,7 @@ def Flux_Quad_Slow(wpert, thetapert):
     return [avup_warm, avdown_warm, avup_cold, avdown_cold]
 
 
-def gm_vars(t, surface_flux,gamma):
+def gm_vars(t_hours, surface_flux,gamma):
     rho=1.
     cp=1004.
     g=9.8
@@ -490,7 +490,7 @@ def gm_vars(t, surface_flux,gamma):
     theta_0=300.  #K
     B0=flux*g/theta_0
     gamma=gamma  #K/m
-    tsec=t*3600
+    tsec=t_hours*3600
     g=9.8  #m/s^2
     N2=g/theta_0*gamma  #s**(-2)
     N=N2**0.5
