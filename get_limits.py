@@ -60,7 +60,6 @@ def Main_Fun(rundate, gamma, flux_s):
              top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
              
          #function for calcuating heights
-         pdb.set_trace()
          [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index, 'old')
          [L0,N,B0,zenc]=nc.gm_vars(t,flux_s,gamma)
          
@@ -68,7 +67,7 @@ def Main_Fun(rundate, gamma, flux_s):
          delta_h=eltop_dthetadz - elbot_dthetadz
          delta = z1_GM - h
          
-         print(z1_GM, delta)
+         print('z1_GM, delta: ',z1_GM, delta)
          
          [c_delta, rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(B0, N, delta, h, zenc, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
          
@@ -78,11 +77,12 @@ def Main_Fun(rundate, gamma, flux_s):
          tau = 1.0*h/wstar
          invrinos.append([c_delta, rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4])
          gm_vars.append([L0,N,B0,zenc])
+     pdb.set_trace()
      files.save_file(np.array(AvProfLims), "AvProfLims_old")
      files.save_file(np.array(invrinos), "invrinos_old")
      #files.save_file(np.array(gm_vars), "gm_vars")
 
-run_list = [["Nov302013", .005, 100], ["Dec142013", .01, 100], ["Dec202013", .005, 60], ["Dec252013", .0025, 60], ["Jan152014_1", .005, 150], ["Mar12014", .01, 60], ["Mar52014", .01, 150]]
+run_list = [ ["Mar12014", .01, 60],["Nov302013", .005, 100], ["Dec142013", .01, 100], ["Dec202013", .005, 60], ["Dec252013", .0025, 60], ["Jan152014_1", .005, 150], ["Mar52014", .01, 150]]
 
 for run in run_list:
     Main_Fun(run[0], run[1], run[2])
