@@ -117,18 +117,18 @@ if __name__ == "__main__":
             title = key
             plt.xlabel("scaled warm flux quadrant", size=20)
             plt.ylabel("scaled height",size=20)
-            ax.set(title="",ylim=(0,1.2), xlim=(-2, 2))
+            ax.set(title="",ylim=(0,1.2), xlim=(-.7, 1.6))
             #figname = '{}_100.png'.format(key)
             #ax.legend(numpoints=1, loc='best')
             
 
-            ax.plot([-6,25], [zgdist['avg']/zgdist['avg'], zgdist['avg']/zgdist['avg']], 'k:')
-            ax.plot([-6,25], [zg0dist['avg']/zgdist['avg'], zg0dist['avg']/zgdist['avg']], 'k:')
-            ax.plot([-6,25], [zf0dist['avg']/zgdist['avg'], zf0dist['avg']/zgdist['avg']], 'k:')
+            ax.plot([-.3,1], [zgdist['avg']/zgdist['avg'], zgdist['avg']/zgdist['avg']], 'k:')
+            ax.plot([-.3,1], [zg0dist['avg']/zgdist['avg'], zg0dist['avg']/zgdist['avg']], 'k:')
+            ax.plot([-.3,1], [zf0dist['avg']/zgdist['avg'], zf0dist['avg']/zgdist['avg']], 'k:')
             
-            ax.text(-9, zgdist['avg']/zgdist['avg'], r"$\overline{z_{g}}$", size=30)
-            ax.text(-9, zf0dist['avg']/zgdist['avg'], r"$\overline{z_{f0}}$", size=30)
-            ax.text(-9, zg0dist['avg']/zgdist['avg'], r"$\overline{z_{g0}}$", size=30)
+            ax.text(1, zgdist['avg']/zgdist['avg'], r"$\overline{z_{g}}$", size=30)
+            ax.text(1, zf0dist['avg']/zgdist['avg'], r"$\overline{z_{f0}}$", size=30)
+            ax.text(1, zg0dist['avg']/zgdist['avg'], r"$\overline{z_{g0}}$", size=30)
             
             #ax.axhline(zgdist['avg']/zgdist['avg'])
             #ax.axhline(zg0dist['avg']/zgdist['avg'])
