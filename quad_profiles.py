@@ -155,9 +155,9 @@ if __name__ == "__main__":
                     store_sum['wp_tp'] += flux
                     flux=(dwvelpertslice[hit]).mean()
                     store_sum['dwp_tpdz']+=flux 
-                    flux = (wvelpertslice[hit]).mean()
+                    flux = (thetapertslice[hit]).mean()
                     store_sum['tp_wp'] += flux
-                    flux=(dwvelpertslice[hit]).mean()
+                    flux=(dthetapertslice[hit]).mean()
                     store_sum['dtp_wpdz']+=flux 
                     
                     flux=wvelthetapertslice.mean()

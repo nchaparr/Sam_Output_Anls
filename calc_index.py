@@ -42,11 +42,11 @@ if __name__ == "__main__":
         nd_times = (Times*3600.)*line_dict['N']
         print(nd_times, line_dict['N'])
         time_index=int(np.searchsorted(nd_times,time_nd_target))
-        #try:
-        #    print('case: {}, target: {}, closest ndtime: {}'.format(case,time_nd_target,nd_times[time_index]))
-        #except IndexError:
-        #    print('Dropping case: {}, target: {}, last nd_time: {}, L0: {}'.format(case,time_nd_target,nd_times[-1],line_dict['L0']))
-        #    continue
+        try:
+            print('case: {}, target: {}, closest ndtime: {}'.format(case,time_nd_target,nd_times[time_index]))
+        except IndexError:
+            print('Dropping case: {}, target: {}, last nd_time: {}, L0: {}'.format(case,time_nd_target,nd_times[-1],line_dict['L0']))
+            continue
         run_dict[case] = line_dict
         print(run_dict[case]['legends'])
         run_dict[case]['time_list'] = (start,step,stop)
