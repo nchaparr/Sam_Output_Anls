@@ -62,7 +62,7 @@ def Main_Fun(rundate, gamma, flux_s):
          press = np.genfromtxt(press_file_list[i])
          rhow = nc.calc_rhow(press, height, theta[0])
          h = AvProfVars[j, 4]
-         h0=AvProfVars[j, 0]
+         h0=AvProfVars[j, 1]
          h1 = AvProfVars[j, 2]
          scaled_time=np.divide(gm_vars[j, 3], gm_vars[j, 0])
          deltah = h1-h
@@ -104,7 +104,7 @@ Ax3 = Fig2.add_subplot(111)
 #Ax3.set_xlabel(r"$Time", fontsize=30)
 Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h}}{\gamma ( h_{1}-h)} \ (where \ w^{\prime}<0)$", fontsize=30)
-Ax3.set_ylabel(r"$\overline{w^{\prime}\theta^{\prime}}_{z_{g0}}/\overline{w^{\prime}\theta^{\prime}}_{s}$", fontsize=30)
+Ax3.set_ylabel(r"$\overline{w^{\prime}\theta^{\prime}}_{z_{g}}/\overline{w^{\prime}\theta^{\prime}}_{s}$", fontsize=30)
 Ax3.set_xlabel(r"$z_{enc}/L_{0}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{\overline{w^{\prime-}_{h}}(where \ \theta^{\prime}>0) }{w^{*}}$ ", fontsize=30)
 
@@ -122,11 +122,16 @@ Ax3.set_ylim(-1.1, 1.1)
 for run in run_list:
     #print run[0]
     upwarm_h0, downwarm_h0, upcold_h0, downcold_h0, scaled_times, flux_h0 = Main_Fun(run[0], run[1], run[2])
-    Ax3.plot(scaled_times, 1.0*upwarm_h0, 'r+') #, markersize=10
-    Ax3.plot(scaled_times, 1.0*downwarm_h0, 'r--')
-    Ax3.plot(scaled_times, 1.0*upcold_h0, 'b+')
-    Ax3.plot(scaled_times, 1.0*downcold_h0, 'b--')
-    Ax3.plot(scaled_times, 1.0*flux_h0, 'k-')
+    downwarm_h0[0:1]=np.nan
+    downcold_h0[0:1]=np.nan
+    if run[0]=="Dec202013":
+         downcold_h0[3:5]=np.nan
+         downcold_h0[14]=np.nan
+    Ax3.plot(scaled_times, 1.0*upwarm_h0, 'r+') #run[4], markersize=10
+    Ax3.plot(scaled_times, 1.0*downwarm_h0, 'r--')# run[4]
+    Ax3.plot(scaled_times, 1.0*upcold_h0, 'b+' )#run[4]
+    Ax3.plot(scaled_times, 1.0*downcold_h0, 'b--')#run[4]
+    Ax3.plot(scaled_times, 1.0*flux_h0, 'k-')#run[4]
 #Ax3.legend(bbox_to_anchor=(1.49, 1.03), prop={'size':20}, numpoints = 1)
 #box = Ax3.get_position()
 #Ax3.set_position([box.x0, box.y0, box.width*1.33, box.height])
