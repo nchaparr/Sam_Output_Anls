@@ -47,6 +47,7 @@ def Main_Fun(rundate, gamma, flux_s):
         t = Times[i]
 
         theta = np.genfromtxt(theta_file_list[i])
+        theta0 = np.genfromtxt(theta_file_list[0])
         height = np.genfromtxt(height_file)    
         press = np.genfromtxt(press_file_list[i])
         rhow = nc.calc_rhow(press, height, theta[0])
@@ -59,31 +60,26 @@ def Main_Fun(rundate, gamma, flux_s):
              top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
 
         #function for calcuating heights
-        [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, mltheta, z1_GM]= nc.Get_CBLHeights(height, press, theta, wvelthetapert, gamma, flux_s, top_index)
-
+        [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, Deltatheta, deltatheta_f, Deltatheta_f, mltheta, z1_GM]= nc.Get_CBLHeights(height, press, theta, theta0, wvelthetapert, gamma, flux_s, top_index, "old")
                 
         h_lev = np.where(height==h)[0]         
         delta_h=eltop_dthetadz - elbot_dthetadz
         delta=z1_GM-h
-        
-        
+           
         
         [L0,N,B0,zenc]=nc.gm_vars(t,flux_s,gamma)
         
-        [c_delta, rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(B0, N, zenc, delta, h, mltheta, 1.0*flux_s/(rhow[0]*1004), deltatheta, gamma, delta_h)
-        print c_delta, delta, zenc, z1_GM
+        [c_delta, rino, invrino, wstar, S, pi3, pi4] =  nc.calc_rino(B0, N, zenc, delta, h, mltheta, 1.0*flux_s/(rhow[0]*1004), Deltatheta, gamma, delta_h)
 
-        AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, zenc, z1_GM])
+        AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, Deltatheta, zenc, z1_GM])
         
         tau = 1.0*h/wstar
         thetastar = 1.0*flux_s/(rhow[0]*1004*wstar)
-        invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4, thetastar, c_delta])
-        gm_vars.append([L0,N,B0,zenc])
-
-        print c_delta, z1_GM, zenc, h     
+        invrinos.append([rino, invrino, wstar, S, tau, mltheta, Deltatheta, pi3, pi4, thetastar, c_delta])
+        gm_vars.append([L0,N,B0,zenc])     
     
-    files.save_file(np.array(AvProfLims), "AvProfLims")
-    files.save_file(np.array(invrinos), "invrinos")
+    files.save_file(np.array(AvProfLims), "AvProfLims_old")
+    files.save_file(np.array(invrinos), "invrinos_old")
     files.save_file(np.array(gm_vars), "gm_vars")
 
 run_list = [["Nov302013", .005, 100], ["Dec142013", .01, 100], ["Dec202013", .005, 60], ["Dec252013", .0025, 60], ["Jan152014_1", .005, 150], ["Mar12014", .01, 60], ["Mar52014", .01, 150]]

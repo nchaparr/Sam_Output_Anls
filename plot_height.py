@@ -59,11 +59,11 @@ Run_Date_List = ["Dec142013", "Nov302013", "Dec202013", "Dec252013", "Jan152014_
 for i in range(len(label_list)):
     if i<99:
         points = For_Plots(Run_Date_List[i])
-        rinovals = points.rinovals_old() #rinovals_old
+        rinovals = points.rinovals() #rinovals_old
         gm_vars = points.gm_vars()
-        Deltah = points.Deltah_over_h_old(2, 0, 1) #change for deltahinvri plots [elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM] Deltah_old
+        Deltah = points.Deltah_over_h(2, 0, 1) #change for deltahinvri plots [elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM] Deltah_old
         HistVars = points.HistVars()  
-        AvProfVars = points.AvProfVars_old()  # AvProfVars_old()
+        AvProfVars = points.AvProfVars()  # AvProfVars_old()
         if Run_Date_List[i] == "Nov302013":
              Deltah[13] = np.nan
              Deltah[15:17] = np.nan
@@ -113,7 +113,7 @@ Ax3.loglog(x1es, ys1, 'k--')#for our deltah invri plot
 Ax3.text(.028, .49, r'$b = -1$',  fontdict=None, withdash=False, fontsize = 25, rotation=35)#for our deltah invri plots
 Ax3.text(.048, .67, r'$b = -\frac{1}{2}$',  fontdict=None, withdash=False, fontsize = 25, rotation=22)
 
-Ax3.text(.085, .88, r'(d)', fontsize=30)
+Ax3.text(.085, .88, r'(b)', fontsize=30)
 #Ax3.set_ylim(0, 2500)
 #Ax3.legend(loc = 'lower right', prop={'size': 14}, numpoints=1)
 #Ax3.set_title(r'$\Delta h (Flux)\ vs \ Time$', fontsize=20)
