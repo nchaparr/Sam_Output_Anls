@@ -60,28 +60,28 @@ class For_Plots:
         rinovals_old = np.genfromtxt(self.read_path + "invrinos_old")
         return rinovals_old
 
-    def Deltah(self):
-        AvProfVars = np.genfromtxt(self.path + "AvProfLims")
-        Deltah = np.subtract(AvProfVars[:, 2], AvProfVars[:, 0])
+    def Deltah(self, upper, lower):
+        AvProfVars = np.genfromtxt(self.read_path + "AvProfLims")
+        Deltah = np.subtract(AvProfVars[:, upper], AvProfVars[:, lower])
         #Deltah0 = np.divide(Deltah0, AvProfVars[:,1])
         return Deltah
 
-    def Deltah_old(self):
-        AvProfVars_old = np.genfromtxt(self.path + "AvProfLims_old")
-        Deltah_old = np.subtract(AvProfVars_old[:, 2], AvProfVars_old[:, 0])
+    def Deltah_old(self, upper, lower):
+        AvProfVars_old = np.genfromtxt(self.read_path + "AvProfLims_old")
+        Deltah_old = np.subtract(AvProfVars_old[:, upper], AvProfVars_old[:, lower])
         #Deltah0 = np.divide(Deltah0, AvProfVars[:,1])
         return Deltah_old
 
-    def Deltah_over_h(self):
+    def Deltah_over_h(self, upper, lower, scale):
         AvProfVars = np.genfromtxt(self.read_path + "AvProfLims")
-        Deltah = np.subtract(AvProfVars[:, 2], AvProfVars[:, 0])
-        Deltah_over_h = np.divide(Deltah, AvProfVars[:, 1])
+        Deltah = np.subtract(AvProfVars[:, upper], AvProfVars[:, lower])
+        Deltah_over_h = np.divide(Deltah, AvProfVars[:, scale])
         return Deltah_over_h
 
-    def Deltah_over_h_old(self):
+    def Deltah_over_h_old(self, upper, lower, scale):
         AvProfVars_old = np.genfromtxt(self.read_path + "AvProfLims_old")
-        Deltah_old = np.subtract(AvProfVars_old[:, 2], AvProfVars_old[:, 0])
-        Deltah_over_h_old = np.divide(Deltah_old, AvProfVars_old[:, 1])
+        Deltah_old = np.subtract(AvProfVars_old[:, upper], AvProfVars_old[:, lower])
+        Deltah_over_h_old = np.divide(Deltah_old, AvProfVars_old[:, scale])
         return Deltah_over_h_old
 
 class Get_Var_Arrays1:
