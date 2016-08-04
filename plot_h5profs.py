@@ -115,8 +115,8 @@ if __name__ == "__main__":
                 #ax.axhline(hvals[time_index,zg0_index]/zg)
                 
             title = key
-            plt.xlabel(r"$\frac{w^{\prime}}{w^{*}}$", size=40)
-            plt.ylabel(r"$\frac{z}{z_{g}}$",size=40)
+            plt.xlabel(r"$w^{\prime}/w^{*}$", size=40)
+            plt.ylabel(r"$z/z_{g}$",size=40)
             ax.set(title="",ylim=(0,1.2), xlim=(0, 1))
             ax.tick_params(axis='both', labelsize=20)
             #figname = '{}_100.png'.format(key)
