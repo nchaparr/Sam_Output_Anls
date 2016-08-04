@@ -62,7 +62,7 @@ def Main_Fun(rundate, gamma, flux_s):
          press = np.genfromtxt(press_file_list[i])
          rhow = nc.calc_rhow(press, height, theta[0])
          h = AvProfVars[j, 4]
-         h0=AvProfVars[j, 1]
+         h0=AvProfVars[j, 4]
          h1 = AvProfVars[j, 2]
          scaled_time=np.divide(gm_vars[j, 3], gm_vars[j, 0])
          deltah = h1-h
@@ -104,11 +104,11 @@ Ax3 = Fig2.add_subplot(111)
 #Ax3.set_xlabel(r"$Time", fontsize=30)
 Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h}}{\gamma ( h_{1}-h)} \ (where \ w^{\prime}<0)$", fontsize=30)
-Ax3.set_ylabel(r"$\overline{w^{\prime}\theta^{\prime}}_{z_{g}}/\overline{w^{\prime}\theta^{\prime}}_{s}$", fontsize=30)
+Ax3.set_ylabel(r"$\overline{w^{\prime}\theta^{\prime}}_{z_{f}}/\overline{w^{\prime}\theta^{\prime}}_{s}$", fontsize=30)
 Ax3.set_xlabel(r"$z_{enc}/L_{0}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{\overline{w^{\prime-}_{h}}(where \ \theta^{\prime}>0) }{w^{*}}$ ", fontsize=30)
 
-#Ax3.set_ylabel(r"$$", fontsize=30)
+Ax3.text(5, .9, "(a)", fontsize=30)
 
 #Ax3.set_ylabel( r"$\overline{w^{\prime -}}_{h}} \ (where \ \theta^{\prime}>0)", fontsize=30)
 
