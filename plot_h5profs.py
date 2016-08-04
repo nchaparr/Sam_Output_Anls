@@ -115,9 +115,10 @@ if __name__ == "__main__":
                 #ax.axhline(hvals[time_index,zg0_index]/zg)
                 
             title = key
-            plt.xlabel("scaled upwarm vertical velocity fluctuation", size=20)
-            plt.ylabel("scaled height",size=20)
+            plt.xlabel(r"$\frac{w^{\prime}}{w^{*}}$", size=40)
+            plt.ylabel(r"$\frac{z}{z_{g}}$",size=40)
             ax.set(title="",ylim=(0,1.2), xlim=(0, 1))
+            ax.tick_params(axis='both', labelsize=20)
             #figname = '{}_100.png'.format(key)
             #ax.legend(numpoints=1, loc='best')
             
@@ -130,6 +131,9 @@ if __name__ == "__main__":
             ax.text(.9, zf0dist['avg']/zgdist['avg'], r"$\overline{z_{f0}}$", size=30)
             ax.text(.9, zg0dist['avg']/zgdist['avg'], r"$\overline{z_{g0}}$", size=30)
             
+            ax.text(0, 0.02, r"(a)", size=30)
+
+            plt.tight_layout()
             #ax.axhline(zgdist['avg']/zgdist['avg'])
             #ax.axhline(zg0dist['avg']/zgdist['avg'])
             #ax.axhline(zf0dist['avg']/zgdist['avg'])
