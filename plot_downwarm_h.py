@@ -36,7 +36,7 @@ def Main_Fun(rundate, gamma, flux_s):
      flux_quads_file_list = [files.get_file(dump_time, "flux_quads_test") for dump_time in dump_time_list] #"flux_quads_theta1":[upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar] 
      
      height_file = files.get_file("0000000600", "heights")
-
+     theta0_file=files.get_file("0000000600", "theta_bar")
      #Get heights, scaling parameters
      AvProfVars = files.AvProfVars()
      rinovals = files.rinovals()
@@ -57,12 +57,13 @@ def Main_Fun(rundate, gamma, flux_s):
              j = (i+1)*3 - 1
          #print i, j
          height = np.genfromtxt(height_file)
+         theta0 = np.genfromtxt(theta0_file)
          theta = np.genfromtxt(theta_file_list[i])
          #print theta.shape
          press = np.genfromtxt(press_file_list[i])
          rhow = nc.calc_rhow(press, height, theta[0])
          h = AvProfVars[j, 4]
-         h0=AvProfVars[j, 3]
+         h0=AvProfVars[j, 0]
          h1 = AvProfVars[j, 2]
          scaled_time=np.divide(gm_vars[j, 3], gm_vars[j, 0])
          deltah = h1-h
@@ -72,12 +73,13 @@ def Main_Fun(rundate, gamma, flux_s):
          h0_lev = np.where(height == h0)
          flux_quads = np.genfromtxt(flux_quads_file_list[i])
          flux_s1 = 1.0*flux_s/(rhow[0]*1004)
+         theta0_h0=theta0[h0_lev]
          #flux_quads: 
-         upwarm = flux_quads[h0_lev, 0][0][0]
-         downwarm = flux_quads[h0_lev, 1][0][0]
-         upcold = flux_quads[h0_lev, 2][0][0]
-         downcold = flux_quads[h0_lev, 3][0][0]
-         flux = flux_quads[h0_lev, 4][0][0]
+         upwarm = flux_quads[h0_lev, 0][0][0]*(theta0_h0/300)
+         downwarm = flux_quads[h0_lev, 1][0][0]*(theta0_h0/300)
+         upcold = flux_quads[h0_lev, 2][0][0]*(theta0_h0/300)
+         downcold = flux_quads[h0_lev, 3][0][0]*(theta0_h0/300)
+         flux = flux_quads[h0_lev, 4][0][0]*(theta0_h0/300)
          #print flux_s1, flux_s
          upwarm_h0.append(1.0*upwarm/(flux_s1))# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
          downwarm_h0.append(1.0*downwarm/(flux_s1))

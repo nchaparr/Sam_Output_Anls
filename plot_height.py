@@ -39,7 +39,7 @@ for i in range(len(label_list)):
         rinovals = points.rinovals()
         Deltah = points.Deltah(8, 1)#upper, lower, scale
         HistVars = points.HistVars()
-        AvProfVars = points.AvProfVars() #chage to AvProfVars_old() for old limitsx
+        AvProfVars = points.AvProfVars_old() #chage to AvProfVars_old() for old limitsx
         gm_vars = points.gm_vars()
 
 
@@ -55,8 +55,11 @@ for i in range(len(label_list)):
             #print "Nov302013", gm_vars[11:,3].shape, AvProfVars[11:,8].shape, AvProfVars[11:, 3].shape
             #Ax3.plot(np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0]), rinovals[11:29, 1], legend_list[i], label = label_list[i])
             
+            Ax3.plot(np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0]), np.divide(AvProfVars[11:29, 1], gm_vars[11:29, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0]), np.divide(AvProfVars[11:29, 8], gm_vars[11:29, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0]), np.divide(AvProfVars[11:29, 2], gm_vars[11:29, 3]), legend_list[i], label = label_list[i])
-            Ax3.plot(np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0]), np.divide(AvProfVars[11:29, 4], gm_vars[11:29, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0]), np.divide(AvProfVars[11:29, 0], gm_vars[11:29, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0]), np.divide(AvProfVars[11:29, 3], gm_vars[11:29, 3]), legend_list[i], label = label_list[i])
             #Ax3.loglog(np.multiply(rinovals[11:29, 10]**(0.5),np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0])), np.divide(Deltah[11:29], gm_vars[11:29,3]), legend_list[i], label = label_list[i], markersize=10)
             #Ax3.plot(np.divide(gm_vars[11:29,3], gm_vars[11:29,0]),rinovals[11:29, 10],  legend_list[i], label = label_list[i], markersize=10)
         elif Run_Date_List[i]=="Mar12014":
@@ -69,9 +72,11 @@ for i in range(len(label_list)):
             #print "Nov302013", gm_vars[11:,3].shape, AvProfVars[11:,8].shape, AvProfVars[11:, 3].shape
             #Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), rinovals[11:, 1], legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 8], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 2], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 0], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
-            #Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 5], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.loglog(np.multiply(rinovals[11:29, 10]**(0.5), np.divide(gm_vars[11:29,3], gm_vars[11:29,0])), np.divide(Deltah[11:29],gm_vars[11:29,3]), legend_list[i], label = label_list[i], markersize=10)
             #Ax3.plot(np.divide(gm_vars[11:29,3], gm_vars[11:29,0]),rinovals[11:29, 10],  legend_list[i], label = label_list[i], markersize=10)
 
@@ -83,11 +88,12 @@ for i in range(len(label_list)):
             #AvProfVars[12:17, 2]=np.nan
             AvProfVars[28:32, 0]=np.nan
             #print "Nov302013", gm_vars[11:,3].shape, AvProfVars[11:,8].shape, AvProfVars[11:, 3].shape
-            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
-            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 2], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 8], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), rinovals[11:, 1], legend_list[i], label = label_list[i])
-            #Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
-            #Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 5], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 2], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 0], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.loglog(np.multiply(rinovals[11:, 10]**(0.5),np.divide(gm_vars[11:, 3], gm_vars[11:, 0])), np.divide(Deltah[11:],gm_vars[11:,3]), legend_list[i], label = label_list[i], markersize=10)
             #Ax3.plot(np.divide(gm_vars[11:,3], gm_vars[11:,0]),rinovals[11:, 10],  legend_list[i], label = label_list[i], markersize=10)         
         elif Run_Date_List[i]=="Nov302013":
@@ -106,9 +112,11 @@ for i in range(len(label_list)):
             #print "Nov302013", gm_vars[11:,3].shape, AvProfVars[11:,8].shape, AvProfVars[11:, 3].shape
             #Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), rinovals[11:, 1], legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 8], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 2], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 0], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
-            #Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 5], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.plot(AvProfVars[11:,8], np.divide(AvProfVars[11:, 4], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.plot(AvProfVars[11:,8], np.divide(AvProfVars[11:, 1], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.plot(AvProfVars[11:,8], np.divide(AvProfVars[11:, 0], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
@@ -122,9 +130,11 @@ for i in range(len(label_list)):
             print(Run_Date_List[i], label_list[i])
             #Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), rinovals[11:, 1], legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 1], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 8], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 2], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
-            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 4], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
-            #Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 5], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 0], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
+            Ax3.plot(np.divide(gm_vars[11:, 3], gm_vars[11:, 0]), np.divide(AvProfVars[11:, 3], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.plot(AvProfVars[11:,8], np.divide(AvProfVars[11:, 4], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.plot(AvProfVars[11:,8], np.divide(AvProfVars[11:, 1], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
             #Ax3.plot(AvProfVars[11:,8], np.divide(AvProfVars[11:, 0], gm_vars[11:, 3]), legend_list[i], label = label_list[i])
@@ -143,13 +153,13 @@ for i in range(len(label_list)):
 #Ax3.loglog(x1es, ys1, 'k--')
 
 
-#Ax3.text(32.5, 1.25, r"$z_{g1}$", size=20)
-Ax3.text(32.5, 1.2, r"$z_{f1}$", size=20)
+Ax3.text(32.5, 1.25, r"$z_{g1}$", size=20)
+#Ax3.text(32.5, 1.2, r"$z_{f1}$", size=20)
 Ax3.text(32.5, 1.2, r"$z_{g1GM}$", size=20)
 Ax3.text(32.5, .95, r"$z_{f0}$", size=20)
 #Ax3.text(32.5, 1.1, r"$z_{f}$", size=20)
-#Ax3.text(32.5, 1.15, r"$z_{g}$", size=20)
-#Ax3.text(32.5, 0.87, r"$z_{g0}$", size=20)
+Ax3.text(32.5, 1.15, r"$z_{g}$", size=20)
+Ax3.text(32.5, 0.87, r"$z_{g0}$", size=20)
 
 Ax3.text(6, 1.4, '(a)', fontsize=30)
 
@@ -164,7 +174,7 @@ Ax3.set_ylabel(r"$z / z_{enc}$", fontsize=30)
 Ax3.set_xlabel(r"$z_{enc} / L_{0}}$", fontsize=30)
 Ax3.tick_params(axis="both", labelsize=20)
 plt.ylim(0.6, 1.5)
-plt.xlim(5, 35)
+plt.xlim(5, 37)
 plt.tight_layout()
 plt.show()
 
