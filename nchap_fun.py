@@ -606,7 +606,7 @@ def Get_CBLHeights(heights, press, thetas, theta0, wvelthetapert, gamma, flux_s,
 
     thresh_dict={}
     thresh_dict['old']={'dtheta_dz_b1':.0002,'dtheta_dz_b2':0, 'dtheta_dz_t1':.0002,'dtheta_dz_t2':.0002, 'dtheta_dz_t3':gamma, 'flux_b':0, 'flux_t1':0.5,'flux_t2':0}
-    thresh_dict['new']={'dtheta_dz_b1':.03,'dtheta_dz_b2':0, 'dtheta_dz_t1':.03,'dtheta_dz_t2':.04, 'dtheta_dz_t3':1,'flux_b':0 ,'flux_t1':0.01,'flux_t2':0}
+    thresh_dict['new']={'dtheta_dz_b1':.04,'dtheta_dz_b2':0, 'dtheta_dz_t1':.03,'dtheta_dz_t2':.04, 'dtheta_dz_t3':1,'flux_b':0 ,'flux_t1':0.01,'flux_t2':0}
     
     dheight = np.diff(heights)
     dtheta = np.diff(thetas)
