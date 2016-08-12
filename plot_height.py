@@ -59,61 +59,70 @@ Run_Date_List = ["Dec142013", "Nov302013", "Dec202013", "Dec252013", "Jan152014_
 for i in range(len(label_list)):
     if i<99:
         points = For_Plots(Run_Date_List[i])
-        rinovals = points.rinovals() #rinovals_old
+        rinovals = points.rinovals_old() #rinovals_old invrinos.append([rino, invrino, wstar, S, tau, mltheta, Deltatheta, pi3, pi4, thetastar, c_delta, rino_delta_GM, rino_delta_GM1])
         gm_vars = points.gm_vars()
-        Deltah = points.Deltah_over_h(2, 0, 1) #change for deltahinvri plots [elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM] Deltah_old
+        #delta_z_i = points.Deltah_over_h(8, 7, 7) #change for deltahinvri plots [elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM] Deltah_old
+        Delta_z = points.Deltah_over_h(2, 0, 1)
         HistVars = points.HistVars()  
-        AvProfVars = points.AvProfVars()  # AvProfVars_old()
+        AvProfVars = points.AvProfVars()  # AvProfVars_old() AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, Deltatheta, zenc, z1_GM])
         if Run_Date_List[i] == "Nov302013":
-             Deltah[13] = np.nan
-             Deltah[15:17] = np.nan
-             Deltah[24:26] = np.nan
-             #Ax3.plot(np.divide(gm_vars[7:, 3], gm_vars[7:, 0]), rinovals[7:,10], legend_list[i], label = label_list[i], markersize=10) 
-             #Ax3.loglog(np.multiply(rinovals[7:, 10]**(0.5),np.divide(gm_vars[7:, 3], gm_vars[7:, 0])), Deltah[7:], legend_list[i], label = label_list[i], markersize=10) #for GM comparison plot
-             Ax3.loglog(rinovals[7:, 1], Deltah[7:], legend_list[i], label = label_list[i], markersize=10) #for our invri deltah plots
+             #Delta_z[13] = np.nan
+             #Delta_z[15:17] = np.nan
+             #Delta_z[24:26] = np.nan
+             #Ax3.plot(np.divide(gm_vars[7:, 3], gm_vars[7:, 0]), delta_z_i[7:], legend_list[i], label = label_list[i], markersize=10)
+             #Ax3.plot(np.divide(gm_vars[7:, 3], gm_vars[7:, 0]), Delta_z[7:], legend_list[i], label = label_list[i], markersize=10)
+             #Ax3.loglog(np.multiply(rinovals[7:, 13]**(0.5),np.divide(gm_vars[7:, 3], gm_vars[7:, 0])), Deltah[7:], legend_list[i], label = label_list[i], markersize=10) #for GM comparison plot
+             #Ax3.plot(, [7:], legend_list[i], label = label_list[i], markersize=10) #for our invri deltah plots
+             Ax3.plot(rinovals[7:, 0], Delta_z[7:], legend_list[i], label = label_list[i], markersize=10)
              #Ax3.loglog(np.divide(gm_vars[7:, 3], gm_vars[7:, 0]), Deltah[7:], legend_list[i], label = label_list[i], markersize=10)
         elif Run_Date_List[i] == "Jan152014_1":
     #TODO: alternative starting index for Nov302013
-             Deltah[16:21] = np.nan
+             #Delta_z[16:21] = np.nan
              #print Deltah
-             #Ax3.plot(np.divide(gm_vars[11:29,3], gm_vars[11:29,0]), rinovals[11:29,10], legend_list[i], label = label_list[i], markersize=10)
+             #Ax3.plot(np.divide(gm_vars[11:29,3], gm_vars[11:29,0]), delta_z_i[11:29], legend_list[i], label = label_list[i], markersize=10)
+             #Ax3.plot(np.divide(gm_vars[11:29,3], gm_vars[11:29,0]), Delta_z[11:29], legend_list[i], label = label_list[i], markersize=10)
              #Ax3.loglog(np.multiply(rinovals[11:29, 10]**(0.5), np.divide(gm_vars[11:29,3], gm_vars[11:29,0])), Deltah[11:29], legend_list[i], label = label_list[i], markersize=10) #for GM comparison plot
-             Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i], markersize=10) #for our deltah invrino plot
+             Ax3.plot(rinovals[11:29, 0], Delta_z[11:29], legend_list[i], label = label_list[i], markersize=10)
+             #Ax3.plot(np.divide(gm_vars[11:29,3], gm_vars[11:29,0]), rinovals[11:29, 11], legend_list[i], label = label_list[i], markersize=10) #for our deltah invrino plot
              #Ax3.loglog(np.divide(gm_vars[11:29,3], gm_vars[11:29,0]), Deltah[11:29], legend_list[i], label = label_list[i], markersize=10)
         elif Run_Date_List[i] == "Mar12014":
     #TODO: alternative starting index for Nov302013
-             Deltah[11:17] = np.nan
+             #Delta_z[11:17] = np.nan
              #print Deltah
              #Ax3.loglog(np.multiply(rinovals[11:29, 10]**(0.5), np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0])), Deltah[11:29], legend_list[i], label = label_list[i], markersize=10) #for GM comparison plot
-             Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i], markersize=10) #for our deltah invrino plot
+             Ax3.plot(rinovals[11:29, 0], Delta_z[11:29], legend_list[i], label = label_list[i], markersize=10) #for our deltah invrino plot
              #Ax3.loglog(np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0]), Deltah[11:29], legend_list[i], label = label_list[i], markersize=10)
-             #Ax3.plot(np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0]), rinovals[11:29,10], legend_list[i], label = label_list[i], markersize=10)
+             #Ax3.plot(np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0]), delta_z_i[11:29], legend_list[i], label = label_list[i], markersize=10)
+             #Ax3.plot(np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0]), Delta_z[11:29], legend_list[i], label = label_list[i], markersize=10)
         else:     
              #print  rinovals[11:, 10]
              zenc_over_L0 = np.divide(gm_vars[11:, 3], gm_vars[11:, 0])
              #Ax3.loglog(np.multiply(rinovals[11:, 10]**(0.5), zenc_over_L0), Deltah[11:], legend_list[i], label = label_list[i], markersize=10) #for GM comparison plot
-             Ax3.loglog(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i], markersize=10) #for our invro deltah plot
+             Ax3.plot(rinovals[11:, 0], Delta_z[11:], legend_list[i], label = label_list[i], markersize=10) #for our invro deltah plot
              #Ax3.loglog(zenc_over_L0, Deltah[11:], legend_list[i], label = label_list[i], markersize=10)
-             #Ax3.plot(zenc_over_L0, rinovals[11:,10], legend_list[i], label = label_list[i], markersize=10)
+             #Ax3.plot(zenc_over_L0, delta_z_i[11:], legend_list[i], label = label_list[i], markersize=10)
+             #Ax3.plot(zenc_over_L0, Delta_z[11:], legend_list[i], label = label_list[i], markersize=10)
 
 #xes = np.arange(6, 25, 1) #for gm comparison plot
 #ys= (.4**.5)*xes**(-2.0/3)#for gm comparison plot
 #Ax3.loglog(xes, ys, 'k--')#for gm comparison plot
 
-xes = np.arange(.04, .075, .0001)#for our deltah invri plot
-x1es = np.arange(.029, .04, .0001)#for our deltah invri plot
-ys = 2.5*xes**(.5)#for our deltah invri plot
-ys1= 12.5*x1es**(1)#for our deltah invri plot
-Ax3.loglog(xes, ys, 'k--')#for our deltah invri plot
-Ax3.loglog(x1es, ys1, 'k--')#for our deltah invri plot
+xes = np.arange(.02, .08, .001)#for our deltah invri plot
+x1es = 1/xes#for our deltah invri plot
+ys = 11*xes**(1)#for our deltah invri plot
+ys1= 11/x1es**(-1)#for our deltah invri plot
+#Ax3.loglog(xes, ys, 'k--')#for our deltah invri plot
+#Ax3.loglog(x1es, ys1, 'k-')#for our deltah invri plot
 
 #Ax3.plot(np.arange(0, .1, .01)[2:10], np.arange(0, .1, .01)[2:10]**(3.0/2), 'k--')
 #Ax3.plot(Times[11:], Fit, 'b-', label="2nd Order Polyfit")
 #Ax3.text(6.6, .2, r'$y = \sqrt{0.4}x^{-\frac{2}{3}}$',  fontdict=None, withdash=False, fontsize = 25, rotation=-8) #for GM comparison plot
-Ax3.text(.028, .49, r'$b = -1$',  fontdict=None, withdash=False, fontsize = 25, rotation=35)#for our deltah invri plots
-Ax3.text(.048, .67, r'$b = -\frac{1}{2}$',  fontdict=None, withdash=False, fontsize = 25, rotation=22)
-
-Ax3.text(.085, .88, r'(b)', fontsize=30)
+#Ax3.text(.028, .49, r'$b = -1$',  fontdict=None, withdash=False, fontsize = 25, rotation=35)#for our deltah invri plots
+#Ax3.text(.048, .4, r'$b = -\frac{1}{2}$',  fontdict=None, withdash=False, fontsize = 25, rotation=18)
+#Ax3.text(.040, .7, r'$b = -1$',  fontdict=None, withdash=False, fontsize = 25, rotation=28)
+#Ax3.text(26, .27, r'$$', fontsize=20)
+#Ax3.text(28, .4, r'$$', fontsize=20)
+#Ax3.text(.085, .88, r'(b)', fontsize=30)
 #Ax3.set_ylim(0, 2500)
 #Ax3.legend(loc = 'lower right', prop={'size': 14}, numpoints=1)
 #Ax3.set_title(r'$\Delta h (Flux)\ vs \ Time$', fontsize=20)
@@ -127,7 +136,7 @@ Ax3.text(.085, .88, r'(b)', fontsize=30)
 #Ax3.set_ylabel(r"$\frac{\Delta z}{z_g}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{w_{e}}{w^{*}}$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h (m)$", fontsize=20)
-Ax3.set_ylabel(r"$\frac{\Delta z}{z_g}$", fontsize=30)
+Ax3.set_ylabel(r"$\Delta z/z_{g}$", fontsize=30)
 Ax3.set_xlabel(r"$Ri_{\Delta}^{-1}$", fontsize=30)
 #Ax3.set_ylabel(r"$\Delta \theta (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\overline{ \theta} (K)$", fontsize=20)
@@ -144,12 +153,12 @@ Ax3.set_xlabel(r"$Ri_{\Delta}^{-1}$", fontsize=30)
 #Ax3.set_xticklabels([0.02, 0.04, 0.06, 0.08, .1])
 
 #for deltah invri plots
-plt.ylim(0.2, 1)
-Ax3.set_yticks([0.2, 0.4, 0.6, 0.8, 1])
-Ax3.set_yticklabels([0.2, 0.4, 0.6, 0.8, 1])
-plt.xlim(.02, .1)
-Ax3.set_xticks([0.02, 0.04, 0.06, 0.08, .1])
-Ax3.set_xticklabels([0.02, 0.04, 0.06, 0.08, .1])
+#plt.ylim(.2, 1)
+#Ax3.set_yticks([0.2, 0.4, .6, .8, 1])
+#Ax3.set_yticklabels([0.2, 0.4, 0.6, 0.8, 1])
+#plt.xlim(.02, .08)
+#Ax3.set_xticks([0.04, .06, 0.08, .12])
+#Ax3.set_xticklabels([0.04, .06, 0.08, .12])
 
 
 Ax3.tick_params(axis="both", labelsize=20)

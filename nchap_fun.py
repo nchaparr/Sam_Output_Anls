@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 """ starting to collect commonly used functions"""
 
 
-def calc_rino(B0, N, zenc, delta, BLHeight, MLTheta, SfcFlux, Theta_jump, gamma, delta_h):
+def calc_rino(B0, N, z_g0, zenc, delta, BLHeight, MLTheta, SfcFlux, Theta_jump, gamma, delta_h):
     """Richardson number
 
     Arguments:
@@ -15,10 +15,11 @@ def calc_rino(B0, N, zenc, delta, BLHeight, MLTheta, SfcFlux, Theta_jump, gamma,
     MLTheta -- average potential temperature in mixed layer, scalar, K
     SfcFlx -- surface heat flux, scalar, w/m2
     Theta_jump -- inversion temperature jump, scalar, K
+    ...
 
     Returns:
     rino, invrino, wstar -- Richardson Number, Inverse Richardson Number, convective velocity scale
-    
+    ...
     """
     intermed = 1.0 * BLHeight / MLTheta
     intermed1 = intermed * SfcFlux
@@ -29,6 +30,9 @@ def calc_rino(B0, N, zenc, delta, BLHeight, MLTheta, SfcFlux, Theta_jump, gamma,
     
     wstar_GM = (B0*zenc)**(1.0/3)
     c_delta = (delta*(N**2)*delta)*1.0/wstar_GM**2
+
+    rino_delta_GM = (zenc*(N**2)*(delta + (BLHeight - zenc)))*1.0/wstar_GM**2
+    rino_delta_GM1= (zenc*(N**2)*(delta + (BLHeight - z_g0)))*1.0/wstar_GM**2
     
     S = ((1.0 * BLHeight / wstar)**2) * (gamma) * (1.0 * 9.81 / MLTheta)
 
@@ -36,7 +40,7 @@ def calc_rino(B0, N, zenc, delta, BLHeight, MLTheta, SfcFlux, Theta_jump, gamma,
 
     pi4 = gamma * 1.0 * delta_h / Theta_jump
 
-    return c_delta, rino, 1.0 / rino, wstar, S, pi3, pi4
+    return c_delta, rino, 1.0 / rino, wstar, S, pi3, pi4, rino_delta_GM, rino_delta_GM1
 
 
 def get_dhdt(heights, time):
@@ -687,7 +691,7 @@ def Get_CBLHeights(heights, press, thetas, theta0, wvelthetapert, gamma, flux_s,
 
     deltatheta_f = theta0[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]] - thetas[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]]
     deltatheta = theta0[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]] - thetas[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]
-    Deltatheta_f = thetas[flux_index_t] - thetas[flux_index_b]
+    Deltatheta_f = thetas[flux_index_t] - thetas[flux_index_b] #changing for GM definition
     Deltatheta = thetas[dtheta_index_t] - thetas[dtheta_index_b]
 
     mltheta = np.mean(thetas[0:dtheta_index_b])
