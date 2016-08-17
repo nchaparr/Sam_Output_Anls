@@ -78,7 +78,7 @@ dump_time_list, Times = Make_Timelists(1, 1800, 28800)
 #dump_time_list, Times = dump_time_list[12:], Times[12:]  
 theta_file_list = ["/tera/users/nchaparr/"+date+"/data/theta_bar"+ dump_time for dump_time in dump_time_list]
 press_file_list = ["/tera/users/nchaparr/"+date+"/data/press"+ dump_time for dump_time in dump_time_list]
-flux_file_list = ["/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads_test"+ dump_time for dump_time in dump_time_list]
+flux_file_list = ["/tera/users/nchaparr/"+date+"/data/upwarm_rtmnsq_thetas"+ dump_time for dump_time in dump_time_list]
 flux_file_list1 = ["/tera/users/nchaparr/"+date+"/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
 height_file = "/tera/users/nchaparr/"+date+"/data/heights0000018000"
 AvProfVars = np.genfromtxt("/tera/users/nchaparr/"+date+"/data/AvProfLims")
@@ -92,16 +92,16 @@ for i in range(len(theta_file_list)):
     print(rhow[0])
     flux_quads = np.genfromtxt(flux_file_list[i])
     #flux = np.genfromtxt(flux_file_list1[i])
-    upwarm=flux_quads[:,0]
+    upwarm=flux_quads[:]
     upwarm[0] = np.nan
-    downwarm=flux_quads[:,1]
-    downwarm[0]=np.nan
-    upcold=flux_quads[:,2]
-    upcold[0] = np.nan
-    downcold=flux_quads[:,3]
-    downcold[0] = np.nan
-    flux=flux_quads[:,4]
-    flux[0] = np.nan
+    #downwarm=flux_quads[:,1]
+    #downwarm[0]=np.nan
+    #upcold=flux_quads[:,2]
+    #upcold[0] = np.nan
+    #downcold=flux_quads[:,3]
+    #downcold[0] = np.nan
+    #flux=flux_quads[:,4]
+    #flux[0] = np.nan
     #Now for the gradients
     dheight = np.diff(height)
     #print dheight
@@ -123,11 +123,11 @@ for i in range(len(theta_file_list)):
     #print AvProfVars[:,1].shape, height.shape
     scaled_height = [1.0*h/AvProfVars[h_time_index,1] for h in height]
 
-    upwarm = np.multiply(upwarm, rhow)*1004.0/sfc_flx
-    downwarm = np.multiply(downwarm, rhow)*1004.0/sfc_flx
-    upcold = np.multiply(upcold, rhow)*1004.0/sfc_flx
-    downcold = np.multiply(downcold, rhow)*1004.0/sfc_flx
-    flux = np.multiply(flux, rhow)*1004.0/sfc_flx
+    #upwarm = np.multiply(upwarm, rhow)*1004.0/sfc_flx
+    #downwarm = np.multiply(downwarm, rhow)*1004.0/sfc_flx
+    #upcold = np.multiply(upcold, rhow)*1004.0/sfc_flx
+    #downcold = np.multiply(downcold, rhow)*1004.0/sfc_flx
+    #flux = np.multiply(flux, rhow)*1004.0/sfc_flx
     
 
     if np.mod(i+1, 1) == 0:
@@ -136,11 +136,11 @@ for i in range(len(theta_file_list)):
         upwarm[0] = np.nan
         zeros = np.zeros_like(height)
 
-        Ax.plot(flux, scaled_height, 'k-') #, label = str(Times[i])+'hrs'        
+        #Ax.plot(flux, scaled_height, 'k-') #, label = str(Times[i])+'hrs'        
         Ax1.plot(upwarm, scaled_height,'r-')
-        Ax1.plot(downcold, scaled_height, 'b-')
-        Ax2.plot(upcold, scaled_height,'b-')
-        Ax2.plot(downwarm, scaled_height, 'r-')
+        #Ax1.plot(downcold, scaled_height, 'b-')
+        #Ax2.plot(upcold, scaled_height,'b-')
+        #Ax2.plot(downwarm, scaled_height, 'r-')
         
     
 array = np.genfromtxt('/tera/phil/nchaparr/python/Pert_Files/snd')
