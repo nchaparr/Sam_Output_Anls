@@ -111,11 +111,11 @@ if __name__ == "__main__":
                 #print('found zenc: ',zenc, scales[time_index, 2])	    
                 flux = data_dict[case][key]['data']
                 #print(flux.shape)
-                ax.plot(1.0*flux/wstar, height_nd,legend, markersize=10, label=int(L0))
+                ax.plot(1.0*flux, height_nd,legend, markersize=10, label=int(L0))
                 #ax.axhline(hvals[time_index,zg0_index]/zg)
                 
             title = key
-            plt.xlabel(r"$w^{\prime}/w^{*}$", size=40)
+            #plt.xlabel(r"$w^{\prime}/w^{*}$", size=40)
             plt.ylabel(r"$z/z_{g}$",size=40)
             ax.set(title="",ylim=(0,1.2), xlim=(0, 1))
             ax.tick_params(axis='both', labelsize=20)
