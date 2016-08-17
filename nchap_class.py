@@ -34,6 +34,10 @@ class For_Plots:
      def rinovals(self):
           rinovals = np.genfromtxt(self.path + "invrinos")
           return rinovals
+     
+     def gm_vars(self):
+          gm_vars = np.genfromtxt(self.path + "gm_vars")
+          return gm_vars
 
      def scaled_we_plot(self):
           scaled_we_plot = np.genfromtxt(self.path + "dhdtinvriplt.txt")

@@ -76,13 +76,15 @@ def Main_Fun(date, dump_time, hflux):
          wvelperts_list.append(wvelpert[slice_lev, :, :])       
          thetaperts_list.append(thetapert[slice_lev, :, :])          
 
-         [upwarm, downwarm, upcold, downcold]=nc.Flux_Quad(wvelpert, thetapert) #TODO: expand clas Get_Vars.. to include this          
+         [upwarm, downwarm, upcold, downcold]=nc.Flux_Quad_Wvels(wvelpert, thetapert) #TODO: expand clas Get_Vars.. to include this          
 
-         upwarm_list.append(upwarm) 
-         downwarm_list.append(downwarm)
-         upcold_list.append(upcold)
-         downcold_list.append(downcold)
-         wvelthetaperts_list.append(wvelthetapert)     
+         mnsq_upwarm = np.square(upwarm)
+         
+         upwarm_list.append(mnsq_upwarm) 
+         #downwarm_list.append(downwarm)
+         #upcold_list.append(upcold)
+         #downcold_list.append(downcold)
+         #wvelthetaperts_list.append(wvelthetapert)     
          
      #and ensemble average them     
      #ens_upwarm = nc.Ensemble1_Average(upwarm_list)
@@ -97,16 +99,19 @@ def Main_Fun(date, dump_time, hflux):
      #downcold_bar = nc.Horizontal_Average(ens_downcold)
      #wvelthetapert_bar = nc.Horizontal_Average(ens_avwvelthetaperts)
      #applying new average, which ignores zero values
-     upwarm_bar = nc.pert_h_Average(upwarm_list)     
-     downwarm_bar = nc.pert_h_Average(downwarm_list)
-     upcold_bar = nc.pert_h_Average(upcold_list)
-     downcold_bar = nc.pert_h_Average(downcold_list)
-     wvelthetapert_bar = nc.pert_h_Average(wvelthetaperts_list)               
+     upwarm_bar = nc.pert_h_Average(upwarm_list)
+     upwarm_bar = np.sqrt(upwarm_bar)	     
+     #downwarm_bar = nc.pert_h_Average(downwarm_list)
+     #upcold_bar = nc.pert_h_Average(upcold_list)
+     #downcold_bar = nc.pert_h_Average(downcold_list)
+     #wvelthetapert_bar = nc.pert_h_Average(wvelthetaperts_list)
+
+     
      #save text files
-     #print "SAVING", "/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads_theta1" + dump_time 
+     print("SAVING", "/tera/users/nchaparr/"+date+"/data/upwarm_rtmsq_wvels" + dump_time) 
      #np.savetxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
      #print upwarm_bar.shape, downwarm_bar.shape, upcold_bar.shape, downcold_bar.shape, wvelthetapert_bar.shape
-     np.savetxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads_test" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
+     np.savetxt("/tera/users/nchaparr/"+date+"/data/upwarm_rtmnsq_thetas" + dump_time, np.array([upwarm_bar]), delimiter=' ') #need to transpose if more than one dimension
      
      #flatten the arrays, TODO: make a function or class method
      wvelperts = np.array(wvelperts_list)
@@ -127,7 +132,7 @@ def Main_Fun(date, dump_time, hflux):
      #wvelperts = np.reshape(wvelperts, enum*ynum*xnum)
      #thetaperts = np.reshape(thetaperts, enum*ynum*xnum)
      
-     return height, wvelperts, thetaperts, wvelperts_slice, thetaperts_slice, upwarm_bar[slice_lev], downwarm_bar[slice_lev], upcold_bar[slice_lev], downcold_bar[slice_lev], wvelthetapert_bar[slice_lev]
+     return upwarm_bar[slice_lev]
 
 go_ahead = np.int(input('have you changed the write out folder paths? 1 or 0: '))
 
@@ -148,7 +153,7 @@ if go_ahead == 1:
          #else:         
          date = date_list[i]
          dump_time_list, Times = Make_Timelists(1, 1800, 28800)
-         hvals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
+         hvals = np.genfromtxt("/tera/users/nchaparr/"+date+"/data/AvProfLims")
          #    scales = np.genfromtxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/invrinos")
          #    thetastar, wstar = scales[29, 9], scales[29, 2]
          #    lev_index = np.int(raw_input('which height level, 0, 1 or 2 (h0, h or h1)?:'))             
@@ -164,7 +169,7 @@ if go_ahead == 1:
                  hindex=3*(j+1)-1
          #    if i == 19:
          #need index specialized for Nov runs
-             height, wvelperts, thetaperts, wvelperts_slice, thetaperts_slice, upwarm, downwarm, upcold, downcold, avflux = Main_Fun(date, dump_time_list[j], hvals[hindex, 1])
+             upwarm = Main_Fun(date, dump_time_list[j], hvals[hindex, 1])
              ##print "Heights", hvals[29, 0], hvals[29, 1], hvals[29, 2], dump_time_list[19], Times[19]
                
          #av_quad_profs = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time_list[i])
@@ -197,7 +202,7 @@ if go_ahead == 1:
            
              #theAx2.set_ylim(-2, 1.5)
              #theAx2.set_xlim(-3, 5)
-         i = i +1                    
+         #i = i +1                    
             #theFig3.canvas.draw()
             #theFig1.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/fluxquadprofs.png")
             #theFig1.savefig("/tera/phil/nchaparr/python/Plotting/"+date+"/pngs/fluxquads.png")
