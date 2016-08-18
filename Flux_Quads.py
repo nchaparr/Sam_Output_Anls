@@ -76,7 +76,7 @@ def Main_Fun(date, dump_time, hflux):
          wvelperts_list.append(wvelpert[slice_lev, :, :])       
          thetaperts_list.append(thetapert[slice_lev, :, :])          
 
-         [upwarm, downwarm, upcold, downcold]=nc.Flux_Quad_Thetas(wvelpert, thetapert) #TODO: expand clas Get_Vars.. to include this          
+         [upwarm, downwarm, upcold, downcold]=nc.Flux_Quad_Wvels(wvelpert, thetapert) #TODO: expand clas Get_Vars.. to include this          
 
          mnsq_upwarm = np.square(upwarm)
          
@@ -108,7 +108,7 @@ def Main_Fun(date, dump_time, hflux):
 
      
      #save text files
-     print("SAVING", "/tera/users/nchaparr/"+date+"/data/upwarm_rtmsq_thetas" + dump_time) 
+     print("SAVING", "/tera/users/nchaparr/"+date+"/data/upwarm_rtmsq_wvels" + dump_time) 
      #np.savetxt("/newtera/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads" + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar])), delimiter=' ')
      #print upwarm_bar.shape, downwarm_bar.shape, upcold_bar.shape, downcold_bar.shape, wvelthetapert_bar.shape
      np.savetxt("/tera/users/nchaparr/"+date+"/data/upwarm_rtmnsq_thetas" + dump_time, np.array([upwarm_bar]), delimiter=' ') #need to transpose if more than one dimension

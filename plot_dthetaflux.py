@@ -55,7 +55,7 @@ Ax1.set_xlabel( r'$+$', fontsize=20)
 #Ax1.set_xticks([0, .005])
 #Ax1.set_ylabel(r"$z$", fontsize=20)
 #plt.xlim(-.025, .025)
-plt.xlim(0, 2)
+plt.xlim(0, 1)
 #plt.ylim(100, 1500)
 plt.ylim(0, 1.2)
 
@@ -78,7 +78,7 @@ dump_time_list, Times = Make_Timelists(1, 1800, 28800)
 #dump_time_list, Times = dump_time_list[12:], Times[12:]  
 theta_file_list = ["/tera/users/nchaparr/"+date+"/data/theta_bar"+ dump_time for dump_time in dump_time_list]
 press_file_list = ["/tera/users/nchaparr/"+date+"/data/press"+ dump_time for dump_time in dump_time_list]
-flux_file_list = ["/tera/users/nchaparr/"+date+"/data/upwarm_rtmnsq_thetas"+ dump_time for dump_time in dump_time_list]
+flux_file_list = ["/tera/users/nchaparr/"+date+"/data/upwarm_rtmnsq_wvel"+ dump_time for dump_time in dump_time_list]
 flux_file_list1 = ["/tera/users/nchaparr/"+date+"/data/wvelthetapert"+ dump_time for dump_time in dump_time_list]
 height_file = "/tera/users/nchaparr/"+date+"/data/heights0000018000"
 AvProfVars = np.genfromtxt("/tera/users/nchaparr/"+date+"/data/AvProfLims")

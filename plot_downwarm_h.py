@@ -33,7 +33,7 @@ def Main_Fun(rundate, gamma, flux_s):
 
      press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]
     
-     flux_quads_file_list = [files.get_file(dump_time, "upwarm_rtmnsq_thetas") for dump_time in dump_time_list] #"flux_quads_theta1":[upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar] 
+     flux_quads_file_list = [files.get_file(dump_time, "downwarm_rtmnsq_wvel") for dump_time in dump_time_list] #"flux_quads_theta1":[upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar] 
      
      height_file = files.get_file("0000000600", "heights")
 
@@ -79,7 +79,7 @@ def Main_Fun(rundate, gamma, flux_s):
          #upcold = flux_quads[h0_lev, 2][0][0]
          #downcold = flux_quads[h0_lev, 3][0][0]
          #print flux_s1, flux_s
-         upwarm_h0.append(1.0*upwarm/thetastar)# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
+         upwarm_h0.append(1.0*upwarm)# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
          scaled_time.append(1.0*zenc/L0)
          #downwarm_h0.append(1.0*downwarm/(flux_s1))
          #upcold_h0.append(1.0*upcold/(flux_s1))
