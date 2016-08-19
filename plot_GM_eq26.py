@@ -46,14 +46,15 @@ for i in range(len(label_list)):
         z1_GM = heights[:,8]
         z_g=heights[:,1] # [elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM]
         delta = z1_GM - z_g
-        z_enc=heights[:, 7]
+        z_enc=gm_vars[:, 3]
         L0 = gm_vars[:, 0]
         c_squared_delta = rinovals[:, 10]
-        c_delta = c_squared_delta
+        c_delta = c_squared_delta**.5
 
         Xs =  c_delta*(z_enc/L0) 
-        Ys = delta/z_g
-        
+        #Ys = delta/z_enc
+        Ys = points.Deltah_over_h(8, 1, 7)
+
         if Run_Date_List[i] == "Nov302013":
              #clean up
              Ys[13] = np.nan
@@ -84,7 +85,7 @@ Ax3.loglog(xs, ys, 'k--')
 Ax3.text(6.6, .2, r'$y = \sqrt{0.4}x^{-\frac{2}{3}}$',  fontdict=None, withdash=False, fontsize = 25, rotation=-8)
 Ax3.set_xlabel(r"$c_{\delta}(z_{enc}/L_{0})$", fontsize=20)
 Ax3.set_ylabel(r"$\delta/z_{enc}$", fontsize=20)
-plt.ylim(0, 0.2)
+#plt.ylim(0, 0.2)
 plt.xlim(0, 22)
 Ax3.tick_params(axis="both", labelsize=20)
 plt.tight_layout()
