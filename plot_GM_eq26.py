@@ -52,8 +52,8 @@ for i in range(len(label_list)):
         c_delta = c_squared_delta**.5
 
         Xs =  c_delta*(z_enc/L0) 
-        #Ys = delta/z_enc
-        Ys = points.Deltah_over_h(8, 1, 7)
+        Ys = delta/z_enc
+        #Ys = points.Deltah_over_h(8, 1, 7)
 
         if Run_Date_List[i] == "Nov302013":
              #clean up
