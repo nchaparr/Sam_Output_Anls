@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 """ starting to collect commonly used functions"""
 
 
-def calc_rino(B0, N, z_g0, zenc, delta, BLHeight, MLTheta, SfcFlux, Theta_jump, gamma, delta_h):
+def calc_rino(B0, N, zenc, delta, BLHeight, MLTheta, SfcFlux, Theta_jump, gamma, delta_h):
     """Richardson number
 
     Arguments:
@@ -15,11 +15,10 @@ def calc_rino(B0, N, z_g0, zenc, delta, BLHeight, MLTheta, SfcFlux, Theta_jump, 
     MLTheta -- average potential temperature in mixed layer, scalar, K
     SfcFlx -- surface heat flux, scalar, w/m2
     Theta_jump -- inversion temperature jump, scalar, K
-    ...
 
     Returns:
     rino, invrino, wstar -- Richardson Number, Inverse Richardson Number, convective velocity scale
-    ...
+    
     """
     intermed = 1.0 * BLHeight / MLTheta
     intermed1 = intermed * SfcFlux
@@ -29,10 +28,7 @@ def calc_rino(B0, N, z_g0, zenc, delta, BLHeight, MLTheta, SfcFlux, Theta_jump, 
     rino = 1.0 * Theta_jump / thetastar
     
     wstar_GM = (B0*zenc)**(1.0/3)
-    c_delta = (delta*(N**2)*delta)*1.0/wstar_GM**2
-
-    rino_delta_GM = (zenc*(N**2)*(delta + (BLHeight - zenc)))*1.0/wstar_GM**2
-    rino_delta_GM1= (zenc*(N**2)*(delta + (BLHeight - z_g0)))*1.0/wstar_GM**2
+    c_squared_delta = (delta*(N**2)*delta)*1.0/wstar_GM**2
     
     S = ((1.0 * BLHeight / wstar)**2) * (gamma) * (1.0 * 9.81 / MLTheta)
 
@@ -40,7 +36,7 @@ def calc_rino(B0, N, z_g0, zenc, delta, BLHeight, MLTheta, SfcFlux, Theta_jump, 
 
     pi4 = gamma * 1.0 * delta_h / Theta_jump
 
-    return c_delta, rino, 1.0 / rino, wstar, S, pi3, pi4, rino_delta_GM, rino_delta_GM1
+    return c_squared_delta, rino, 1.0 / rino, wstar, S, pi3, pi4
 
 
 def get_dhdt(heights, time):
@@ -593,55 +589,44 @@ def Flux_Quad_Wvels(wpert, thetapert):
     return [upwarm, downwarm, upcold, downcold]
 
 
-def Get_CBLHeights(heights, press, thetas, theta0, wvelthetapert, gamma, flux_s,
-                   top_index, old_new_key):
+def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
+                   top_index):
     """
     Gets heights based on dthetdz and flux
     
     Arguments:
-    
+    wpert -- array of w perturbations
+    thetapert -- array of theta perturbations
+
     Returns:
-    
+    [up_warm, down_warm, up_cold, down_cold] -- arrays, np.nans are fillers  
+
     """
 
-    thresh_dict={}
-    thresh_dict['old']={'dtheta_dz_b1':.0002,'dtheta_dz_b2':0, 'dtheta_dz_t1':.0002,'dtheta_dz_t2':.0002, 'dtheta_dz_t3':gamma, 'flux_b':0, 'flux_t1':0.5,'flux_t2':0}
-    thresh_dict['new']={'dtheta_dz_b1':.04,'dtheta_dz_b2':0, 'dtheta_dz_t1':.03,'dtheta_dz_t2':.04, 'dtheta_dz_t3':1,'flux_b':0 ,'flux_t1':0.01,'flux_t2':0}
-    
     dheight = np.diff(heights)
     dtheta = np.diff(thetas)
     dthetadz = np.divide(dtheta, dheight)
     dzdtheta = np.divide(dheight, dtheta)
     element0 = np.array([0])
+    dthetadz = np.hstack((element0, dthetadz)) * 1.0 / gamma
     rhow = calc_rhow(press, heights, thetas[0])
 
-    if old_new_key=='old':
-        thresholds=thresh_dict['old']
-        dthetadz = np.hstack((element0, dthetadz))
-        fluxes = np.multiply(wvelthetapert, rhow) * 1004.0
-
-    else:
-        thresholds=thresh_dict['new']  
-        dthetadz = np.hstack((element0, dthetadz)) * 1.0 / gamma
-        fluxes = np.multiply(wvelthetapert, rhow) * 1004.0 / flux_s
-         
-       
+    fluxes = np.multiply(wvelthetapert, rhow) * 1004.0 / flux_s
 
     #where gradient is greater than zero
     for j in range(len(dthetadz[:top_index]) - 1):
-        #print('starting first loop')
-        if (dthetadz[j + 1] > thresholds['dtheta_dz_b1']) and (dthetadz[j] >= thresholds['dtheta_dz_b2']):
+        if (dthetadz[j + 1] > .03) and (dthetadz[j] >= 0):
             dtheta_index_b = j + 1
-            #print('ending first loop')
             break
 
     #where gradient resumes as gamma
     dtheta_index_t = 999
     for k in range(len(dthetadz[:top_index]) - 1):
-        #print(np.abs(dthetadz[k + 2] - thresholds['dtheta_dz_t3']), thresholds['dtheta_dz_t1'])
-        #print("")
-        #print(np.abs(dthetadz[k + 1] - thresholds['dtheta_dz_t3']), thresholds['dtheta_dz_t3'])  
-        if np.abs(dthetadz[k + 2] - thresholds['dtheta_dz_t3']) < thresholds['dtheta_dz_t1'] and np.abs(dthetadz[k + 1] - thresholds['dtheta_dz_t3']) < thresholds['dtheta_dz_t1'] and dthetadz[k - 1] > thresholds['dtheta_dz_t3']:
+        ##print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
+        ##print ""
+        ##print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
+        if np.abs(dthetadz[k + 2] - 1) < .03 and np.abs(dthetadz[
+                k + 1] - 1) < .03 and dthetadz[k - 1] > 1:
             dtheta_index_t = k + 1
             break
 
@@ -651,31 +636,24 @@ def Get_CBLHeights(heights, press, thetas, theta0, wvelthetapert, gamma, flux_s,
             #   #print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
             #   #print ""
             #   #print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
-            if np.abs(dthetadz[k + 2] - thresholds['dtheta_dz_t3']) < thresholds['dtheta_dz_t2'] and np.abs(dthetadz[k + 1] - thresholds['dtheta_dz_t3']) < thresholds['dtheta_dz_t2'] and dthetadz[k - 1] > thresholds['dtheta_dz_t3']:
+            if np.abs(dthetadz[k + 2] - 1) < .04 and np.abs(dthetadz[
+                    k + 1] - 1) < .04 and dthetadz[k - 1] > 1:
                 dtheta_index_t = k + 1
                 break
 
         #now fluxes
 
     for l in range(len(dthetadz) - 1):
-        if (fluxes[l + 1] <= thresholds['flux_b']) and (fluxes[l] > thresholds['flux_b']):
+        if (fluxes[l + 1] <= .0) and (fluxes[l] > 0):
             flux_index_b = l + 1
             break
 
-       
-    for m in range(len(dthetadz[0:top_index+5])-1):
-         #print fluxes[m+1], fluxes[m], fluxes[m-1]
-         if old_new_key=='old':
-
-             print(m, abs(fluxes[m+1]), thresholds['flux_t1'], fluxes[m], thresholds['flux_t2'], fluxes[m-1], thresholds['flux_t2'])
-
-             if (abs(fluxes[m+1]) < thresholds['flux_t1']) and (fluxes[m] < thresholds['flux_t2']) and (fluxes[m-1] < thresholds['flux_t2']):
-                 flux_index_t = m+1
-                 break
-         else:
-             if (abs(fluxes[m+1]) < thresholds['flux_t1']) and (abs(fluxes[m+2]) < thresholds['flux_t1']) and (fluxes[m] < thresholds['flux_t2']) and (fluxes[m-1] < thresholds['flux_t2']):
-                 flux_index_t = m+1
-                 break
+    for m in range(len(dthetadz[0:top_index]) - 1):
+        #print fluxes[m+1], fluxes[m], fluxes[m-1]
+        if (abs(fluxes[m + 1]) < 0.01) and (abs(fluxes[m + 2]) < 0.01) and (
+                fluxes[m] < 0) and (fluxes[m - 1] < 0):
+            flux_index_t = m + 1
+            break
     #print flux_index_t
 
     eltop_dthetadz = heights[dtheta_index_t]
@@ -689,11 +667,7 @@ def Get_CBLHeights(heights, press, thetas, theta0, wvelthetapert, gamma, flux_s,
     h_flux = heights[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][
         0]]
 
-    deltatheta_f = theta0[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]] - thetas[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]]
-    deltatheta = theta0[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]] - thetas[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]
-    Deltatheta_f = thetas[flux_index_t] - thetas[flux_index_b] #changing for GM definition
-    Deltatheta = thetas[dtheta_index_t] - thetas[dtheta_index_b]
-
+    deltatheta = thetas[dtheta_index_t] - thetas[dtheta_index_b]
     mltheta = np.mean(thetas[0:dtheta_index_b])
 
     hindex=np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index])== 0)[0][0]
@@ -703,7 +677,6 @@ def Get_CBLHeights(heights, press, thetas, theta0, wvelthetapert, gamma, flux_s,
     theta_z1_GM=(C*gamma+300)*1.0/(1-(dzdtheta[hindex])*gamma)
     z1_GM=(theta_z1_GM-300)*1.0/gamma
 
-    #print(gamma, flux_s, "fluxindices and heights",flux_index_t, flux_index_b, eltop_flux, elbot_flux, h_flux)           
-      
+    #print C, gamma, dzdtheta[hindex], h,z1_GM, thetas[hindex]           
     
-    return [elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, Deltatheta, deltatheta_f, Deltatheta_f, mltheta, z1_GM]
+    return [elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM]
