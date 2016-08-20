@@ -206,7 +206,6 @@ def from_lmo():
     -- array    
     
     """
-<<<<<<< HEAD
      #print 'Need to edit filepath for lmo.txt'
      txtfile_list = ["/tera/phil/nchaparr/sam_ensemble/sam_case" + str(i+2) + "/OUT_STAT/lmo.txt" for i in range(9)]
      array_list = []
