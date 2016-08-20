@@ -49,9 +49,9 @@ for i in range(len(label_list)):
         c_squared_delta = rinovals[:, 10]
         c_delta = c_squared_delta**.5
 
-        Xs =  (z_enc/L0) 
-        #Ys = delta/z_enc
-        Ys = points.Deltah_over_h(8, 1, 7)
+        Xs = (z_enc/L0) 
+        Ys = delta/z_enc
+        #Ys = points.Deltah_over_h(8, 1, 7)
 
         if Run_Date_List[i] == "Nov302013":
             #clean up
@@ -67,7 +67,7 @@ for i in range(len(label_list)):
             Xs[32:] = np.nan
             Ys[32:] = np.nan
             Ys[0] = np.nan #neg value
-            print('Nov 30 deltas: ',Ys)
+            #print('Nov 30 deltas: ',Ys)
             #plot 
         elif Run_Date_List[i] == "Jan152014_1":
              #clean up
@@ -91,12 +91,13 @@ plt.close('all')
 
 fig1,ax1 = plt.subplots(1,1)
         
-for count,name in enumerate(Run_Date_List):        
-    ax1.loglog(keep_x[count,:],keep_y[count,:], legend_list[count], label = label_list[count], markersize=10)
+for count,name in enumerate(Run_Date_List):
+    if name=="Nov302012":
+        ax1.plot(keep_x[count,:],keep_y[count,:], legend_list[count], label = label_list[count], markersize=10)
         
 xs = np.arange(6, 40, 1)
 ys= (1)*xs**(-0.8)
-ax1.loglog(xs, ys, 'k--')
+ax1.plot(xs, ys, 'k--')
 
 ax1.text(6.6, .2, r'$y = \sqrt{0.4}x^{-\frac{2}{3}}$',  fontdict=None, withdash=False, fontsize = 25, rotation=-8)
 ax1.set_xlabel(r"$z_{enc}/L_{0}$", fontsize=20)
@@ -115,11 +116,13 @@ for count,name in enumerate(Run_Date_List):
     good_points= np.logical_not(np.isnan(keep_y[count,:]))
     good_x = keep_x[count,good_points]
     good_y = keep_y[count,good_points]
+    print(good_y)
     hit = good_y < 0
-    if np.sum(hit) > 0:
-        print("found neg delta for {}".format(name))
+    #if np.sum(hit) > 0:
+        #print("found neg delta for {}".format(name))
     x=np.log10(good_x)
     y=np.log10(good_y)
+    print(y)
     ax2.plot(x,y, legend_list[count], label = label_list[count], markersize=10)
     x_keep.extend(good_x)
     y_keep.extend(good_y)

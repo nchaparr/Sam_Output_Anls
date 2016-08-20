@@ -207,16 +207,16 @@ def from_lmo():
     
     """
      #print 'Need to edit filepath for lmo.txt'
-     txtfile_list = ["/tera/phil/nchaparr/sam_ensemble/sam_case" + str(i+2) + "/OUT_STAT/lmo.txt" for i in range(9)]
-     array_list = []
-     for txtfile in txtfile_list:
+    txtfile_list = ["/tera/phil/nchaparr/sam_ensemble/sam_case" + str(i+2) + "/OUT_STAT/lmo.txt" for i in range(9)]
+    array_list = []
+    for txtfile in txtfile_list:
           array = np.genfromtxt(txtfile)
           [columns] = array.shape
           array = np.reshape(array, [1.0*columns/4, 4])
           array_list.append(array)
           
-     array = Ensemble1_Average(array_list)     
-     return array          
+    array = Ensemble1_Average(array_list)     
+    return array          
 
 
 def Plot_nc(theFile, imax, theAx):
@@ -376,16 +376,14 @@ def Bin_Peaks(peaks, heights):
     
     """
 
-     bin_vols=np.zeros_like(heights)
-     [xpos, ypos] = peaks.shape
-     #print xpos, ypos
-     for i in range(xpos):
-          for j in range(ypos):
-                            
-               index = np.where(heights - peaks[i, j] == 0)[0][0]
-               
-               bin_vols[index] = bin_vols[index] + 1               
-     return bin_vols          
+    bin_vols=np.zeros_like(heights)
+    [xpos, ypos] = peaks.shape
+    #print xpos, ypos
+    for i in range(xpos):
+        for j in range(ypos):
+            index = np.where(heights - peaks[i, j] == 0)[0][0]
+            bin_vols[index] = bin_vols[index] + 1               
+    return bin_vols          
 
 
 def Ensemble_Average(list):
@@ -489,29 +487,29 @@ def Get_Var_Arrays(ncfolder, ncfilename, dump_time, case_number):
     
     """
      #create list of filenames for given dump_time
-     ncfile = ncfolder + str(case_number) + ncfilename + dump_time + ".nc"
+    ncfile = ncfolder + str(case_number) + ncfilename + dump_time + ".nc"
      
      #create lists for variable arrays from each case
      
-     thefile = ncfile
+    thefile = ncfile
      #print thefile     
-     ncdata = Dataset(thefile,'r')
-     wvel = np.squeeze(ncdata.variables['W'][...])
+    ncdata = Dataset(thefile,'r')
+    wvel = np.squeeze(ncdata.variables['W'][...])
      
-     press = np.squeeze(ncdata.variables['p'][...])#pressure already horizontally averaged
-     height = np.squeeze(ncdata.variables['z'][...])
-     temp = np.squeeze(ncdata.variables['TABS'][...])
+    press = np.squeeze(ncdata.variables['p'][...])#pressure already horizontally averaged
+    height = np.squeeze(ncdata.variables['z'][...])
+    temp = np.squeeze(ncdata.variables['TABS'][...])
      #tracer = np.squeeze(ncdata.variables['TRACER'][...])
-     ncdata.close()
+    ncdata.close()
      
           #calculate thetas
-     theta = np.zeros_like(temp)
-     thetafact = np.array([(1.0*1000/k)**(1.0*287/1004) for k in press])
-     [zvals, yvals, xvals] = theta.shape
-     for j in range(zvals): #TODO: do a theta.shape, to the z dimension
+    theta = np.zeros_like(temp)
+    thetafact = np.array([(1.0*1000/k)**(1.0*287/1004) for k in press])
+    [zvals, yvals, xvals] = theta.shape
+    for j in range(zvals): #TODO: do a theta.shape, to the z dimension
          theta[j, :, :] = temp[j, :, :]*thetafact[j]     
      
-     return wvel, theta, theta, height
+    return wvel, theta, theta, height
 
     
 def Flux_Quad(wpert, thetapert):
