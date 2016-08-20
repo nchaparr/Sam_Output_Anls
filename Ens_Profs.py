@@ -33,10 +33,11 @@ def Main_Fun(dump_time):
     height -- array of height values
     
     """
+
      date = "Dec142013" #TODO: this should be an argument passed to Main_Fun
      
      #pulls data using class Get_Var_Arrays1     
-     Vars = Get_Var_Arrays1("/tera2/nchaparr/"+date+"/runs/sam_case", "/OUT_3D/keep/NCHAPP1_testing_doscamiopdata_24_", dump_time)
+     Vars = Get_Var_Arrays1("/newtera/tera/phil/nchaparr/tera2_cp/nchaparr/"+date+"/runs/sam_case", "/OUT_3D/NCHAPP1_testing_doscamiopdata_24_", dump_time)
      thetas_list, press_list = Vars.get_thetas() 
      wvels_list= Vars.get_uvelperts()
      height = Vars.get_height()
@@ -69,13 +70,13 @@ def Main_Fun(dump_time):
      #wvel_bar = nc.Horizontal_Average(ens_avwvels)     
      theta_bar = nc.Horizontal_Average(ens_avthetas)
      #wvelpert_bar = Horizontal_Average(ens_avwvelperts)
-     wvelthetapert_bar = nc.Horizontal_Average(ens_avwvelthetaperts)
+     #wvelthetapert_bar = nc.Horizontal_Average(ens_avwvelthetaperts)
      
      #for testing w scale -- slows script down
-     rtwvelpertsq_bar = nc.Horizontal_Average(rtens_avwvelpertsq)
+     #rtwvelpertsq_bar = nc.Horizontal_Average(rtens_avwvelpertsq)
      
      #save text files, TODO: make more purdy
-      #datapath = For_Plots(date)
+     #datapath = For_Plots(date)
      #datapath.save_file(np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar])), "flux_quads" + dump_time)
      #datapath.save_file(wvelthetapert_bar, "wvelthetapert"+dump_time)
      #datapath.save_file(theta_bar, "theta_bar"+dump_time)
@@ -83,8 +84,15 @@ def Main_Fun(dump_time):
      #datapath.save_file(ens_press, "press"+dump_time)
      #datapath.save_file(tracer_bar, "tracers"+dump_time)
      #datapath.save_file(rtwvelpertsq_bar, "rootmeanvsq"+dump_time)
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/"+date+"/data/flux_quads' + dump_time, np.transpose(np.array([upwarm_bar, downwarm_bar, upcold_bar, downcold_bar])), delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/wvelthetapert'+dump_time, wvelthetapert_bar, delimiter=' ')
+     np.savetxt('/newtera/tera/phil/nchaparr/python/Plotting/'+date+'/data/theta_bar'+dump_time, theta_bar, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/heights'+dump_time, height, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/press'+dump_time, ens_press, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/"+date+"/data/tracers'+dump_time, tracer_bar, delimiter=' ')
+     #np.savetxt('/tera/phil/nchaparr/python/Plotting/'+date+'/data/rootmeanvsq'+dump_time, rtwvelpertsq_bar, delimiter=' ')
      
-     return rtwvelpertsq_bar, height
+     return theta_bar, height
 
 
 go_ahead = np.int(raw_input('have you changed the write out folder paths? 1 or 0: '))
@@ -92,19 +100,20 @@ if go_ahead == 1:
 
      #MLZero_Vars = np.genfromtxt('/tera/phil/nchaparr/python/Plotting/Nov42013/data/MLZero_Vars.txt')
      
-     dump_time_list, Times = Make_Timelists(1, 600, 28800)
+     dump_time_list, Times = Make_Timelists(1, 60, 28800)
      
 
      #set up plot
      theAx = nc.Do_Plot(3, r"Horizontally Averaged, Ensemble Averaged $w^{'}\theta^{'}$ Profiles", 'Height (m)', r"$\overline{w^{'}\theta^{'}}$ (mK/s)", 111)
      #get horizontally averaged ensemble averaged variable and plot
      colorlist=['k', 'b', 'c', 'g', 'r', 'm', 'y', '.75']
-     for i in range(48):
-          if np.mod(i+1, 1)==0:
+     for i in range(480):
+          if np.mod(i+1, 240)==0:
+          #if i > 120:
                print i
                
                #make plots for MLZero
-               color = colorlist[int(1.0*i/6)]
+               color = colorlist[int(1.0*i/60)]
                
                #theAx.plot([MLZero_Vars[i, 0], MLZero_Vars[i, 0]], [0, MLZero_Vars[i, 1]], color+'--')
                #theAx.plot([MLZero_Vars[i, 0], MLZero_Vars[i, 0]+MLZero_Vars[i, 2]], [MLZero_Vars[i, 1], MLZero_Vars[i, 1]], color+'--')
@@ -127,9 +136,9 @@ if go_ahead == 1:
      theAx.plot(zeros, height)
 
      #get initial sounding data ie potential temperature
-     array = np.genfromtxt('/tera/phil/nchaparr/python/Pert_Files/snd1')
-     height_0 = array[:, 0]
-     theta_0 = array[:, 1]
+     #array = np.genfromtxt('/tera/phil/nchaparr/python/Pert_Files/snd1')
+     #height_0 = array[:, 0]
+     #theta_0 = array[:, 1]
      #f=interp1d(height_0, theta_0) #not sure i need this
 
      #Now plot inital sounding
