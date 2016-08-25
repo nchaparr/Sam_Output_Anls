@@ -13,46 +13,6 @@ from nchap_class import *
    Editing it for plotting scaled TKE   
 """
 #TODO: may be obsolete
-#TODO: see which functions can be pulled from nchap_fun
-def Ensemble_Averageold(list, dim2):
-     """Gets enseble average of a list of arrays
-
-    Arguments:
-    list -- list of 6, dim2 arrays
-
-    Returns:
-    ens_avs -- 6, dim2 array
-    
-    """
-     ens_avs = np.zeros([24, dim2])
-     for i in range(24): #time
-          for j in range(dim2): #height
-               vals = []          
-               for k in range(len(list)):
-                    #print i, j, k, list[k].shape
-                    val = list[k][i, j]#i, j, kth elemement from var array l                                        
-                    vals.append(val)                
-               avval = 1.0*sum(vals)/len(vals) #average over l arrays                             
-               ens_avs[i, j] = avval
-     return ens_avs
-
-def Ensemble_Average(list):
-    """Gets enseble average of a list of arrays
-
-    Arguments:
-    list -- list of arrays
-
-    Returns:
-    ens_avs -- array
-    
-    """
-    to_av = list[0]
-    for k in range(len(list)-1): 
-        to_av = np.add(to_av, list[k+1])
-    ens_avs = 1.0*to_av/len(list)
-    return ens_avs
-
-
 def Get_Var_Arrays(var, fignum):
      """Pulls stats output from a ensemble of cases, gets ensemble averages and does contour plots
      on height, time grid
@@ -64,7 +24,7 @@ def Get_Var_Arrays(var, fignum):
     
     """
      #create list of filenames
-     ncfile_list = ["/tera2/nchaparr/Mar52014/runs/sam_case"+ str(i+1) + "/OUT_STAT/NCHAPP1_testing_doscamiopdata.nc" for i in range(10)]
+     ncfile_list = ["/newtera/tera/phil/nchaparr/sam_grex_ensemble/sam_case"+ str(i+2) + "/OUT_STAT/NCHAPP1_testing_doscamiopdata.nc" for i in range(1)]
 
      #create lists for variable arrays from each case
      vars_list = []
@@ -74,6 +34,7 @@ def Get_Var_Arrays(var, fignum):
      
      for i in range(len(ncfile_list)): #loop over list of nc files
           thefile = ncfile_list[i]
+          print thefile   
           ncdata = Dataset(thefile,'r')
           Vars = ncdata.variables[var][...]
           #print Vars.shape
@@ -91,8 +52,8 @@ def Get_Var_Arrays(var, fignum):
           press_list.append(press)
           
      #get ensemble averages
-     ens_vars = Ensemble_Average(vars_list)
-     ens_press = Ensemble_Average(press_list)
+     ens_vars = nc.Ensemble1_Average(vars_list)
+     ens_press = nc.Ensemble1_Average(press_list)
      ens_press = np.transpose(ens_press)
      
      #TODO: verify this is in time order!
@@ -109,18 +70,18 @@ def Get_Var_Arrays(var, fignum):
      for i in range(len(time)):
           if np.mod(i+1, 6)==0:
                #print i, time[i], 1.0*(i+1)/10, "plotting"
-               points = For_Plots("Mar52014")
-               rinovals = points.rinovals()
-               print len(rinovals[:,2])
-               AvProfVars = points.AvProfVars()
+               #points = For_Plots("Mar52014")
+               #rinovals = points.rinovals()
+               #print len(rinovals[:,2])
+               #AvProfVars = points.AvProfVars()
                #invrinos: [rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4]
-               wstar= rinovals[1.0*((i+1))*(6.0/6.0)-1, 2]
-               h= AvProfVars[1.0*((i+1))*(6.0/6.0)-1, 1]
-               h_index = np.where(height==h)[0]
+               #wstar= rinovals[1.0*((i+1))*(6.0/6.0)-1, 2]
+               #h= AvProfVars[1.0*((i+1))*(6.0/6.0)-1, 1]
+               #h_index = np.where(height==h)[0]
                print time[i]
-               have_ens_vars.append(1.0*np.sum(ens_vars[i][0:h_index])/(h*wstar**3))
+               have_ens_vars.append(1.0*np.sum(ens_vars[i]))
                #print have_ens_vars[i]
-               theAx.plot(1.0*ens_vars[i]/wstar**3, 1.0*height/h, label=str(int(time[i])+1) + 'hrs')
+               theAx.plot(1.0*ens_vars[i], height, label=str(int(time[i])+1) + 'hrs')
      #height, time = np.meshgrid(height, time)
      #maxlev = np.max(ens_vars)
      #minlev = np.min(ens_vars)
@@ -131,12 +92,12 @@ def Get_Var_Arrays(var, fignum):
      #cbar.ax.set_ylabel('colorbar')
      #print 'plotting'
      #theAx.plot(time, have_ens_vars, label=var)
-     plt.ylim(0, 2)
+     plt.ylim(0, 2000)
      plt.legend(loc = 'upper right', prop={'size':8})
      plt.show()
 
 #theAx = nc.Do_Plot(1, 'Layer Averaged, Scaled TKE Terms vs Time', 'TKE Term/w*3', 'Time (hrs)',111)
-var_list = [ 'TKE']
+var_list = [ 'TKE', 'THETAV']
 #BUOYA', 'BUOYAS', 'DISSIP', 'DISSIPS','DISSIPS', 'BUOYAS', TKE', 'TKES','TKE', 'TKES', 'WVADV', 'WUADV', 'WUPRES', 'WVPRES', 'WUSHEAR', 'WVSHEAR', 'W2ADV', 'W2PRES', 'W2BUOY', 'WVBUOY', 'WUBUOY', 'W2REDIS', 'W2DIFF'
 for i in range(len(var_list)):
      Get_Var_Arrays(var_list[i], i)

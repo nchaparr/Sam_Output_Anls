@@ -28,9 +28,10 @@ def Main_Fun(date, dump_time, hflux):
 
     Arguments:
     dump_time -- time of output eg '0000000720'
+    date -- eg "Mar52014"
 
     Returns:
-    var_bar -- 64 array of horizontally averaged, ensemble averages or perturbations (covariances)
+     -- 
     
     """
      #create list of filenames for given dump_time     
@@ -56,31 +57,27 @@ def Main_Fun(date, dump_time, hflux):
      ens_press = nc.Ensemble1_Average(press_list)
                
      #now get the perturbations
-     #wvelthetaperts_list = []
      theta_pert_sq_list = []
+     thetaperts_list = Vars.get_thetaperts()
      for i in range(len(wvels_list)):  #TODO: this should be more modular, see nchap_class                  
-         thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
-         thetapert = np.zeros_like(thetapert_rough)
-         [znum, ynum, xnum] = wvels_list[i].shape
-         for j in range(znum):#something like this is done in statistics.f90, staggered grid!
-             if j == 0:
-                 thetapert[j,:,:] = thetapert_rough[j,:,:]
-             else:
-                 thetapert[j,:,:] = 0.5*np.add(thetapert_rough[j,:,:], thetapert_rough[j-1,:,:])
-         wvelpert = wvels_list[i]
+          
+          wvelpert = wvels_list[i]
+          thetapert = thetaperts_list[i]
+          slice_lev = np.where(np.abs(height - hflux) < 26)[0][0]        
 
-         slice_lev = np.where(np.abs(height - hflux) < 26)[0][0]        
-         wvelthetapert = np.multiply(wvelpert, thetapert)
-         wvelperts_list.append(wvelpert[slice_lev, :, :])       
-         thetaperts_list.append(thetapert[slice_lev, :, :])          
+          wvelthetapert = np.multiply(wvelpert, thetapert)
+          wvelperts_list.append(wvelpert[slice_lev, :, :])       
+          thetaperts_list.append(thetapert[slice_lev, :, :])          
 
-         [upwarm, downwarm, upcold, downcold]=nc.Flux_Quad_Wvels(wvelpert, thetapert) #TODO: expand clas Get_Vars.. to include this          
+          [upwarm, downwarm, upcold, downcold]=nc.Flux_Quad(wvelpert, thetapert) #TODO: expand clas Get_Vars.. to include this          
 
-         upwarm_list.append(upwarm) 
-         downwarm_list.append(downwarm)
-         upcold_list.append(upcold)
-         downcold_list.append(downcold)
-         wvelthetaperts_list.append(wvelthetapert)     
+          upwarm_list.append(upwarm) 
+          downwarm_list.append(downwarm)
+          upcold_list.append(upcold)
+          downcold_list.append(downcold)
+          wvelthetaperts_list.append(wvelthetapert)     
+          
+
          
      #and ensemble average them     
      ens_upwarm = nc.Ensemble1_Average(upwarm_list)

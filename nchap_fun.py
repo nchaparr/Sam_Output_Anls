@@ -206,18 +206,17 @@ def from_lmo():
     -- array    
     
     """
-    #print 'Need to edit filepath for lmo.txt'
-    txtfile_list = ["/tera/phil/nchaparr/sam_ensemble/sam_case" + str(i + 2) +
-                    "/OUT_STAT/lmo.txt" for i in range(9)]
+     #print 'Need to edit filepath for lmo.txt'
+    txtfile_list = ["/tera/phil/nchaparr/sam_ensemble/sam_case" + str(i+2) + "/OUT_STAT/lmo.txt" for i in range(9)]
     array_list = []
     for txtfile in txtfile_list:
-        array = np.genfromtxt(txtfile)
-        [columns] = array.shape
-        array = np.reshape(array, [1.0 * columns / 4, 4])
-        array_list.append(array)
-
-    array = Ensemble1_Average(array_list)
-    return array
+          array = np.genfromtxt(txtfile)
+          [columns] = array.shape
+          array = np.reshape(array, [1.0*columns/4, 4])
+          array_list.append(array)
+          
+    array = Ensemble1_Average(array_list)     
+    return array          
 
 
 def Plot_nc(theFile, imax, theAx):
@@ -376,16 +375,15 @@ def Bin_Peaks(peaks, heights):
      --     
     
     """
-    bin_vols = np.zeros_like(heights)
+
+    bin_vols=np.zeros_like(heights)
     [xpos, ypos] = peaks.shape
     #print xpos, ypos
     for i in range(xpos):
         for j in range(ypos):
-
             index = np.where(heights - peaks[i, j] == 0)[0][0]
-
-            bin_vols[index] = bin_vols[index] + 1
-    return bin_vols
+            bin_vols[index] = bin_vols[index] + 1               
+    return bin_vols          
 
 
 def Ensemble_Average(list):
@@ -423,12 +421,12 @@ def Ensemble1_Average(list):
 
     """
     to_av = list[0]
-
-    for k in range(len(list) - 1):
-        ##print k, 'array sizes', to_av.shape, list[k+1].shape
-        to_av = np.add(to_av, list[k + 1])
-    ens_avs = 1.0 * to_av / len(list)
-
+        
+    for k in range(len(list)-1):
+         ##print k, 'array sizes', to_av.shape, list[k+1].shape 
+         to_av = np.add(to_av, list[k+1])
+    ens_avs = 1.0*to_av/len(list)
+    
     return ens_avs
 
 
@@ -488,33 +486,32 @@ def Get_Var_Arrays(ncfolder, ncfilename, dump_time, case_number):
     var_bar -- 64 array of horizontally averaged, ensemble averages or perturbations (covariances)
     
     """
-    #create list of filenames for given dump_time
+     #create list of filenames for given dump_time
     ncfile = ncfolder + str(case_number) + ncfilename + dump_time + ".nc"
-
-    #create lists for variable arrays from each case
-
+     
+     #create lists for variable arrays from each case
+     
     thefile = ncfile
-    #print thefile
-    ncdata = Dataset(thefile, 'r')
+     #print thefile     
+    ncdata = Dataset(thefile,'r')
     wvel = np.squeeze(ncdata.variables['W'][...])
-
-    press = np.squeeze(ncdata.variables['p'][...]
-                       )  #pressure already horizontally averaged
+     
+    press = np.squeeze(ncdata.variables['p'][...])#pressure already horizontally averaged
     height = np.squeeze(ncdata.variables['z'][...])
     temp = np.squeeze(ncdata.variables['TABS'][...])
-    #tracer = np.squeeze(ncdata.variables['TRACER'][...])
+     #tracer = np.squeeze(ncdata.variables['TRACER'][...])
     ncdata.close()
-
-    #calculate thetas
+     
+          #calculate thetas
     theta = np.zeros_like(temp)
-    thetafact = np.array([(1.0 * 1000 / k)**(1.0 * 287 / 1004) for k in press])
+    thetafact = np.array([(1.0*1000/k)**(1.0*287/1004) for k in press])
     [zvals, yvals, xvals] = theta.shape
-    for j in range(zvals):  #TODO: do a theta.shape, to the z dimension
-        theta[j, :, :] = temp[j, :, :] * thetafact[j]
-
+    for j in range(zvals): #TODO: do a theta.shape, to the z dimension
+         theta[j, :, :] = temp[j, :, :]*thetafact[j]     
+     
     return wvel, theta, theta, height
 
-
+    
 def Flux_Quad(wpert, thetapert):
     """
     Separates fluxes into quadrants
@@ -589,17 +586,16 @@ def Flux_Quad_Wvels(wpert, thetapert):
     return [upwarm, downwarm, upcold, downcold]
 
 
-def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
-                   top_index):
+def Get_CBLHeights(heights, press, thetas, theta0s, wvelthetapert, gamma, flux_s, top_index):
     """
     Gets heights based on dthetdz and flux
     
     Arguments:
-    wpert -- array of w perturbations
-    thetapert -- array of theta perturbations
+     -- 
+     --
 
     Returns:
-    [up_warm, down_warm, up_cold, down_cold] -- arrays, np.nans are fillers  
+     --   
 
     """
 
@@ -632,27 +628,26 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
 
     #Hacky fix for when the upper theta gradient profiles are wonky
     if dtheta_index_t == 999:
-        for k in range(len(dthetadz[:top_index]) - 1):
-            #   #print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
-            #   #print ""
-            #   #print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
-            if np.abs(dthetadz[k + 2] - 1) < .04 and np.abs(dthetadz[
-                    k + 1] - 1) < .04 and dthetadz[k - 1] > 1:
-                dtheta_index_t = k + 1
-                break
-
-        #now fluxes
-
-    for l in range(len(dthetadz) - 1):
-        if (fluxes[l + 1] <= .0) and (fluxes[l] > 0):
-            flux_index_b = l + 1
+         for k in range(len(dthetadz[:top_index])-1):
+           #   #print dthetadz[k-1], dthetadz[k+1], dthetadz[k+2]
+           #   #print ""
+           #   #print np.abs(dthetadz[k+1]-1), np.abs(dthetadz[k+2]-1)
+              if np.abs(dthetadz[k+2]-1)<.04 and np.abs(dthetadz[k+1]-1)<.04 and dthetadz[k-1]>1:            
+                   dtheta_index_t = k+1                        
+                   break
+         
+         
+    #now fluxes    
+    
+    for l in range(len(dthetadz)-1):
+        if (fluxes[l+1] <= .0) and (fluxes[l] > 0):
+            flux_index_b = l+1
             break
-
-    for m in range(len(dthetadz[0:top_index]) - 1):
-        #print fluxes[m+1], fluxes[m], fluxes[m-1]
-        if (abs(fluxes[m + 1]) < 0.01) and (abs(fluxes[m + 2]) < 0.01) and (
-                fluxes[m] < 0) and (fluxes[m - 1] < 0):
-            flux_index_t = m + 1
+        
+    for m in range(len(dthetadz[0:top_index])-1):
+         #print fluxes[m+1], fluxes[m], fluxes[m-1]
+         if (abs(fluxes[m+1]) < 0.01) and (abs(fluxes[m+2]) < 0.01) and (fluxes[m] < 0) and (fluxes[m-1] < 0):
+            flux_index_t = m+1
             break
     #print flux_index_t
 
@@ -662,21 +657,13 @@ def Get_CBLHeights(heights, press, thetas, wvelthetapert, gamma, flux_s,
     eltop_flux = heights[flux_index_t]
     elbot_flux = heights[flux_index_b]
 
-    h = heights[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index])
-                         == 0)[0][0]]
-    h_flux = heights[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][
-        0]]
-
+    h = heights[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]
+    h_flux = heights[np.where(wvelthetapert - np.amin(wvelthetapert) == 0)[0][0]]
+    
+    Deltatheta = thetas[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]] - theta0s[np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index]) == 0)[0][0]]
+    
     deltatheta = thetas[dtheta_index_t] - thetas[dtheta_index_b]
     mltheta = np.mean(thetas[0:dtheta_index_b])
-
-    hindex=np.where(dthetadz[0:top_index] - np.amax(dthetadz[0:top_index])== 0)[0][0]
     
-    #C=((dzdtheta[hindex])*h-thetas[hindex])*1.0/dthetadz[hindex]??
-    C=h-thetas[hindex]*dzdtheta[hindex]
-    theta_z1_GM=(C*gamma+300)*1.0/(1-(dzdtheta[hindex])*gamma)
-    z1_GM=(theta_z1_GM-300)*1.0/gamma
+    return [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, Deltatheta, mltheta]
 
-    #print C, gamma, dzdtheta[hindex], h,z1_GM, thetas[hindex]           
-    
-    return [elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM]

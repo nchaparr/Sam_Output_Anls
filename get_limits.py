@@ -20,6 +20,37 @@ rcParams.update({'font.size': 10})
 
 def Main_Fun(rundate, gamma, flux_s):
      
+    
+     #output times
+     if rundate == "Nov302013":     
+          dump_time_list, Times = Make_Timelists(1, 900, 28800)
+          Times = np.array(Times)
+     else:
+          dump_time_list, Times = Make_Timelists(1, 600, 28800)
+          Times = np.array(Times)
+     
+
+     #class for pulling data files
+     files = For_Plots(rundate)
+
+     #Create lists of variable lists
+     #TODO: need to test Deltatheta
+     first_theta_file = files.get_file(dump_time_list[0], "theta_bar")
+     theta_file_list = [files.get_file(dump_time, "theta_bar") for dump_time in dump_time_list]
+     press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]
+     flux_file_list = [files.get_file(dump_time, "wvelthetapert") for dump_time in dump_time_list]
+     height_file = files.get_file("0000000600", "heights")
+
+     AvProfLims = []
+     invrinos = []
+     #loop over text files files
+     for i in range(len(theta_file_list)):
+         print i, theta_file_list[i]
+         theta0=np.genfromtxt(first_theta_file)
+         theta = np.genfromtxt(theta_file_list[i])
+         print theta.shape
+         height = np.genfromtxt(height_file)
+
     #output times
     if rundate == "Nov302013":
         dump_time_list, Times = Make_Timelists(1, 900, 28800)
@@ -59,6 +90,7 @@ def Main_Fun(rundate, gamma, flux_s):
         else:
              top_index = np.where(abs(1700 - height) < 26.)[0][0] #may need to be higher (e.g. for 60/2.5)
 
+
         #function for calcuating heights
         [elbot_dthetadz, h, eltop_dthetadz, elbot_flux ,h_flux  ,eltop_flux, deltatheta, Deltatheta, deltatheta_f, Deltatheta_f, mltheta, z1_GM]= nc.Get_CBLHeights(height, press, theta, theta0, wvelthetapert, gamma, flux_s, top_index, "new")
                 
@@ -85,6 +117,9 @@ def Main_Fun(rundate, gamma, flux_s):
 run_list = [["Nov302013", .005, 100], ["Dec142013", .01, 100], ["Dec202013", .005, 60], ["Dec252013", .0025, 60], ["Jan152014_1", .005, 150], ["Mar12014", .01, 60], ["Mar52014", .01, 150]]
 
 for run in run_list:
+
+#run = run_list[0]
+
     Main_Fun(run[0], run[1], run[2])
 
 

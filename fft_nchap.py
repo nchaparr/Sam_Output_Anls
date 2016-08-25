@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 import site
 from datetime import datetime
-
+from nchap_class import *
 
 site.addsitedir('/tera/phil/nchaparr/python')
 #from nchap_fun import *
@@ -36,8 +36,12 @@ ncdata = Dataset(thefile,'r')
 #tau = ncdata.variables['tau'][...]
 #print tau.shape
 #[ynum, xnum] = tau.shape
-AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
-RinoVals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/invrinos")
+
+data = For_Plots(date)
+AvProfVars = data.AvProfVars()
+RinoVals = data.RinoVals()
+#AvProfVars = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/AvProfLims")
+#RinoVals = np.genfromtxt("/tera/phil/nchaparr/python/Plotting/"+date+"/data/invrinos")
 
 h0 = AvProfVars[11, 0]
 h = AvProfVars[11, 1]

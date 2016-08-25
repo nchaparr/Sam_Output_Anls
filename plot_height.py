@@ -22,33 +22,17 @@ rcParams.update({'font.size': 10})
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
 Times = np.array(Times)
 dump_time_list0, Times0 = Make_Timelists(1, 900, 28800)
-Times0 = np.array(Times0)
+Times0=np.array(Times0)
 #plot the heights vs time
 #print Line2D.markers
 Fig2 = plt.figure(2)
 Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
 
-#Getting w_{e} from a polyfit to the height vs time plot
-#FitFunc=np.polyfit(Times[11:], AvProfVars5[11:, 1], 2, full=False)
-#Fit = FitFunc[0]*Times[11:]**2 + FitFunc[1]*Times[11:] + FitFunc[2]
-#dhdt =1.0*(2*FitFunc[0]*Times[11:] + FitFunc[1])/3600
-
-#Fit = FitFunc[0]*Times[120:]**3 + FitFunc[1]*Times[120:]**2 + FitFunc[2]*Times[120:] + FitFunc[3]
-#dhdt =1.0*(3*FitFunc[0]*Times[120:]**2 + 2*FitFunc[1]*Times[120:] + FitFunc[2])/3600
-
-#Not sure I need this, doing it already above
-#deltah = np.subtract(AvProfVars5[:, 2], AvProfVars5[:, 0])
-#deltah = np.divide(deltah, AvProfVars5[:, 1])
+#This needs to be included, for scaled time vs height plot
 #tau = 1.0*rinovals5[:,4]/3600
 #scaled_time = np.divide(Times, tau)
 
-#This is an important step -- perhaps should be a function?
-#saving the scaled we vs invri plot points
-#scaled_dhdt = np.divide(dhdt, rinovals5[11:, 2])
-#dhdtinvriplt = np.vstack((rinovals5[11:, 1], scaled_dhdt))
-#dhdtinvriplt = np.transpose(np.vstack((dhdtinvriplt,deltah[11:])))
-#np.savetxt('/tera/phil/nchaparr/python/Plotting/Mar52014/data/dhdtinvriplt.txt', dhdtinvriplt, delimiter=' ')
 
 #Main Part -- pulling points and plotting them
 label_list = ['100/10', '100/5', '60/5', '60/2.5', '150/5', '60/10', '150/10']
@@ -59,12 +43,11 @@ Run_Date_List = ["Dec142013", "Nov302013", "Dec202013", "Dec252013", "Jan152014_
 for i in range(len(label_list)):
     if i<99:
         points = For_Plots(Run_Date_List[i])
-        rinovals = points.rinovals_old() #rinovals_old invrinos.append([rino, invrino, wstar, S, tau, mltheta, Deltatheta, pi3, pi4, thetastar, c_delta, rino_delta_GM, rino_delta_GM1])
-        gm_vars = points.gm_vars()
-        #delta_z_i = points.Deltah_over_h(8, 7, 7) #change for deltahinvri plots [elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, deltatheta, mltheta, z1_GM] Deltah_old
-        Delta_z = points.Deltah_over_h(2, 0, 1)
-        HistVars = points.HistVars()  
-        AvProfVars = points.AvProfVars()  # AvProfVars_old() AvProfLims.append([elbot_dthetadz, h, eltop_dthetadz, elbot_flux, h_flux, eltop_flux, Deltatheta, zenc, z1_GM])
+        rinovals = points.rinovals()
+        Deltah = points.Deltah_over_h()
+        HistVars = points.HistVars()
+        AvProfVars = points.AvProfVars()
+        
         if Run_Date_List[i] == "Nov302013":
              #Delta_z[13] = np.nan
              #Delta_z[15:17] = np.nan
@@ -124,16 +107,25 @@ ys1= 11/x1es**(-1)#for our deltah invri plot
 #Ax3.text(28, .4, r'$$', fontsize=20)
 #Ax3.text(.085, .88, r'(b)', fontsize=30)
 #Ax3.set_ylim(0, 2500)
+<<<<<<< HEAD
+Ax3.legend(loc = 'lower left', prop={'size': 10}, numpoints=1)
+=======
 #Ax3.legend(loc = 'lower right', prop={'size': 14}, numpoints=1)
+>>>>>>> cf4afd265861812e8d27dd1462e57067a12f0aa9
 #Ax3.set_title(r'$\Delta h (Flux)\ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$Scaled \ Time \ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$\frac{\Delta h}{h} \ vs \ Ri^{-1}$', fontsize=20)
-#Ax3.set_title(r'$Ri^{-1} \ vs \ Time$', fontsize=20)
+Ax3.set_xlabel(r'$Time \ (hrs)$', fontsize=20)
 #Ax3.set_title(r'$\Delta \theta \ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$\overline{\theta} \ vs \ Time$', fontsize=20)
 #Ax3.set_xlabel(r"$\frac{Time}{\tau}$", fontsize=20)
+<<<<<<< HEAD
+#Ax3.set_ylabel(r"$pi3_{Douw}$", fontsize=20)
+Ax3.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
+=======
 #Ax3.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 #Ax3.set_ylabel(r"$\frac{\Delta z}{z_g}$", fontsize=30)
+>>>>>>> cf4afd265861812e8d27dd1462e57067a12f0aa9
 #Ax3.set_ylabel(r"$\frac{w_{e}}{w^{*}}$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h (m)$", fontsize=20)
 Ax3.set_ylabel(r"$\Delta z/z_{g}$", fontsize=30)
@@ -141,6 +133,14 @@ Ax3.set_xlabel(r"$Ri_{\Delta}^{-1}$", fontsize=30)
 #Ax3.set_ylabel(r"$\Delta \theta (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\overline{ \theta} (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h \ (m)$", fontsize=20)
+<<<<<<< HEAD
+#Ax3.set_ylabel(r"$z \ (m)$", fontsize=20)
+#Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=20)
+#Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
+#Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
+plt.ylim(0, 1.5)
+#plt.xlim(.02, .1)
+=======
 #Ax3.set_xlabel(r"$c_{\delta}(z_{enc}/L_{0})$", fontsize=20)#gm comp plot
 #Ax3.set_xlabel(r"$Ri_{\Delta}^{-1}$", fontsize=30)
 #Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
@@ -163,6 +163,7 @@ plt.xlim(.02, .1)
 
 Ax3.tick_params(axis="both", labelsize=20)
 plt.tight_layout()
+>>>>>>> cf4afd265861812e8d27dd1462e57067a12f0aa9
 plt.show()
 
 
