@@ -33,7 +33,7 @@ def Main_Fun(rundate, gamma, flux_s):
 
      press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]
     
-     flux_quads_file_list = [files.get_file(dump_time, "downwarm_rtmnsq_wvel") for dump_time in dump_time_list] #"flux_quads_theta1":[upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar] 
+     flux_quads_file_list = [files.get_file(dump_time, "upwarm_rtmnsq_wvel") for dump_time in dump_time_list] #"flux_quads_theta1":[upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar] 
      
      height_file = files.get_file("0000000600", "heights")
 
@@ -79,7 +79,7 @@ def Main_Fun(rundate, gamma, flux_s):
          #upcold = flux_quads[h0_lev, 2][0][0]
          #downcold = flux_quads[h0_lev, 3][0][0]
          #print flux_s1, flux_s
-         upwarm_h0.append(1.0*upwarm)# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
+         upwarm_h0.append(1.0*upwarm/wstar)# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
          scaled_time.append(1.0*zenc/L0)
          #downwarm_h0.append(1.0*downwarm/(flux_s1))
          #upcold_h0.append(1.0*upcold/(flux_s1))
@@ -102,11 +102,11 @@ Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
 Ax3.set_xlabel(r"$z_{enc}/L_{0}$", fontsize=30)
 Ax3.tick_params(axis="both", labelsize=20)
-Ax3.set_ylabel(r"$\sqrt{\overline{(\theta^{\prime})^{2}}}/\theta_*$", fontsize=30)
+Ax3.set_ylabel(r"$\sqrt{\overline{(w^{\prime})^{2}}}/w_*$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{ \overline{w^{\prime-}\theta^{\prime+}}_{h}}{\overline{w^{\prime}\theta^{\prime}}_{s}}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h} (where \ w^{\prime}<0) }{\theta^{*}}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{\overline{w^{\prime-}_{h}}(where \ \theta^{\prime}>0) }{w^{*}}$ ", fontsize=30)
-
+Ax3.text(5, .01, r'(b)', fontsize=30)
 #Ax3.set_ylabel(r"$$", fontsize=30)
 
 #Ax3.set_ylabel( r"$\overline{w^{\prime -}}_{h}} \ (where \ \theta^{\prime}>0)", fontsize=30)
@@ -114,7 +114,7 @@ Ax3.set_ylabel(r"$\sqrt{\overline{(\theta^{\prime})^{2}}}/\theta_*$", fontsize=3
 #Ax3.set_ylabel(r"$\overline{w^{\prime-}\theta^{\prime+}}_{h}$ (ms$^{-1}$K)", fontsize=30)
 
 #Ax3.set_ylim(-.14, 0)
-#Ax3.set_ylim(0, 1)
+Ax3.set_ylim(0, 1)
 #Ax3.set_ylim(-.5, 0)
 #Ax3.set_xlim(2, 8.2)
 
