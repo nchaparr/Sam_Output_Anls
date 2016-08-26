@@ -107,25 +107,16 @@ ys1= 11/x1es**(-1)#for our deltah invri plot
 #Ax3.text(28, .4, r'$$', fontsize=20)
 #Ax3.text(.085, .88, r'(b)', fontsize=30)
 #Ax3.set_ylim(0, 2500)
-<<<<<<< HEAD
-Ax3.legend(loc = 'lower left', prop={'size': 10}, numpoints=1)
-=======
 #Ax3.legend(loc = 'lower right', prop={'size': 14}, numpoints=1)
->>>>>>> cf4afd265861812e8d27dd1462e57067a12f0aa9
+
 #Ax3.set_title(r'$\Delta h (Flux)\ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$Scaled \ Time \ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$\frac{\Delta h}{h} \ vs \ Ri^{-1}$', fontsize=20)
-Ax3.set_xlabel(r'$Time \ (hrs)$', fontsize=20)
 #Ax3.set_title(r'$\Delta \theta \ vs \ Time$', fontsize=20)
 #Ax3.set_title(r'$\overline{\theta} \ vs \ Time$', fontsize=20)
 #Ax3.set_xlabel(r"$\frac{Time}{\tau}$", fontsize=20)
-<<<<<<< HEAD
-#Ax3.set_ylabel(r"$pi3_{Douw}$", fontsize=20)
-Ax3.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-=======
 #Ax3.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
 #Ax3.set_ylabel(r"$\frac{\Delta z}{z_g}$", fontsize=30)
->>>>>>> cf4afd265861812e8d27dd1462e57067a12f0aa9
 #Ax3.set_ylabel(r"$\frac{w_{e}}{w^{*}}$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h (m)$", fontsize=20)
 Ax3.set_ylabel(r"$\Delta z/z_{g}$", fontsize=30)
@@ -133,24 +124,12 @@ Ax3.set_xlabel(r"$Ri_{\Delta}^{-1}$", fontsize=30)
 #Ax3.set_ylabel(r"$\Delta \theta (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\overline{ \theta} (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h \ (m)$", fontsize=20)
-<<<<<<< HEAD
 #Ax3.set_ylabel(r"$z \ (m)$", fontsize=20)
 #Ax3.set_xlabel(r"$Time \ (hrs)$", fontsize=20)
 #Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
 #Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
 plt.ylim(0, 1.5)
 #plt.xlim(.02, .1)
-=======
-#Ax3.set_xlabel(r"$c_{\delta}(z_{enc}/L_{0})$", fontsize=20)#gm comp plot
-#Ax3.set_xlabel(r"$Ri_{\Delta}^{-1}$", fontsize=30)
-#Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
-#Ax3.set_ylabel(r"$\delta/z_{enc}$", fontsize=20) #gm comp plot
-#plt.ylim(0, 0.2)
-#Ax3.set_yticks([0, 0.1, 0.2])
-#Ax3.set_yticklabels([0.2, 0.4, 0.6, 0.8, 1])
-#plt.xlim(6, 22) #gm comp plot
-#Ax3.set_xticks([0, 10])
-#Ax3.set_xticklabels([0.02, 0.04, 0.06, 0.08, .1])
 
 #for deltah invri plots
 plt.ylim(.2, 1)
@@ -163,7 +142,6 @@ plt.xlim(.02, .1)
 
 Ax3.tick_params(axis="both", labelsize=20)
 plt.tight_layout()
->>>>>>> cf4afd265861812e8d27dd1462e57067a12f0aa9
 plt.show()
 
 
