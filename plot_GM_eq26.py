@@ -50,7 +50,7 @@ for i in range(len(label_list)):
         c_squared_delta = rinovals[:, 10]
         c_delta = c_squared_delta**.5
 
-        Xs =  (L0/z_enc) 
+        Xs =  (z_enc/L0) 
 
         Ys = delta/z_enc
         #Ys = points.Deltah_over_h(8, 1, 7)
@@ -112,19 +112,19 @@ for count,name in enumerate(Run_Date_List):
         #print(keep_x[count,:])
     ax1.loglog(keep_x[count,:],keep_y[count,:], legend_list[count], label = label_list[count], markersize=10)
 
-xs = np.arange(0, .2, .00001)
-ys= (1)*xs**(.78)
+xs = np.arange(0, 37, 1)
+ys= (1)*xs**(-.78)
 ax1.loglog(xs, ys, 'k--')
 
-ax1.text(.08, .15, r'$y = x^{.78}$',  fontdict=None, withdash=False, fontsize = 25, rotation=32)
-ax1.set_xlabel(r"$(z_{enc}/L_{0})^{-1}$", fontsize=20)
+ax1.text(9, .15, r'$y = x^{-.78}$',  fontdict=None, withdash=False, fontsize = 25, rotation=-32)
+ax1.set_xlabel(r"$z_{enc}/L_{0}$", fontsize=20)
 ax1.set_ylabel(r"$\delta/z_{enc}$", fontsize=20)
 plt.ylim(0.03, 0.2)
 ax1.set_yticks([.1, .2])
 ax1.set_yticklabels([0.1, .2])
-plt.xlim(.03,.2)
-ax1.set_xticks([.1, .2])
-ax1.set_xticklabels([0.1, .2])
+plt.xlim(5,37)
+ax1.set_xticks([5,10,15,20,25,30,35])
+ax1.set_xticklabels([5,10,15,20,25,30,35])
 ax1.tick_params(axis="both", labelsize=20)
 plt.tight_layout()
 
