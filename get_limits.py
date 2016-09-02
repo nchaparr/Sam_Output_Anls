@@ -81,7 +81,7 @@ def Main_Fun(rundate, gamma, flux_s):
          thetastar = 1.0*flux_s/(rhow[0]*1004*wstar)
          invrinos.append([rino, invrino, wstar, S, tau, mltheta, deltatheta, pi3, pi4, thetastar])
 
-     files.save_file(np.array(AvProfLims), "AvProfLims")
+     #files.save_file(np.array(AvProfLims), "AvProfLims")
      files.save_file(np.array(invrinos), "invrinos")
 
 
