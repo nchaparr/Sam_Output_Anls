@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     
     #all_keys=['wntp','wntn','wptp','wptn','wt','wn_tp','wn_tn','wp_tn','wp_tp','tp_wn', 'tp_wp','tn_wn','tn_wp','dwn_tpdz','dwn_tndz','dwp_tndz','dwp_tpdz','dtp_wndz','dtp_wpdz','dtn_wndz','dtn_wpdz']
-    keys=['wp_tp']
+    keys=['tp_wp']
     plot = True
     if plot:
         plt.close('all')
@@ -109,27 +109,28 @@ if __name__ == "__main__":
                 height_nd = height/zg
                 legend=case_numbers[case]['legends']
                 #print('found zenc: ',zenc, scales[time_index, 2])	    
-                flux = data_dict[case][key]['data']
+                flux = data_dict[case][key]['data']/thetastar
                 #print(flux.shape)
                 ax.plot(1.0*flux, height_nd,legend, markersize=10, label=int(L0))
                 #ax.axhline(hvals[time_index,zg0_index]/zg)
                 
             title = key
-            #plt.xlabel(r"$w^{\prime}/w^{*}$", size=40)
+            plt.xlabel(r"$\theta^{\prime}/\theta^{*}$", size=40)
             plt.ylabel(r"$z/z_{g}$",size=40)
             ax.set(title="",ylim=(0,1.2), xlim=(0, 1))
             ax.tick_params(axis='both', labelsize=20)
+            ax.set_xlim(0,3)
             #figname = '{}_100.png'.format(key)
             #ax.legend(numpoints=1, loc='best')
             
 
-            ax.plot([0,2], [zgdist['avg']/zgdist['avg'], zgdist['avg']/zgdist['avg']], 'k:')
-            ax.plot([0,2], [zg0dist['avg']/zgdist['avg'], zg0dist['avg']/zgdist['avg']], 'k:')
-            ax.plot([0,2], [zf0dist['avg']/zgdist['avg'], zf0dist['avg']/zgdist['avg']], 'k:')
+            ax.plot([0,2.6], [zgdist['avg']/zgdist['avg'], zgdist['avg']/zgdist['avg']], 'k:')
+            ax.plot([0,2.6], [zg0dist['avg']/zgdist['avg'], zg0dist['avg']/zgdist['avg']], 'k:')
+            ax.plot([0,2.6], [zf0dist['avg']/zgdist['avg'], zf0dist['avg']/zgdist['avg']], 'k:')
             
-            ax.text(.9, zgdist['avg']/zgdist['avg'], r"$\overline{z_{g}}$", size=30)
-            ax.text(.9, zf0dist['avg']/zgdist['avg'], r"$\overline{z_{f0}}$", size=30)
-            ax.text(.9, zg0dist['avg']/zgdist['avg'], r"$\overline{z_{g0}}$", size=30)
+            ax.text(2.8, zgdist['avg']/zgdist['avg'], r"$\overline{z_{g}}$", size=30)
+            ax.text(2.7, zf0dist['avg']/zgdist['avg'], r"$\overline{z_{f0}}$", size=30)
+            ax.text(2.7, zg0dist['avg']/zgdist['avg'], r"$\overline{z_{g0}}$", size=30)
             
             ax.text(0, 0.02, r"(a)", size=30)
 
