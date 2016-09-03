@@ -72,7 +72,7 @@ def Main_Fun(rundate, gamma, flux_s):
          thetastar = rinovals[j, 9]
          wstar = rinovals[j, 2]
          h0_lev = np.where(height==h0)
-         #h0_lev = np.where(np.abs(h0-height)<25)[0]
+         #h0_lev = np.where(np.abs(h/2-height)<25)[0]
          flux_quads = np.genfromtxt(flux_quads_file_list[i])
          flux_quads1=np.genfromtxt(flux_quads_file_list1[i])
          flux_s1 = 1.0*flux_s/(rhow[0]*1004)
@@ -83,7 +83,7 @@ def Main_Fun(rundate, gamma, flux_s):
          #upcold = flux_quads[h0_lev, 2][0][0]
          #downcold = flux_quads[h0_lev, 3][0][0]
          #print flux_s1, flux_s
-         upwarm_temp_h0.append(1.0*thetastar)# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
+         upwarm_temp_h0.append(1.0*upwarm_temp/thetastar)# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
          upwarm_wvel_h0.append(1.0*wstar)# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
          scaled_time.append(1.0*zenc/L0)
          #downwarm_h0.append(1.0*downwarm/(flux_s1))
@@ -108,8 +108,8 @@ Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
 Ax3.set_xlabel(r"$z_{enc}/L_{0}$", fontsize=30)
 #Ax3.set_ylabel(r"$rms / \theta^{\prime}, w^{\prime}$", fontsize=30)
-#Ax3.set_ylabel(r"$\theta_*, w_*$", fontsize=30)
-Ax3.set_ylabel(r"scales", fontsize=30)
+Ax3.set_ylabel(r"$\sqrt{\overline{\theta^{\prime 2}}}/\theta_{*}$", fontsize=30)
+#Ax3.set_ylabel(r"$\sqrt{\overline{\theta^{\prime}}}$", fontsize=30)
 Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\sqrt{\overline{(w^{\prime})^{2}}}/w_*$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{ \overline{w^{\prime-}\theta^{\prime+}}_{h}}{\overline{w^{\prime}\theta^{\prime}}_{s}}$", fontsize=30)
@@ -120,17 +120,18 @@ Ax3.set_ylim(0,2)
 for run in run_list: 
      if run[0]=="Mar12014":
           upwarm_temp_h0, upwarm_wvel_h0, Times = Main_Fun(run[0], run[1], run[2])
-          Ax3.plot(Times, 1.0*upwarm_temp_h0, "ro", markersize=8, label=r"$\theta_*$")
-          Ax3.plot(Times, 1.0*upwarm_wvel_h0, "r^", markersize=8, label=r"$w_*$")
+          Ax3.plot(Times, 1.0*upwarm_temp_h0, run[4], markersize=10)
+          #Ax3.plot(Times, 1.0*upwarm_wvel_h0, run[4], markersize=8)
      else:
           upwarm_temp_h0, upwarm_wvel_h0, Times = Main_Fun(run[0], run[1], run[2])
-          Ax3.plot(Times, 1.0*upwarm_temp_h0, "ro", markersize=8)
-          Ax3.plot(Times, 1.0*upwarm_wvel_h0, "r^", markersize=8)
+          Ax3.plot(Times, 1.0*upwarm_temp_h0, run[4], markersize=10)
+          #Ax3.plot(Times, 1.0*upwarm_wvel_h0, run[4], markersize=8)
     #
     #Ax3.plot(Times, 1.0*downwarm_h0, run[4])
     #Ax3.plot(Times, 1.0*upcold_h0, 'b-')
     #Ax3.plot(Times, 1.0*downcold_h0, 'b-')
-Ax3.legend(loc="upper right", prop={'size':20}, numpoints = 1)
+Ax3.text(5, .01, r'(b)', fontsize=30)
+#Ax3.legend(loc="upper right", prop={'size':20}, numpoints = 1)
 #box = Ax3.get_position()
 #Ax3.set_position([box.x0, box.y0, box.width*1.33, box.height])
 plt.tight_layout()
