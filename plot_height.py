@@ -91,7 +91,7 @@ for i in range(len(label_list)):
              scaled_we_plot = points.scaled_we_plot()
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)             
              #Ax3.loglog(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i])
-Ax3.text(.069, .023, r"$y=0.28x$",  fontdict=None, withdash=False, fontsize = 25, rotation=32)
+#Ax3.text(.069, .023, r"$y=0.28x$",  fontdict=None, withdash=False, fontsize = 25, rotation=32)
 xes = np.arange(0.02, .09, .0001)
 x1es = np.arange(.01, .2, .0001)
 ys = 2.2*xes**(1.5)
@@ -102,7 +102,7 @@ Ax3.loglog(x1es, ys1, 'k--', label = r"$\frac{w_{e}}{w^{*}}=0.28Ri_{\Delta}^{-1}
 #Ax3.plot(Times[11:], Fit, 'b-', label="2nd Order Polyfit")
 #Ax3.text(.03, .02, r'$a = -\frac{3}{2}$',  fontdict=None, withdash=False, fontsize = 32, rotation=47)
 
-Ax3.text(.03, .005, '(b)',  fontdict=None, withdash=False, fontsize = 30)
+Ax3.text(.03, .005, '(a)',  fontdict=None, withdash=False, fontsize = 30)
 
 #Ax3.set_ylim(0, 2500)
 #Ax3.legend(bbox_to_anchor=(1.63, .75), prop={'size': 20}, numpoints=1)
@@ -123,7 +123,7 @@ Ax3.set_ylabel(r"$\frac{w_{e}}{w^{*}}$", fontsize=40)
 #Ax3.set_ylabel(r"$\overline{ \theta} (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h \ (m)$", fontsize=20)
 #Ax3.set_ylabel(r"$z \ (m)$", fontsize=20)
-Ax3.set_xlabel(r"$Ri_{\Delta g}^{-1}$", fontsize=35)
+Ax3.set_xlabel(r"$Ri_{\Delta f}^{-1}$", fontsize=35)
 #Ax3.set_xticks([.2, .4, .6, .8, 1])
 #Ax3.set_xticklabels([.02, .04, .06, .08, .1])
 
