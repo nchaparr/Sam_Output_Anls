@@ -32,8 +32,16 @@ class For_Plots:
         AvProfVars = np.genfromtxt(self.path + "AvProfLims")
         return AvProfVars
 
+    def AvProfVars_old(self):
+        AvProfVars = np.genfromtxt(self.path + "AvProfLims_old")
+        return AvProfVars_old
+
     def rinovals(self):
         rinovals = np.genfromtxt(self.path + "invrinos")
+        return rinovals
+
+    def rinovals_old(self):
+        rinovals = np.genfromtxt(self.path + "invrinos_old")
         return rinovals
 
 
@@ -43,12 +51,18 @@ class For_Plots:
           #Deltah0 = np.divide(Deltah0, AvProfVars[:,1])
         return Deltah
           
-    def Deltah_over_h(self):
+    def Deltah_over_h(self, upper, lower, scale):
         AvProfVars = np.genfromtxt(self.path + "AvProfLims")
-        Deltah = np.subtract(AvProfVars[:,2], AvProfVars[:,0])
-        Deltah_over_h = np.divide(Deltah, AvProfVars[:,1])
+        Deltah = np.subtract(AvProfVars[:,upper], AvProfVars[:,lower])
+        Deltah_over_h = np.divide(Deltah, AvProfVars[:,scale])
         return Deltah_over_h         
-     
+
+    def Deltah_over_h_old(self, upper, lower, scale):
+        AvProfVars = np.genfromtxt(self.path + "AvProfLims_old")
+        Deltah = np.subtract(AvProfVars[:,upper], AvProfVars[:,lower])
+        Deltah_over_h = np.divide(Deltah, AvProfVars[:,scale])
+        return Deltah_over_h         
+    
     def get_dhdt(self, Times, start_index, end_index):
         """
             polyfits the h vs time plot to get we for the scaled

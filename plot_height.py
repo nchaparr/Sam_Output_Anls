@@ -43,8 +43,8 @@ Run_Date_List = ["Dec142013", "Nov302013", "Dec202013", "Dec252013", "Jan152014_
 for i in range(len(label_list)):
     if i<99:
         points = For_Plots(Run_Date_List[i])
-        rinovals = points.rinovals()
-        Deltah = points.Deltah_over_h()
+        rinovals = points.rinovals_old()
+        Delta_z = points.Deltah_over_h_old(2,0,1)
         HistVars = points.HistVars()
         AvProfVars = points.AvProfVars()
         
@@ -79,7 +79,7 @@ for i in range(len(label_list)):
              #Ax3.plot(np.divide(gm_vars[11:29, 3], gm_vars[11:29, 0]), Delta_z[11:29], legend_list[i], label = label_list[i], markersize=10)
         else:     
              #print  rinovals[11:, 10]
-             zenc_over_L0 = np.divide(gm_vars[11:, 3], gm_vars[11:, 0])
+             #zenc_over_L0 = np.divide(gm_vars[11:, 3], gm_vars[11:, 0])
              #Ax3.loglog(np.multiply(rinovals[11:, 10]**(0.5), zenc_over_L0), Deltah[11:], legend_list[i], label = label_list[i], markersize=10) #for GM comparison plot
              Ax3.loglog(1/rinovals[11:, 0], Delta_z[11:], legend_list[i], label = label_list[i], markersize=10) #for our invro deltah plot
              #Ax3.loglog(zenc_over_L0, Deltah[11:], legend_list[i], label = label_list[i], markersize=10)
@@ -105,7 +105,7 @@ ys1= 11/x1es**(-1)#for our deltah invri plot
 #Ax3.text(.040, .7, r'$b = -1$',  fontdict=None, withdash=False, fontsize = 25, rotation=28)
 #Ax3.text(26, .27, r'$$', fontsize=20)
 #Ax3.text(28, .4, r'$$', fontsize=20)
-#Ax3.text(.085, .88, r'(b)', fontsize=30)
+Ax3.text(.085, .88, r'(a)', fontsize=30)
 #Ax3.set_ylim(0, 2500)
 #Ax3.legend(loc = 'lower right', prop={'size': 14}, numpoints=1)
 
@@ -119,8 +119,8 @@ ys1= 11/x1es**(-1)#for our deltah invri plot
 #Ax3.set_ylabel(r"$\frac{\Delta z}{z_g}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{w_{e}}{w^{*}}$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h (m)$", fontsize=20)
-Ax3.set_ylabel(r"$\Delta z/z_{g}$", fontsize=30)
-Ax3.set_xlabel(r"$Ri_{\Delta}^{-1}$", fontsize=30)
+Ax3.set_ylabel(r"$\frac{(\Delta z)^{c}}{z_{g}}$", fontsize=30)
+Ax3.set_xlabel(r"$(Ri_{\Delta g}^{-1})^{c}$", fontsize=30)
 #Ax3.set_ylabel(r"$\Delta \theta (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\overline{ \theta} (K)$", fontsize=20)
 #Ax3.set_ylabel(r"$\Delta h \ (m)$", fontsize=20)
@@ -130,6 +130,15 @@ Ax3.set_xlabel(r"$Ri_{\Delta}^{-1}$", fontsize=30)
 #Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
 plt.ylim(0, 1.5)
 #plt.xlim(.02, .1)
+plt.ylim(0.2, 1)
+Ax3.set_yticks([0.2, 0.4, 0.6, 0.8, 1])
+Ax3.set_yticklabels([0.2, 0.4, 0.6, 0.8, 1])
+plt.xlim(.02, .1)
+Ax3.set_xticks([0.02, 0.04, 0.06, 0.08, .1])
+Ax3.set_xticklabels([0.02, 0.04, 0.06, 0.08, .1])
+Ax3.tick_params(axis="both", labelsize=20)
+plt.tight_layout()
+plt.show()
 
 #for deltah invri plots
 plt.ylim(.2, 1)
