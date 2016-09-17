@@ -6,7 +6,7 @@ from Make_Timelist import *
 #import sys
 #sys.path.insert(0, '/tera/phil/nchaparr/python')
 import nchap_fun as nc
-import pandas as pd
+#import pandas as pd
 
 from nchap_class import *
 from nchap_class import For_Plots
@@ -65,7 +65,7 @@ def Main_Fun(rundate, gamma, flux_s):
          L0=gm_vars[j,0]
          zenc=gm_vars[j,3]
          h = AvProfVars[j, 4]
-         h0=AvProfVars[j, 0]
+         h0=AvProfVars[j, 1]
          h1 = AvProfVars[j, 2]
          deltah = h1-h
          deltatheta = gamma*deltah
@@ -84,7 +84,7 @@ def Main_Fun(rundate, gamma, flux_s):
          #downcold = flux_quads[h0_lev, 3][0][0]
          #print flux_s1, flux_s
          upwarm_temp_h0.append(1.0*upwarm_temp/thetastar)# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
-         upwarm_wvel_h0.append(1.0*wstar)# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
+         upwarm_wvel_h0.append(1.0*upwarm_vel/wstar)# // (thetastar) / /(gamma*deltah)/(0.2*thetastar)
          scaled_time.append(1.0*zenc/L0)
          #downwarm_h0.append(1.0*downwarm/(flux_s1))
          #upcold_h0.append(1.0*upcold/(flux_s1))
@@ -108,7 +108,7 @@ Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
 Ax3.set_xlabel(r"$z_{enc}/L_{0}$", fontsize=30)
 #Ax3.set_ylabel(r"$rms / \theta^{\prime}, w^{\prime}$", fontsize=30)
-Ax3.set_ylabel(r"$\sqrt{\overline{\theta^{\prime 2}}}/\theta_{*}$", fontsize=30)
+Ax3.set_ylabel(r"$\sqrt{\overline{w^{\prime 2}}}/w_{*}$", fontsize=30)
 #Ax3.set_ylabel(r"$\sqrt{\overline{\theta^{\prime}}}$", fontsize=30)
 Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\sqrt{\overline{(w^{\prime})^{2}}}/w_*$", fontsize=30)
@@ -116,16 +116,16 @@ Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h} (where \ w^{\prime}<0) }{\theta^{*}}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{\overline{w^{\prime-}_{h}}(where \ \theta^{\prime}>0) }{w^{*}}$ ", fontsize=30)
 #Ax3.text(5, .01, r'(b)', fontsize=30)
-Ax3.set_ylim(0,2)
+#Ax3.set_ylim(0,2)
 for run in run_list: 
      if run[0]=="Mar12014":
           upwarm_temp_h0, upwarm_wvel_h0, Times = Main_Fun(run[0], run[1], run[2])
-          Ax3.plot(Times, 1.0*upwarm_temp_h0, run[4], markersize=10)
-          #Ax3.plot(Times, 1.0*upwarm_wvel_h0, run[4], markersize=8)
+          #Ax3.plot(Times, 1.0*upwarm_temp_h0, run[4], markersize=10)
+          Ax3.plot(Times, 1.0*upwarm_wvel_h0, run[4], markersize=8)
      else:
           upwarm_temp_h0, upwarm_wvel_h0, Times = Main_Fun(run[0], run[1], run[2])
-          Ax3.plot(Times, 1.0*upwarm_temp_h0, run[4], markersize=10)
-          #Ax3.plot(Times, 1.0*upwarm_wvel_h0, run[4], markersize=8)
+          #Ax3.plot(Times, 1.0*upwarm_temp_h0, run[4], markersize=10)
+          Ax3.plot(Times, 1.0*upwarm_wvel_h0, run[4], markersize=8)
     #
     #Ax3.plot(Times, 1.0*downwarm_h0, run[4])
     #Ax3.plot(Times, 1.0*upcold_h0, 'b-')
