@@ -33,7 +33,7 @@ def Main_Fun(rundate, gamma, flux_s):
 
      press_file_list = [files.get_file(dump_time, "press") for dump_time in dump_time_list]
     
-     flux_quads_file_list = [files.get_file(dump_time, "upwarm_rtmnsq_thetas") for dump_time in dump_time_list] #"flux_quads_theta1":[upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar]
+     flux_quads_file_list = [files.get_file(dump_time, "downwarm_rtmnsq_thetas") for dump_time in dump_time_list] #"flux_quads_theta1":[upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar]
      flux_quads_file_list1 = [files.get_file(dump_time, "upwarm_rtmnsq_wvel") for dump_time in dump_time_list] #"flux_quads_theta1":[upwarm_bar, downwarm_bar, upcold_bar, downcold_bar, wvelthetapert_bar]
      
      height_file = files.get_file("0000000600", "heights")
@@ -64,15 +64,15 @@ def Main_Fun(rundate, gamma, flux_s):
          rhow = nc.calc_rhow(press, height, theta[0])
          L0=gm_vars[j,0]
          zenc=gm_vars[j,3]
-         h = AvProfVars[j, 4]
-         h0=AvProfVars[j, 1]
+         h = AvProfVars[j, 0]
+         h0=AvProfVars[j, 4]
          h1 = AvProfVars[j, 2]
          deltah = h1-h
          deltatheta = gamma*deltah
          thetastar = rinovals[j, 9]
          wstar = rinovals[j, 2]
-         h0_lev = np.where(height==h0)
-         #h0_lev = np.where(np.abs(h/2-height)<25)[0]
+         h0_lev = np.where(height==h)
+         h0_lev = np.where(np.abs(h/4-height)<25)[0]
          flux_quads = np.genfromtxt(flux_quads_file_list[i])
          flux_quads1=np.genfromtxt(flux_quads_file_list1[i])
          flux_s1 = 1.0*flux_s/(rhow[0]*1004)
@@ -108,7 +108,7 @@ Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
 Ax3.set_xlabel(r"$z_{enc}/L_{0}$", fontsize=30)
 #Ax3.set_ylabel(r"$rms / \theta^{\prime}, w^{\prime}$", fontsize=30)
-Ax3.set_ylabel(r"$\sqrt{\overline{w^{\prime 2}}}/w_{*}$", fontsize=30)
+Ax3.set_ylabel(r"$\sqrt{\overline{\theta^{\prime 2}}}/\theta_{*}$", fontsize=30)
 #Ax3.set_ylabel(r"$\sqrt{\overline{\theta^{\prime}}}$", fontsize=30)
 Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\sqrt{\overline{(w^{\prime})^{2}}}/w_*$", fontsize=30)
@@ -116,16 +116,16 @@ Ax3.tick_params(axis="both", labelsize=20)
 #Ax3.set_ylabel(r"$\frac{\overline{\theta^{\prime +}}_{h} (where \ w^{\prime}<0) }{\theta^{*}}$", fontsize=30)
 #Ax3.set_ylabel(r"$\frac{\overline{w^{\prime-}_{h}}(where \ \theta^{\prime}>0) }{w^{*}}$ ", fontsize=30)
 #Ax3.text(5, .01, r'(b)', fontsize=30)
-#Ax3.set_ylim(0,2)
+Ax3.set_ylim(0,6)
 for run in run_list: 
      if run[0]=="Mar12014":
           upwarm_temp_h0, upwarm_wvel_h0, Times = Main_Fun(run[0], run[1], run[2])
-          #Ax3.plot(Times, 1.0*upwarm_temp_h0, run[4], markersize=10)
-          Ax3.plot(Times, 1.0*upwarm_wvel_h0, run[4], markersize=8)
+          Ax3.plot(Times, 1.0*upwarm_temp_h0, run[4], markersize=10)
+          #Ax3.plot(Times, 1.0*upwarm_wvel_h0, run[4], markersize=8)
      else:
           upwarm_temp_h0, upwarm_wvel_h0, Times = Main_Fun(run[0], run[1], run[2])
-          #Ax3.plot(Times, 1.0*upwarm_temp_h0, run[4], markersize=10)
-          Ax3.plot(Times, 1.0*upwarm_wvel_h0, run[4], markersize=8)
+          Ax3.plot(Times, 1.0*upwarm_temp_h0, run[4], markersize=10)
+          #Ax3.plot(Times, 1.0*upwarm_wvel_h0, run[4], markersize=8)
     #
     #Ax3.plot(Times, 1.0*downwarm_h0, run[4])
     #Ax3.plot(Times, 1.0*upcold_h0, 'b-')
