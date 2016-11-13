@@ -3,8 +3,6 @@ from scipy.interpolate import interp1d
 import matplotlib
 import matplotlib.pyplot as plt
 from Make_Timelist import *
-#import sys
-#sys.path.insert(0, '/tera/phil/nchaparr/python')
 from nchap_class import *
 import nchap_fun as nc
 from matplotlib.lines import Line2D
@@ -13,7 +11,7 @@ from matplotlib import rcParams
 rcParams.update({'font.size': 10})
 
 """
-   plots heights, rinos, etc
+   plots entrainment rate plot
   
 """
 
@@ -21,32 +19,10 @@ dump_time_list, Times = Make_Timelists(1, 600, 28800)
 Times = np.array(Times)
 dump_time_list0, Times0 = Make_Timelists(1, 900, 28800)
 Times0 = np.array(Times0)
-#plot the heights vs time
-#print Line2D.markers
 Fig2 = plt.figure(2)
 Fig2.clf()
 Ax3 = Fig2.add_subplot(111)
 
-#Getting w_{e} from a polyfit to the height vs time plot
-#FitFunc=np.polyfit(Times[11:], AvProfVars5[11:, 1], 2, full=False)
-#Fit = FitFunc[0]*Times[11:]**2 + FitFunc[1]*Times[11:] + FitFunc[2]
-#dhdt =1.0*(2*FitFunc[0]*Times[11:] + FitFunc[1])/3600
-
-#Fit = FitFunc[0]*Times[120:]**3 + FitFunc[1]*Times[120:]**2 + FitFunc[2]*Times[120:] + FitFunc[3]
-#dhdt =1.0*(3*FitFunc[0]*Times[120:]**2 + 2*FitFunc[1]*Times[120:] + FitFunc[2])/3600
-
-#Not sure I need this, doing it already above
-#deltah = np.subtract(AvProfVars5[:, 2], AvProfVars5[:, 0])
-#deltah = np.divide(deltah, AvProfVars5[:, 1])
-#tau = 1.0*rinovals5[:,4]/3600
-#scaled_time = np.divide(Times, tau)
-
-#This is an important step -- perhaps should be a function?
-#saving the scaled we vs invri plot points
-#scaled_dhdt = np.divide(dhdt, rinovals5[11:, 2])
-#dhdtinvriplt = np.vstack((rinovals5[11:, 1], scaled_dhdt))
-#dhdtinvriplt = np.transpose(np.vstack((dhdtinvriplt,deltah[11:])))
-#np.savetxt('/tera/phil/nchaparr/python/Plotting/Mar52014/data/dhdtinvriplt.txt', dhdtinvriplt, delimiter=' ')
 
 #Main Part -- pulling points and plotting them
 label_list = ['100/10', '100/5', '60/5', '60/2.5', '150/5', '60/10', '150/10']
@@ -64,102 +40,51 @@ for i in range(len(label_list)):
         AvProfVars = points.AvProfVars()
         
         if Run_Date_List[i] == "Nov302013":
-             #Deltah[13] = np.nan
-             #Deltah[15:17] = np.nan
-             #Deltah[24:26] = np.nan
              points.Get_and_save_dhdt(Times0[7:], AvProfVars[7:, 1], rinovals[7:, 2], rinovals[7:, 1])
              scaled_we_plot = points.scaled_we_plot()
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)
-             print(regress_x.shape, regress_y.shape)
              regress_x=np.hstack((regress_x,scaled_we_plot[0, :]))
-             regress_y=np.hstack((regress_y,scaled_we_plot[1, :]))
-             print(regress_x.shape, regress_y.shape, "----")
-             #Ax3.loglog(rinovals[7:, 1], Deltah[7:], legend_list[i], label = label_list[i])
+             regress_y=np.hstack((regress_y,scaled_we_plot[1, :]))             
+        
         elif Run_Date_List[i] == "Jan152014_1":
-    #TODO: alternative starting index for Nov302013
-             #Deltah[16:21] = np.nan
-             #print Deltah
              points.Get_and_save_dhdt(Times[11:29], AvProfVars[11:29, 1], rinovals[11:29, 2], rinovals[11:29, 1])
              scaled_we_plot = points.scaled_we_plot()
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)
-             print(regress_x.shape, regress_y.shape)
              regress_x=np.hstack((regress_x,scaled_we_plot[0, :]))
              regress_y=np.hstack((regress_y, scaled_we_plot[1, :]))
-             print(regress_x.shape, regress_y.shape, "---")
-             #Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i])
+        
         elif Run_Date_List[i] == "Mar12014":
-    #TODO: alternative starting index for Nov302013
-             #Deltah[11:17] = np.nan
-             #print Deltah
              points.Get_and_save_dhdt(Times[11:], AvProfVars[11:, 1], rinovals[11:, 2], rinovals[11:, 1])
              scaled_we_plot = points.scaled_we_plot()
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)            
-             print(regress_x.shape, regress_y.shape)
              regress_x=np.hstack((regress_x, scaled_we_plot[0, :]))
              regress_y=np.hstack((regress_y, scaled_we_plot[1, :]))
-             print(regress_x.shape, regress_y.shape, "---")
-             #Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i])
+        
         else:
              points.Get_and_save_dhdt(Times[11:], AvProfVars[11:, 1], rinovals[11:, 2], rinovals[11:, 1])
              scaled_we_plot = points.scaled_we_plot()
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)
-             print(regress_x.shape, regress_y.shape)
              regress_x=np.hstack((regress_x, scaled_we_plot[0, :]))
              regress_y=np.hstack((regress_y, scaled_we_plot[1, :]))
-             print(regress_x.shape, regress_y.shape, "-----" )
-             #Ax3.loglog(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i])
-#Ax3.text(.069, .023, r"$y=0.28x$",  fontdict=None, withdash=False, fontsize = 25, rotation=32)
-print(regress_x)
-print(regress_y)
+
 regress_x=np.delete(regress_x,0)
 regress_y=np.delete(regress_y,0)
-print(regress_x)
-print(regress_y)
-log10_regress_x=np.log10(regress_x)
-log10_regress_y=np.log10(regress_y)
-log10_regress_results = linregress(log10_regress_x, log10_regress_y)
+
+#log10_regress_x=np.log10(regress_x)
+#log10_regress_y=np.log10(regress_y)
+#log10_regress_results = linregress(log10_regress_x, log10_regress_y)
+
 regress_results = linregress(regress_x, regress_y)
+
 xs = np.arange(0.02, .09, .0001)
-ys=  log10_regress_results.intercept + log10_regress_results.slope*xs
-print(regress_results.intercept,regress_results.slope, xs.shape, ys.shape)
-xes = np.arange(0.02, .09, .0001)
-x1es = np.arange(.01, .2, .0001)
-ys = 2.2*xes**(1.5)
-ys1= .41*x1es**(1)
-#Ax3.loglog(xes, ys, 'k--')
-Ax3.loglog(x1es, ys1, 'k--', label = r"$\frac{w_{e}}{w^{*}}=0.28Ri_{\Delta}^{-1}$")
-#Ax3.plot(xs[:,], ys[:,], 'k--', label = r"$\frac{w_{e}}{w^{*}}=0.28Ri_{\Delta}^{-1}$")
-#Ax3.plot(np.arange(0, .1, .01)[2:10], np.arange(0, .1, .01)[2:10]**(3.0/2), 'k--')
-#Ax3.plot(Times[11:], Fit, 'b-', label="2nd Order Polyfit")
-#Ax3.text(.03, .02, r'$a = -\frac{3}{2}$',  fontdict=None, withdash=False, fontsize = 32, rotation=47)
+#ys=  log10_regress_results.intercept + log10_regress_results.slope*xs
+ys = regress_results.intercept + regress_results.slope*xs
 
-Ax3.text(.03, .005, '(a)',  fontdict=None, withdash=False, fontsize = 30)
+Ax3.loglog(xs, ys, 'k--')
 
-#Ax3.set_ylim(0, 2500)
-#Ax3.legend(bbox_to_anchor=(1.63, .75), prop={'size': 20}, numpoints=1)
-#box = Ax3.get_position()
-#Ax3.set_position([box.x0, box.y0, box.width*1.35, box.height])
-#Ax3.set_title(r'$\Delta h (Flux)\ vs \ Time$', fontsize=20)
-#Ax3.set_title(r'$Scaled \ Time \ vs \ Time$', fontsize=20)
-#Ax3.set_title(r'$\frac{\Delta h}{h} \ vs \ Ri^{-1}$', fontsize=20)
-#Ax3.set_title(r'$Ri^{-1} \ vs \ Time$', fontsize=20)
-#Ax3.set_title(r'$\Delta \theta \ vs \ Time$', fontsize=20)
-#Ax3.set_title(r'$\overline{\theta} \ vs \ Time$', fontsize=20)
-#Ax3.set_xlabel(r"$\frac{Time}{\tau}$", fontsize=20)
-#Ax3.set_ylabel(r"$\frac{z}{h}$", fontsize=20)
-#Ax3.set_ylabel(r"$\frac{\Delta h_{f}}{z_{f}}$", fontsize=20)
+Ax3.text(.03, .005, '(b)',  fontdict=None, withdash=False, fontsize = 30)
 Ax3.set_ylabel(r"$\frac{w_{e}}{w^{*}}$", fontsize=40)
-#Ax3.set_ylabel(r"$\Delta h (m)$", fontsize=20)
-#Ax3.set_ylabel(r"$\Delta \theta (K)$", fontsize=20)g
-#Ax3.set_ylabel(r"$\overline{ \theta} (K)$", fontsize=20)
-#Ax3.set_ylabel(r"$\Delta h \ (m)$", fontsize=20)
-#Ax3.set_ylabel(r"$z \ (m)$", fontsize=20)
-Ax3.set_xlabel(r"$Ri_{\Delta f}^{-1}$", fontsize=35)
-#Ax3.set_xticks([.2, .4, .6, .8, 1])
-#Ax3.set_xticklabels([.02, .04, .06, .08, .1])
-
-#Ax3.set_xlabel(r"$\gamma \frac{\Delta h}{\Delta \theta}$", fontsize=20)
-#Ax3.set_ylabel(r"$h \ (m)$", fontsize=20)
+Ax3.set_xlabel(r"$Ri_{\Delta g}^{-1}$", fontsize=35)
 plt.xlim(.028, .12)
 plt.ylim(0.0045, 0.05)
 Ax3.set_yticks([.005, .01, .05])
