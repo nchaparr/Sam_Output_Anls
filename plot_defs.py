@@ -38,8 +38,8 @@ Ax1.set_xticks([])
 Ax1.set_xticklabels([])
 
 Ax.set_ylabel(r"$z$", fontsize=33)
-Ax.set_xlim(306.5, 310.5)
-Ax1.set_xlim(306.5, 310.5)
+Ax.set_xlim(307.7, 310.5)
+Ax1.set_xlim(307.7, 310.5)
 dump_time_list, Times = Make_Timelists(1, 600, 28800)
  
 theta_file_list = ["/tera/users/nchaparr/"+date+"/data/theta_bar"+ dump_time for dump_time in dump_time_list]
