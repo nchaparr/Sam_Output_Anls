@@ -144,7 +144,7 @@ for i in range(len(theta_file_list)):
         Ax2.plot([dthetadz[h0_index]-1, dthetadz[h0_index]+4], [h0, h0], 'k:')
         Ax2.plot([dthetadz[h0_index]-1, dthetadz[h0_index]+4], [h-5, h-5], 'k:')
         Ax2.plot([dthetadz[h0_index]-1, dthetadz[h0_index]+4], [h1, h1], 'k:')
-        Ax2.axhspan(h0, h1, alpha=0.1, color='grey')
+        Ax2.axhspan(h0, h1, alpha=0.2, color='grey')
 
         Ax2.text(dthetadz[h0_index]-.7, h1, r"$z_{g1}$", size=20)
         Ax2.text(dthetadz[h0_index]-.7, h, r"$z_{g}$", size=20)
@@ -156,7 +156,7 @@ for i in range(len(theta_file_list)):
         Ax1.plot([wvelthetapert[z_f0_index]-.4, wvelthetapert[z_f0_index]+.5], [z_f0, z_f0], 'k:')
         Ax1.plot([wvelthetapert[z_f0_index]-.4, wvelthetapert[z_f0_index]+.5], [z_f1, z_f1], 'k:')
         Ax1.plot([wvelthetapert[z_f0_index]-.4, wvelthetapert[z_f0_index]+.5], [z_f, z_f], 'k:')
-        Ax1.axhspan(z_f0, z_f1, alpha=0.1, color='grey')
+        Ax1.axhspan(z_f0, z_f1, alpha=0.2, color='grey')
         
         Ax1.text(dthetadz[z_f0_index]+.2, z_f0, r"$z_{f0}$", size=20)
         Ax1.text(dthetadz[z_f0_index]+.2, z_f1, r"$z_{f1}$", size=20)
