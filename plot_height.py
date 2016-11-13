@@ -8,7 +8,7 @@ from Make_Timelist import *
 from nchap_class import *
 import nchap_fun as nc
 from matplotlib.lines import Line2D
-
+from scipy.stats import linregress
 from matplotlib import rcParams
 rcParams.update({'font.size': 10})
 
@@ -53,7 +53,8 @@ label_list = ['100/10', '100/5', '60/5', '60/2.5', '150/5', '60/10', '150/10']
 legend_list = ['kv', 'ko', 'yo', 'y*', 'ro', 'yv', 'rv']
 Run_Date_List = ["Dec142013", "Nov302013", "Dec202013", "Dec252013", "Jan152014_1", "Mar12014", "Mar52014"]
 
-
+regress_x=np.array([0])
+regress_y=np.array([0])
 for i in range(len(label_list)):
     if i<99:
         points = For_Plots(Run_Date_List[i])
@@ -61,43 +62,73 @@ for i in range(len(label_list)):
         Deltah = points.Deltahf_over_zf()
         HistVars = points.HistVars()
         AvProfVars = points.AvProfVars()
+        
         if Run_Date_List[i] == "Nov302013":
              #Deltah[13] = np.nan
              #Deltah[15:17] = np.nan
              #Deltah[24:26] = np.nan
-             points.Get_and_save_dhdt(Times0[7:], AvProfVars[7:, 4], rinovals[7:, 2], rinovals[7:, 1])
+             points.Get_and_save_dhdt(Times0[7:], AvProfVars[7:, 1], rinovals[7:, 2], rinovals[7:, 1])
              scaled_we_plot = points.scaled_we_plot()
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)
+             print(regress_x.shape, regress_y.shape)
+             regress_x=np.hstack((regress_x,scaled_we_plot[0, :]))
+             regress_y=np.hstack((regress_y,scaled_we_plot[1, :]))
+             print(regress_x.shape, regress_y.shape, "----")
              #Ax3.loglog(rinovals[7:, 1], Deltah[7:], legend_list[i], label = label_list[i])
         elif Run_Date_List[i] == "Jan152014_1":
     #TODO: alternative starting index for Nov302013
              #Deltah[16:21] = np.nan
              #print Deltah
-             points.Get_and_save_dhdt(Times[11:29], AvProfVars[11:29, 4], rinovals[11:29, 2], rinovals[11:29, 1])
+             points.Get_and_save_dhdt(Times[11:29], AvProfVars[11:29, 1], rinovals[11:29, 2], rinovals[11:29, 1])
              scaled_we_plot = points.scaled_we_plot()
-             Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)            
+             Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)
+             print(regress_x.shape, regress_y.shape)
+             regress_x=np.hstack((regress_x,scaled_we_plot[0, :]))
+             regress_y=np.hstack((regress_y, scaled_we_plot[1, :]))
+             print(regress_x.shape, regress_y.shape, "---")
              #Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i])
         elif Run_Date_List[i] == "Mar12014":
     #TODO: alternative starting index for Nov302013
              #Deltah[11:17] = np.nan
              #print Deltah
-             points.Get_and_save_dhdt(Times[11:], AvProfVars[11:, 4], rinovals[11:, 2], rinovals[11:, 1])
+             points.Get_and_save_dhdt(Times[11:], AvProfVars[11:, 1], rinovals[11:, 2], rinovals[11:, 1])
              scaled_we_plot = points.scaled_we_plot()
              Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)            
-                          
+             print(regress_x.shape, regress_y.shape)
+             regress_x=np.hstack((regress_x, scaled_we_plot[0, :]))
+             regress_y=np.hstack((regress_y, scaled_we_plot[1, :]))
+             print(regress_x.shape, regress_y.shape, "---")
              #Ax3.loglog(rinovals[11:29, 1], Deltah[11:29], legend_list[i], label = label_list[i])
         else:
-             points.Get_and_save_dhdt(Times[11:], AvProfVars[11:, 4], rinovals[11:, 2], rinovals[11:, 1])
+             points.Get_and_save_dhdt(Times[11:], AvProfVars[11:, 1], rinovals[11:, 2], rinovals[11:, 1])
              scaled_we_plot = points.scaled_we_plot()
-             Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)             
+             Ax3.loglog(scaled_we_plot[0, :], scaled_we_plot[1, :], legend_list[i], label = label_list[i], markersize=12)
+             print(regress_x.shape, regress_y.shape)
+             regress_x=np.hstack((regress_x, scaled_we_plot[0, :]))
+             regress_y=np.hstack((regress_y, scaled_we_plot[1, :]))
+             print(regress_x.shape, regress_y.shape, "-----" )
              #Ax3.loglog(rinovals[11:, 1], Deltah[11:], legend_list[i], label = label_list[i])
 #Ax3.text(.069, .023, r"$y=0.28x$",  fontdict=None, withdash=False, fontsize = 25, rotation=32)
+print(regress_x)
+print(regress_y)
+regress_x=np.delete(regress_x,0)
+regress_y=np.delete(regress_y,0)
+print(regress_x)
+print(regress_y)
+log10_regress_x=np.log10(regress_x)
+log10_regress_y=np.log10(regress_y)
+log10_regress_results = linregress(log10_regress_x, log10_regress_y)
+regress_results = linregress(regress_x, regress_y)
+xs = np.arange(0.02, .09, .0001)
+ys=  log10_regress_results.intercept + log10_regress_results.slope*xs
+print(regress_results.intercept,regress_results.slope, xs.shape, ys.shape)
 xes = np.arange(0.02, .09, .0001)
 x1es = np.arange(.01, .2, .0001)
 ys = 2.2*xes**(1.5)
-ys1= .28*x1es**(1)
+ys1= .41*x1es**(1)
 #Ax3.loglog(xes, ys, 'k--')
 Ax3.loglog(x1es, ys1, 'k--', label = r"$\frac{w_{e}}{w^{*}}=0.28Ri_{\Delta}^{-1}$")
+#Ax3.plot(xs[:,], ys[:,], 'k--', label = r"$\frac{w_{e}}{w^{*}}=0.28Ri_{\Delta}^{-1}$")
 #Ax3.plot(np.arange(0, .1, .01)[2:10], np.arange(0, .1, .01)[2:10]**(3.0/2), 'k--')
 #Ax3.plot(Times[11:], Fit, 'b-', label="2nd Order Polyfit")
 #Ax3.text(.03, .02, r'$a = -\frac{3}{2}$',  fontdict=None, withdash=False, fontsize = 32, rotation=47)
