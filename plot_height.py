@@ -159,7 +159,7 @@ Ax3.text(32.5, 1.2, r"$z_{g1GM}$", size=20)
 Ax3.text(32.5, .95, r"$z_{f0}$", size=20)
 #Ax3.text(32.5, 1.1, r"$z_{f}$", size=20)
 Ax3.text(32.5, 1.15, r"$z_{g}$", size=20)
-Ax3.text(32.5, 0.87, r"$z_{g0}$", size=20)
+Ax3.text(32.5, 0.87, r"$(z_{g0})^c$", size=20)
 
 Ax3.text(6, 1.4, '(a)', fontsize=30)
 
