@@ -115,7 +115,7 @@ if __name__ == "__main__":
                 #ax.axhline(hvals[time_index,zg0_index]/zg)
                 
             title = key
-            plt.xlabel(r"$\sqrt{\overline{w^{\prime 2}}}/\theta^{*}$", size=40)
+            plt.xlabel(r"$\sqrt{\overline{w^{\prime 2}}}/w^{*}$", size=40)
             plt.ylabel(r"$z/z_{g}$",size=40)
             ax.set(title="",ylim=(0,1.2), xlim=(0, 1.2))
             ax.tick_params(axis='both', labelsize=20)
