@@ -29,6 +29,7 @@ if __name__ == "__main__":
     attr_dict = dict(hvals='height_columns',scales='scale_columns')
     with h5py.File(flux_profiles,'r') as infile:
         case_numbers = json.loads(infile['/'].attrs['case_dict'])
+        print('debug: ',case_numbers)
         l=lambda:defaultdict(l)
         data_dict = l()
         cases = list(infile.keys())
@@ -107,7 +108,10 @@ if __name__ == "__main__":
                 zenc = find_zenc(time_sec,N,L0)
                 print(time_sec, time_index, zg, zg/zenc)
                 height_nd = height/zg
-                legend=case_numbers[case]['legends']
+                try:
+                    legend=case_numbers[case]['legends']
+                except:
+                    legend='b+'
                 #print('found zenc: ',zenc, scales[time_index, 2])	    
                 flux = data_dict[case][key]['data']/wstar
                 #print(flux.shape)
