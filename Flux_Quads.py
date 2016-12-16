@@ -58,18 +58,23 @@ def get_ensemble(date, dump_time_label, height_level=0):
     #get arrays of ensemble averaged variables, from nchap_fun
 
     ens_avthetas = nc.Ensemble1_Average(thetas_list)
-    ens_press = nc.Ensemble1_Average(press_list)
-
+    #
+    # shape of ens_avthetas is 312,128,192
+    #
     #now get the perturbations
     wvelthetaperts_list = []
     full_profs_list = []
-    for i in range(len(
-            wvels_list)):  #TODO: this should be more modular, see nchap_class
+
+    #TODO: this should be more modular, see nchap_class
+    #
+    # loop over ensemble members
+    #
+    for i in range(len(wvels_list)):  
         thetapert_rough = np.subtract(thetas_list[i], ens_avthetas)
         thetapert = np.zeros_like(thetapert_rough)
         [znum, ynum, xnum] = wvels_list[i].shape
-        for j in range(
-                znum):  #something like this is done in statistics.f90, staggered grid!
+        #something like this is done in statistics.f90, staggered grid!
+        for j in range(znum):  
             if j == 0:
                 thetapert[j, :, :] = thetapert_rough[j, :, :]
             else:
@@ -78,13 +83,17 @@ def get_ensemble(date, dump_time_label, height_level=0):
         wvelpert = wvels_list[i]
 
         slice_lev = np.where(np.abs(height - height_level) < 26)[0][0]
-
         wvelthetapert = np.multiply(wvelpert, thetapert)
+        #
+        #  note that wvelperts_list, thetaperts_list and wvelthetaperts_list
+        #  are returned but not written out  pha 2016/dec/16
+        #
         wvelperts_list.append(wvelpert[slice_lev, :, :])
         thetaperts_list.append(thetapert[slice_lev, :, :])
-
         wvelthetaperts_list.append(wvelthetapert)
+        
         full_profs_list.append((wvelpert, thetapert, wvelthetapert))
+
 
     #flatten the arrays, TODO: make a function or class method
     wvelperts = np.array(wvelperts_list)
@@ -96,8 +105,17 @@ def get_ensemble(date, dump_time_label, height_level=0):
 
     wvelperts = np.reshape(wvelperts, enum * ynum * xnum)
     thetaperts = np.reshape(thetaperts, enum * ynum * xnum)
-
-    return wvelperts, thetaperts, full_profs_list, height, filenames
+    #
+    # prepare an output ens_avthetas by doing the half-level height averaging
+    #
+    ens_theta_out=np.empty_like(ens_avthetas)
+    for j in range(znum):  
+        if j == 0:
+            ens_theta_out[j,:, :] = ens_avthetas[j, :, :]
+        else:
+            ens_theta_out[j,:, :] = 0.5 * np.add(ens_avthetas[j, :,:],
+                                              ens_avthetas[j - 1, :, :])
+    return ens_theta_out, wvelperts, thetaperts, full_profs_list, height, filenames
 
 
 def write_h5(case_dict,h5_outfile='test.h5'):
@@ -142,11 +160,12 @@ def write_h5(case_dict,h5_outfile='test.h5'):
                 print('skipping case {}: requested time index {}, total run is length {}'.format(
                     casename,time_index,scales.shape[0]))
                 continue
-            wvelperts, thetaperts, full_profs_list, height, sam_filelist = get_ensemble(
+            ens_av_thetas, wvelperts, thetaperts, full_profs_list, height, sam_filelist = get_ensemble(
                 casename, dump_time_list[time_index],
                 hvals[time_index, hvals_tup.zg0])
-            print(full_profs_list[0][0].shape)
             case = f.create_group(casename)
+            dset=case.create_dataset('ens_av_thetas',ens_av_thetas.shape,dtype=ens_av_thetas.dtype)
+            dset[...] = ens_av_thetas[...]
             keys = ['wvelpert', 'thetapert', 'wvelthetapert']
             for count, three_perts in enumerate(full_profs_list):
                 run = case.create_group("{}".format(count))
