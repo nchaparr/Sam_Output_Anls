@@ -37,14 +37,15 @@ if __name__ == "__main__":
     h5_profiles = args.prof
     flux_profiles = args.out
     case_dict={}
-    zeros = np.zeros([22]) #chang to 5
     
     keys=['wntp','wntn','wptp','wptn','wt','dwtdz', 'wn_tp','wn_tn','wp_tn','wp_tp','tp_wn', 'tp_wp','tn_wn','tn_wp','dwn_tpdz','dwn_tndz','dwp_tndz','dwp_tpdz','dtp_wndz','dtp_wpdz','dtn_wndz','dtn_wpdz']
-
+    keys=keys[:4]
+    zeros = np.zeros([len(keys)]) #chang to 5
+    
     with h5py.File(h5_profiles,'r') as infile, h5py.File(flux_profiles,'w') as outfile:
         firstpass = True
         for case in list(infile.keys()):
-            top_group = outfile.create_group(case)
+            case_group = outfile.create_group(case)
             case_dict[case] = {}
             case_dict[case]['flux'] = []
             
@@ -172,7 +173,7 @@ if __name__ == "__main__":
 
             for key in keys:
                 flux_prof = np.array(case_dict[case][key]) #expand to include wperts and theta perts
-                dset = top_group.create_dataset(key,flux_prof.shape,dtype=flux_prof.dtype)
+                dset = case_group.create_dataset(key,flux_prof.shape,dtype=flux_prof.dtype)
                 dset[:] = flux_prof[:]
             for dname in ['height','hvals','scales']:
                 the_var = infile[case][dname][...]

@@ -34,7 +34,6 @@ if __name__ == "__main__":
     for index, row in df_table.iterrows():
         line_dict = row.to_dict()
         case = line_dict['name']
-        print(line_dict['legends'])
         start, step, stop = 1, 600, 28800
         if case == 'Nov302013':
             step = 900
@@ -48,13 +47,13 @@ if __name__ == "__main__":
             print('Dropping case: {}, target: {}, last nd_time: {}, L0: {}'.format(case,time_nd_target,nd_times[-1],line_dict['L0']))
             continue
         run_dict[case] = line_dict
-        print(run_dict[case]['legends'])
+        #print(run_dict[case]['legends'])
         run_dict[case]['time_list'] = (start,step,stop)
         time_index = int(time_index)
         run_dict[case]['time_index']=time_index
         print(time_index, case, len(nd_times))
         run_dict[case]['nd_time'] = nd_times[time_index]
-	 
+         
     outfile = 'index_list_time_nd_{}.json'.format(time_nd_target)
     with open(outfile,'w') as f:
         print(run_dict)
