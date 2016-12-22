@@ -60,12 +60,14 @@ The file structure can be examined by doing:
 
 * 3) to do the quadrant conditional averages, run
 
-   python quad_profiles.py -p profiles_may26_300.h5 -o flux_out_300.h5o
+   python quad_profiles.py -p profiles_may26_300.h5 -o flux_out_300.h5
 
 * 4) to make the plots, run
 
   python plot_h5profs.py -q flux_out_300.h5
 
+
+* new code
 
 python Flux_Quads.py -j index_list_time_nd_260.json  -r flux_quads_260
 
@@ -76,7 +78,17 @@ member of group:  /Dec142013/9 <HDF5 dataset "thetapert": shape (312, 128, 192),
 
 and also 
 
-member of group:  /Nov302013 <HDF5 dataset "ens_av_thetas": shape (312, 128, 192), type "<f4">
+member of group:  /Dec142013 <HDF5 dataset "ens_av_thetas": shape (312, 128, 192), type "<f4">
 
-python quad_profiles.py -p profiles_flux_quads_260.h5 -o flux_out_260.h5
+
+** to get fluxes at every level
+
+python full_fluxes.py -p profiles_flux_quads_260.h5 -o full_out_260.h5
+
+** to look at fluxes
+
+   python find_heights.py
+
+  produces fourplot.png   from profiles_flux_quads_260.h5 and full_out_260.h5
+
 
