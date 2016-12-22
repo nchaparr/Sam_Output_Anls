@@ -60,8 +60,23 @@ The file structure can be examined by doing:
 
 * 3) to do the quadrant conditional averages, run
 
-   python quad_profiles.py -p profiles_may26_300.h5 -o flux_out_300.h5
+   python quad_profiles.py -p profiles_may26_300.h5 -o flux_out_300.h5o
 
 * 4) to make the plots, run
 
   python plot_h5profs.py -q flux_out_300.h5
+
+
+python Flux_Quads.py -j index_list_time_nd_260.json  -r flux_quads_260
+
+
+outfile contains wvelpert, thetaper, wvelthetapert for all ensembles
+
+member of group:  /Dec142013/9 <HDF5 dataset "thetapert": shape (312, 128, 192), type "<f4">
+
+and also 
+
+member of group:  /Nov302013 <HDF5 dataset "ens_av_thetas": shape (312, 128, 192), type "<f4">
+
+python quad_profiles.py -p profiles_flux_quads_260.h5 -o flux_out_260.h5
+
