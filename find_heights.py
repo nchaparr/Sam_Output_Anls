@@ -19,7 +19,8 @@ class Heights(IntEnum):
     mltheta=7
     invrinos=8
 #
-# get all 6 heigths
+# get all 6 heights and average theta from file produced
+# by Flux_quads.py -- load thiese into a dictionary called var_dict
 #
 columns=list(Heights.__members__.keys())[:6]
 var_dict = defaultdict(lambda: defaultdict(od))
@@ -37,24 +38,23 @@ with h5py.File(h5_profiles,'r') as infile:
         print('time index: ',infile[case]['time_list'].attrs['time_index'])
         time_index = int(infile[case]['time_list'].attrs['time_index'])
         for col in columns:
-            var_dict[case][col]=hvals[time_index,int(Heights[col])]
+            var_dict[case]['height_dict'][col]=hvals[time_index,int(Heights[col])]
         var_dict[case]['height']=height
         index_dict=od()
         for key in columns:
-            height_value=var_dict[case][key]
+            height_value=var_dict[case]['height_dict'][key]
             index_dict[key]=np.searchsorted(var_dict[case]['height'],height_value,
                                             side='left')
         var_dict[case]['height_index']=index_dict
 
-prof_file='full_out_260.h5'
+quad_file='full_out_260.h5'
 all_vars = ['wptp','wptn','wntn','wntp','wpert','thetapert']
 quadrants = all_vars[:4]
-op_dict=dict(wptp=(np.greater,np.greater),
-             wptn=(np.greater,np.less),
-             wntn=(np.less,np.less),
-             wntp=(np.less,np.greater))
-              
-with h5py.File(prof_file,'r') as flux_in:
+#
+# open the quadrant fluxes file produced by full_fluxes.py
+# find the quadrant fluxes at each level  
+#
+with h5py.File(quad_file,'r') as flux_in:
     case_list=list(flux_in.keys())[:1]
     for case in case_list:
         top_lev=var_dict[case]['height_index']['zg1']
@@ -72,9 +72,19 @@ def calc_stats(var):
     std = float(np.std(var))
     count = len(var)
     return [rms,std,count]
-    
-    
-fieldnames=['wrms','wstd','wcount','Trms','Tstd','Tcount']
+
+
+op_dict=dict(wptp=(np.greater,np.greater),
+             wptn=(np.greater,np.less),
+             wntn=(np.less,np.less),
+             wntp=(np.less,np.greater))
+
+#
+# for each level, recalculate the fluxes just to be safe using
+# the logical comparisons from op_dict  -- we could also just use
+# the values in var_dict
+#
+fieldnames=['Wrms','Wstd','Wcount','Trms','Tstd','Tcount']
 record_list=[]
 for case in case_list:
     for lev in var_dict[case]['zlevs']:
@@ -83,6 +93,7 @@ for case in case_list:
         thetapert=var_dict[case][lev]['thetapert']
         record['tot_flux']=float(np.mean(wpert*thetapert))
         record['height'] = var_dict[case]['height'][lev]
+        record['avg_theta']=var_dict[case]['avg_theta'][lev]
         for quad in quadrants: 
             op_w,op_t = op_dict[quad]
             hit=np.logical_and(op_w(wpert,0),op_t(thetapert,0))
@@ -104,9 +115,13 @@ print(df.head())
 plt.close()
 
 def plot2(ax1,df,the_key,height_dict):
+    """
+     plot statistics from dataframe df, column the_key
+     agains total flux
+    """
     ax2 = ax1.twiny()
     ax1.plot('tot_flux','height','b-',data=df)
-    ax2.plot(the_key,'height','r-')
+    ax2.plot(the_key,'height','r-',data=df)
     for t1 in ax1.get_xticklabels():
         t1.set_color('b')
     for t2 in ax2.get_xticklabels():
@@ -118,26 +133,47 @@ def plot2(ax1,df,the_key,height_dict):
     ax2.xaxis.label.set_color('r')
     return ax1,ax2
 
+quadrants=['wptp','wptn','wntp','wntn']
 
-# zlevs=height[levs]
-# avg_theta_plot=avg_theta[levs]
-# var_dict['avg_theta']=avg_theta
-# fig,axes=plt.subplots(2,2,figsize=(14,14))
-# ax1,ax2 = plot2(axes[0,0],var_dict,'mean_flux','theta_rms',zlevs,height_dict)
-# ax2.set_xlabel('thetarms (K)')
-# ax2.xaxis.label.set_color('r')
+height_dict=var_dict[case]['height_dict']
 
-# # ax1,ax2 = plot2(axes[0,1],var_dict,'mean_flux','theta_std',zlevs,height_dict)
-# # ax2.set_xlabel('thetstd (K)')
+plot_dict=defaultdict(lambda: defaultdict(od))
 
-# # ax1,ax2 = plot2(axes[1,0],var_dict,'mean_flux','theta_count',zlevs,height_dict)
-# # ax2.set_xlabel('thetacount')
+plot_dict['W']['stats'] = ['Wrms','Wstd','Wcount']
+plot_dict['T']['stats'] = ['Trms','Tstd','Tcount']
+plot_dict['W']['labels'] = ['Wrms (K)','Wstd (K)','Wcount']
+plot_dict['T']['labels'] = ['thetarms (K)','thestd (K)','thetacount']
+plot_dict['T']['fig_title'] = 'theta'
+plot_dict['W']['fig_title'] = 'wvel'
 
-# # ax1,ax2 = plot2(axes[1,1],var_dict,'mean_flux','avg_theta',zlevs,height_dict)
-# # ax2.set_xlabel('avg_theta')
+plt.close('all')
+for var in ['T','W']:
+    stats=plot_dict[var]['stats']
+    ax_labels=plot_dict[var]['labels']
+    for quadrant in quadrants:
+        fig,axes=plt.subplots(2,2,figsize=(14,14))
+        print('plotting: ',var,quadrant)
+        flat_axes=axes.ravel()
+        plot_vars=['{}_{}'.format(quadrant,stat) for stat in stats]
+        print(plot_vars,ax_labels)
+        for count,plot_vals in enumerate(zip(plot_vars,ax_labels)):
+            print('axes: ',plot_vals)
+            plot_var,label = plot_vals
+            print(plot_var,label)
+            the_ax=flat_axes[count]
+            ax1,ax2 = plot2(the_ax,df,plot_var,height_dict)
+            ax2.set_xlabel(label)
+            ax2.xaxis.label.set_color('r')
+        the_ax=flat_axes[3]
+        ax1,ax2 = plot2(the_ax,df,'avg_theta',height_dict)
+        ax2.set_xlabel('avg_theta (K)')
+        ax2.xaxis.label.set_color('r')
+        fig_title='{} {} statistics'.format(quadrant,plot_dict[var]['fig_title'])
+        fig_file='{}_fourplot_{}.png'.format(quadrant,plot_dict[var]['fig_title'])
+        fig.suptitle(fig_title,size=20)
+        fig.subplots_adjust(hspace=0.5)
+        fig.savefig(fig_file)
+        #plt.close(fig)
 
-
-# # fig.subplots_adjust(hspace=0.5)
-# # fig.savefig('fourplot.png')
         
-# # plt.show()
+plt.show()

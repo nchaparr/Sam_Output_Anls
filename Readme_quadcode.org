@@ -80,6 +80,11 @@ and also
 
 member of group:  /Dec142013 <HDF5 dataset "ens_av_thetas": shape (312, 128, 192), type "<f4">
 
+* to pull all ensembles into one file
+
+ python Flux_Quads.py -j index_list_time_nd_260.json  -r flux_quads_260
+
+produces profiles_flux_quads_260.h5
 
 ** to get fluxes at every level
 
