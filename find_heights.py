@@ -4,6 +4,7 @@ from collections import OrderedDict as od
 from collections import defaultdict
 import numpy as np
 from matplotlib import pyplot as plt
+import pandas as pd
 plt.style.use('ggplot')
 
 #https://github.com/nchaparr/Sam_Output_Anls/blob/master/Readme.txt#L45    
@@ -22,7 +23,6 @@ class Heights(IntEnum):
 #
 columns=list(Heights.__members__.keys())[:6]
 var_dict = defaultdict(lambda: defaultdict(od))
-results_dict = defaultdict(lambda: defaultdict(od))
 h5_profiles='profiles_flux_quads_260.h5'
 with h5py.File(h5_profiles,'r') as infile:
     case_list=list(infile.keys())[:1]
@@ -68,67 +68,55 @@ with h5py.File(prof_file,'r') as flux_in:
                 var_dict[case][zlev][var]=flux_in[case][szlev][var][...]
 
 def calc_stats(var):
-    rms = np.sqrt(np.mean(var**2.))
-    std = np.std(var)
+    rms = float(np.sqrt(np.mean(var**2.)))
+    std = float(np.std(var))
     count = len(var)
-    return rms,std,count
+    return [rms,std,count]
     
     
 fieldnames=['wrms','wstd','wcount','Trms','Tstd','Tcount']
+record_list=[]
 for case in case_list:
     for lev in var_dict[case]['zlevs']:
+        record=dict(case=case,lev=lev)
         wpert=var_dict[case][lev]['wpert']
         thetapert=var_dict[case][lev]['thetapert']
-        results_dict[case][lev]['flux'] = np.mean(wpert*thetapert)
+        record['tot_flux']=float(np.mean(wpert*thetapert))
+        record['height'] = var_dict[case]['height'][lev]
         for quad in quadrants: 
-            op_w,op_t = op_dict[key]
+            op_w,op_t = op_dict[quad]
             hit=np.logical_and(op_w(wpert,0),op_t(thetapert,0))
-            wout=calc_stats(wpert[hit])
+            stat_vec=calc_stats(wpert[hit])
             Tout=calc_stats(thetapert[hit])
-            stat_vec=wout.extend(Tout)
-            stat_dict=dict(zip(fieldnames,stat_vec))
-            results_dict[case][lev][quad].update(stat_dict)
-
-#for case in case_list:
-#             for zlev in levs:
-#                 print('zlev: ',zlev)
-#                 wpert=flux_in[case][str(zlev)]['wpert'][...]
-#                 thetapert=flux_in[case][str(zlev)]['thetapert'][...]
-#                 uw_hit = ('wptp',np.logical_and(thetapert >0, wpert >0))
-#                 uc_hit = ('wptn',np.logical_and(thetapert <0, wpert >0))
-#                 dc_hit = ('dc',np.logical_and(thetapert <0, wpert <0))
-#                 dw_hit = ('dw',np.logical_and(thetapert >0, wpert <0))
-                
-                
-#                 theta_uw=thetapert[uw_hit]
-#                 tot_flux=(wpert*thetapert).mean()
-#                 for var in ['mean_flux','theta_rms','theta_std','theta_count']:
-#                     theta_out = np.sqrt(np.mean(theta_uw**2.))
-#                     theta_std = np.std(theta_uw)
-#                     theta_count = len(theta_uw)
-#                     var_dict['mean_flux'].append(flux)
-#                     var_dict['theta_rms'].append(theta_out)
-#                     var_dict['theta_std'].append(theta_std)
-#                     var_dict['theta_count'].append(theta_count)
+            stat_vec.extend(Tout)
+            flux=float(np.mean(wpert[hit]*thetapert[hit]))
+            group='{}_flux'.format(quad)
+            record[group]=flux
+            quad_names=['{}_{}'.format(quad,var) for var in fieldnames]
+            stat_dict=dict(zip(quad_names,stat_vec))
+            for field,value in stat_dict.items():
+                record[field]=value
+        record_list.append(record)
+            
+df=pd.DataFrame(record_list)
+print(df.head())            
         
-# plt.close()
+plt.close()
 
-# def plot2(ax1,var_dict,key1,key2,zlevs,height_dict):
-#     prof1=var_dict[key1]
-#     prof2=var_dict[key2]
-#     ax2 = ax1.twiny()
-#     ax1.plot(prof1,zlevs,'b-')
-#     ax2.plot(prof2,zlevs,'r-')
-#     for t1 in ax1.get_xticklabels():
-#         t1.set_color('b')
-#     for t2 in ax2.get_xticklabels():
-#         t2.set_color('r')
-#     for key,hlev in height_dict.items():
-#         ax1.text(0.,hlev,key)
-#     ax1.set_xlabel('net flux (K m/s)')
-#     ax1.xaxis.label.set_color('b')
-#     ax2.xaxis.label.set_color('r')
-#     return ax1,ax2
+def plot2(ax1,df,the_key,height_dict):
+    ax2 = ax1.twiny()
+    ax1.plot('tot_flux','height','b-',data=df)
+    ax2.plot(the_key,'height','r-')
+    for t1 in ax1.get_xticklabels():
+        t1.set_color('b')
+    for t2 in ax2.get_xticklabels():
+        t2.set_color('r')
+    for key,hlev in height_dict.items():
+        ax1.text(0.,hlev,key)
+    ax1.set_xlabel('net flux (K m/s)')
+    ax1.xaxis.label.set_color('b')
+    ax2.xaxis.label.set_color('r')
+    return ax1,ax2
 
 
 # zlevs=height[levs]
@@ -139,17 +127,17 @@ for case in case_list:
 # ax2.set_xlabel('thetarms (K)')
 # ax2.xaxis.label.set_color('r')
 
-# ax1,ax2 = plot2(axes[0,1],var_dict,'mean_flux','theta_std',zlevs,height_dict)
-# ax2.set_xlabel('thetstd (K)')
+# # ax1,ax2 = plot2(axes[0,1],var_dict,'mean_flux','theta_std',zlevs,height_dict)
+# # ax2.set_xlabel('thetstd (K)')
 
-# ax1,ax2 = plot2(axes[1,0],var_dict,'mean_flux','theta_count',zlevs,height_dict)
-# ax2.set_xlabel('thetacount')
+# # ax1,ax2 = plot2(axes[1,0],var_dict,'mean_flux','theta_count',zlevs,height_dict)
+# # ax2.set_xlabel('thetacount')
 
-# ax1,ax2 = plot2(axes[1,1],var_dict,'mean_flux','avg_theta',zlevs,height_dict)
-# ax2.set_xlabel('avg_theta')
+# # ax1,ax2 = plot2(axes[1,1],var_dict,'mean_flux','avg_theta',zlevs,height_dict)
+# # ax2.set_xlabel('avg_theta')
 
 
-# fig.subplots_adjust(hspace=0.5)
-# fig.savefig('fourplot.png')
+# # fig.subplots_adjust(hspace=0.5)
+# # fig.savefig('fourplot.png')
         
-# plt.show()
+# # plt.show()
