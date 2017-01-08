@@ -56,7 +56,8 @@ with h5py.File(h5_profiles,'r') as infile:
 
 print('through with ',h5_profiles)        
 
-quad_file='full_out_260.h5'
+quad_file='allcase_full_out_260.h5'
+#quad_file='full_out_260.h5'
 all_vars = ['wptp','wptn','wntn','wntp','wpert','thetapert']
 quadrants = all_vars[:4]
 #
@@ -68,7 +69,7 @@ with h5py.File(quad_file,'r') as flux_in:
     for case in case_list:
         print('adding heights for: ',case)
         top_lev=var_dict[case]['height_index']['zg1']
-        bot_lev = var_dict[case]['height_index']['zg0']
+        bot_lev = var_dict[case]['height_index']['zg0'] - 15
         levs= list(range(bot_lev-1,top_lev+1))
         var_dict[case]['plot_heights']=var_dict[case]['height'][levs]
         var_dict[case]['zlevs']=levs
@@ -159,7 +160,7 @@ plot_dict['T']['fig_title'] = 'theta'
 plot_dict['W']['fig_title'] = 'wvel'
 
 plt.close('all')
-case_list=case_list[:3]
+
 for casename in case_list:
     print('working on ',casename)
     df_0=df_all.loc[df_all['case'] == casename]
@@ -194,6 +195,6 @@ for casename in case_list:
             fig_file='{}_{}_fourplot_{}.png'.format(casename,quadrant,plot_dict[var]['fig_title'])
             fig.suptitle(fig_title,size=20)
             fig.subplots_adjust(hspace=0.5)
-            fig.savefig(fig_file)
+            fig.savefig(fig_file,dpi=200)
         
 plt.show()
