@@ -53,6 +53,8 @@ with h5py.File(h5_profiles,'r') as infile:
                                             side='left')
         var_dict[case]['height_index']=index_dict
 
+print('through with ',h5_profiles)        
+
 quad_file='full_out_260.h5'
 all_vars = ['wptp','wptn','wntn','wntp','wpert','thetapert']
 quadrants = all_vars[:4]
@@ -61,9 +63,9 @@ quadrants = all_vars[:4]
 # find the quadrant fluxes at each level  
 #
 with h5py.File(quad_file,'r') as flux_in:
-    case_list=list(flux_in.keys())[1:2]
+    case_list=list(flux_in.keys())[:2]
     for case in case_list:
-        print('working on: ',case)
+        print('adding heights for: ',case)
         top_lev=var_dict[case]['height_index']['zg1']
         bot_lev = var_dict[case]['height_index']['zg0']
         levs= list(range(bot_lev-1,top_lev+1))
@@ -73,7 +75,10 @@ with h5py.File(quad_file,'r') as flux_in:
             for zlev in levs:
                 szlev=str(zlev)
                 var_dict[case][zlev][var]=flux_in[case][szlev][var][...]
+                
+print('through with ',quad_file)
 
+                
 def calc_stats(var):
     rms = float(np.sqrt(np.mean(var**2.)))
     std = float(np.std(var))
@@ -118,8 +123,6 @@ for case in case_list:
         record_list.append(record)
     df=pd.DataFrame(record_list)
     df_dict[case]=df
-    
-print(df.head())            
         
 plt.close('all')
 
@@ -136,6 +139,7 @@ def plot2(ax1,df,the_key,height_dict,case_label='case'):
     for t2 in ax2.get_xticklabels():
         t2.set_color('r')
     for key,hlev in height_dict.items():
+        print('writing text: ',key,hlev)
         ax1.text(0.,hlev,key)
     ax1.set_xlabel('net flux (K m/s)')
     ax1.xaxis.label.set_color('b')
@@ -144,7 +148,6 @@ def plot2(ax1,df,the_key,height_dict,case_label='case'):
 
 quadrants=['wptp','wptn','wntp','wntn']
 
-height_dict=var_dict[case]['height_dict']
 
 plot_dict=defaultdict(lambda: defaultdict(od))
 
@@ -155,36 +158,44 @@ plot_dict['T']['labels'] = ['thetarms (K)','thestd (K)','thetacount']
 plot_dict['T']['fig_title'] = 'theta'
 plot_dict['W']['fig_title'] = 'wvel'
 
-
 plt.close('all')
-case_list=case_list[:2]
-for var in ['T','W']:
+case_list=case_list[:3]
+for quadrant in quadrants[:1]:
     print('working on ',case_list)
-    stats=plot_dict[var]['stats']
-    ax_labels=plot_dict[var]['labels']
-    for quadrant in quadrants[:1]:
+    for var in ['T','W']:
+        stats=plot_dict[var]['stats']
+        ax_labels=plot_dict[var]['labels']
         fig,axes=plt.subplots(2,2,figsize=(14,14))
         print('plotting: ',var,quadrant)
         flat_axes=axes.ravel()
+        #
+        # create variable name like wptp_Trms
+        #
         plot_vars=['{}_{}'.format(quadrant,stat) for stat in stats]
-        print(plot_vars,ax_labels)
+        print('top of page: ',plot_vars,ax_labels)
         for count,plot_vals in enumerate(zip(plot_vars,ax_labels)):
             print('axes: ',plot_vals)
             plot_var,ax_label = plot_vals
-            print(plot_var,ax_label)
+            print('plotting variable: ',plot_var,ax_label)
             the_ax=flat_axes[count]
             casename=case_list[0]
+            height_dict=var_dict[casename]['height_dict']
+            print('first plot for ',casename)
             df_0=df_dict[casename]
             ax1,ax2 = plot2(the_ax,df_0,plot_var,height_dict,case_label=casename)
-            if len(case_list) > 1:
-                for the_case in case_list[1:]:
-                    df=df_dict[the_case]
-                    print('plotting line for ',the_case)
-                    ax2.plot(plot_var,'height',data=df,label=the_case)
+            # if len(case_list) > 1:
+            #     fign,axn=plt.subplots(1,1)
+            #     for the_case in case_list[1:]:
+            #         df=df_dict[the_case]
+            #         print('plotting line for ',the_case)
+            #         #axn.plot(plot_var,'height',data=df,label=the_case)
             ax2.set_xlabel(ax_label)
             ax2.xaxis.label.set_color('r')
+        casename=case_list[0]
+        height_dict=var_dict[casename]['height_dict']
         the_ax=flat_axes[3]
-        ax1,ax2 = plot2(the_ax,df,'avg_theta',height_dict)
+        df_0=df_dict[casename]
+        ax1,ax2 = plot2(the_ax,df_0,'avg_theta',height_dict)
         ax2.set_xlabel('avg_theta (K)')
         ax2.xaxis.label.set_color('r')
         fig_title='{} {} statistics'.format(quadrant,plot_dict[var]['fig_title'])
