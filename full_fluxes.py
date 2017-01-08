@@ -45,7 +45,7 @@ if __name__ == "__main__":
         h5_levs=defaultdict(dict)
         h5_cases=dict()
         nz=312
-        case_list=list(infile.keys())[:1]
+        case_list=list(infile.keys())
         outvars=outvars[:4]
         outvars.extend(['wpert','thetapert'])
         height_levs=list(range(nz))
