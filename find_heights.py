@@ -70,6 +70,7 @@ with h5py.File(quad_file,'r') as flux_in:
         print('adding heights for: ',case)
         top_lev=var_dict[case]['height_index']['zg1']
         bot_lev = var_dict[case]['height_index']['zg0'] - 15
+        if bot_lev < 1: bot_lev=1
         levs= list(range(bot_lev-1,top_lev+1))
         var_dict[case]['plot_heights']=var_dict[case]['height'][levs]
         var_dict[case]['zlevs']=levs
@@ -101,12 +102,16 @@ op_dict=dict(wptp=(np.greater,np.greater),
 fieldnames=['Wrms','Wstd','Wcount','Trms','Tstd','Tcount']
 record_list=[]
 for case in case_list:
+    wstar = var_dict[case]['wstar']
+    thetastar=var_dict[case]['thetastar']
+    zg=var_dict[case]['height_dict']['zg']
     for lev in var_dict[case]['zlevs']:
         record=dict(case=case,lev=lev)
         wpert=var_dict[case][lev]['wpert']
         thetapert=var_dict[case][lev]['thetapert']
         record['tot_flux']=float(np.mean(wpert*thetapert))
         record['height'] = var_dict[case]['height'][lev]
+        record['nd_height']=var_dict[case]['height'][lev]/zg
         record['avg_theta']=var_dict[case]['avg_theta'][lev]
         for quad in quadrants: 
             op_w,op_t = op_dict[quad]
@@ -127,22 +132,25 @@ df_all=pd.DataFrame(record_list)
         
 plt.close('all')
 
-def plot2(ax1,df,the_key,height_dict,case_label='case'):
+def plot2(ax1,df,the_key,height_dict,case_label='case',zg=zg):
     """
      plot statistics from dataframe df, column the_key
      agains total flux
     """
     ax2 = ax1.twiny()
-    ax1.plot('tot_flux','height','b-',data=df)
-    ax2.plot(the_key,'height','r-',data=df,label=case_label)
+    ax1.plot('tot_flux','nd_height','b-',data=df)
+    ax2.plot(the_key,'nd_height','r-',data=df,label=case_label)
     for t1 in ax1.get_xticklabels():
         t1.set_color('b')
     for t2 in ax2.get_xticklabels():
         t2.set_color('r')
     for key,hlev in height_dict.items():
+        hlev=hlev/zg
         print('writing text: ',key,hlev)
         ax1.text(0.,hlev,key)
     ax1.set_xlabel('net flux (K m/s)')
+    ax1.set_ylim([0.4,1.2])
+    ax2.set_ylim([0.4,1.2])
     ax1.xaxis.label.set_color('b')
     ax2.xaxis.label.set_color('r')
     return ax1,ax2
@@ -164,6 +172,7 @@ plt.close('all')
 for casename in case_list:
     print('working on ',casename)
     df_0=df_all.loc[df_all['case'] == casename]
+    zg=var_dict[casename]['height_dict']['zg']
     for quadrant in quadrants[:1]:
         for var in ['T','W']:
             stats=plot_dict[var]['stats']
@@ -183,16 +192,16 @@ for casename in case_list:
                 the_ax=flat_axes[count]
                 height_dict=var_dict[casename]['height_dict']
                 print('first plot for ',casename)
-                ax1,ax2 = plot2(the_ax,df_0,plot_var,height_dict,case_label=casename)
+                ax1,ax2 = plot2(the_ax,df_0,plot_var,height_dict,case_label=casename,zg=zg)
                 ax2.set_xlabel(ax_label)
                 ax2.xaxis.label.set_color('r')
             height_dict=var_dict[casename]['height_dict']
             the_ax=flat_axes[3]
-            ax1,ax2 = plot2(the_ax,df_0,'avg_theta',height_dict)
+            ax1,ax2 = plot2(the_ax,df_0,'avg_theta',height_dict,zg=zg)
             ax2.set_xlabel('avg_theta (K)')
             ax2.xaxis.label.set_color('r')
             fig_title='{}: {} {} statistics'.format(casename,quadrant,plot_dict[var]['fig_title'])
-            fig_file='{}_{}_fourplot_{}.png'.format(casename,quadrant,plot_dict[var]['fig_title'])
+            fig_file='notebooks/{}_{}_fourplot_{}.png'.format(casename,quadrant,plot_dict[var]['fig_title'])
             fig.suptitle(fig_title,size=20)
             fig.subplots_adjust(hspace=0.5)
             fig.savefig(fig_file,dpi=200)
